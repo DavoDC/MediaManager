@@ -29,6 +29,9 @@ namespace MediaManager
 
             // Handle new shows folder
             HandleNewShowsFolder();
+
+            // Handle new movies folder
+            HandleNewMoviesFolder();
         }
 
         /// <summary>
@@ -83,7 +86,7 @@ namespace MediaManager
 
             if (episodeFilePaths.Length == 0)
             {
-                throw new Exception($"{msgStart}'{curNewShowSeasonFolderPath}' contained no files");
+                throw new Exception($"'{curNewShowSeasonFolderPath}' contains no files");
             }
 
             // Message start
@@ -93,7 +96,7 @@ namespace MediaManager
             //// If info file already exists, skip folder
             if (episodeFilePaths.Any(f => Path.GetFileName(f).Equals(infoFileName, StringComparison.OrdinalIgnoreCase)))
             {
-                Console.WriteLine($"{msgStart}{infoFileName} already exists, skipping!\n");
+                Console.WriteLine($"{msgStart}Ready for integration!\n");
                 return;
             }
 
@@ -150,6 +153,100 @@ namespace MediaManager
             }
 
             Console.WriteLine("");
+        }
+
+        /// <summary>
+        /// Handle the new movies folder
+        /// </summary>
+        private static void HandleNewMoviesFolder()
+        {
+            Console.WriteLine($"Checking {newMoviesFolderName} folder...");
+
+            // Get new movie folders and check
+            string[] newMovieFolders = Directory.GetDirectories(newMoviesFolderPath, "*", SearchOption.TopDirectoryOnly);
+            if (newMovieFolders.Length == 0)
+            {
+                Console.WriteLine("\nNo new movies found!");
+            }
+
+            // For every new movie folder
+            foreach (string curNewMovieFolder in newMovieFolders)
+            {
+                // Message start
+                string msgStart = "- ";
+
+                // Notify
+                Console.Write($"{msgStart}Found movie: '{Path.GetFileName(curNewMovieFolder)}'\n");
+
+                // Update message start
+                msgStart = $" {msgStart}";
+
+                // Check for folders in movie folder
+                string[] newMovieFolderFolders = Directory.GetDirectories(curNewMovieFolder, "*", SearchOption.TopDirectoryOnly);
+                if (newMovieFolderFolders.Length != 0)
+                {
+                    throw new Exception($"'{curNewMovieFolder}' movie folder has folders");
+                }
+
+                // Get list of files in the movie folder
+                string[] movieFilePaths = Directory.GetFiles(curNewMovieFolder, "*", SearchOption.AllDirectories);
+
+                // If info file already exists, skip folder
+                if (movieFilePaths.Any(f => Path.GetFileName(f).Equals(infoFileName, StringComparison.OrdinalIgnoreCase)))
+                {
+                    Console.WriteLine($"{msgStart}Ready for integration!\n");
+                    continue;
+                }
+
+                ////// Otherwise if info file doesn't exist
+                // Check number of files in movie folder
+                if (movieFilePaths.Length == 0)
+                {
+                    throw new Exception($"'{curNewMovieFolder}' contains no files");
+                }
+                else if (movieFilePaths.Length > 1)
+                {
+                    throw new Exception($"'{curNewMovieFolder}' contains more than 1 file");
+                }
+                
+                // Get movie filename
+                string movieFilename = movieFilePaths.Select(f => Path.GetFileName(f)).ToArray()[0];
+
+                // Create info file in movie folder with filename and notify
+                string infoFilePath = Path.Combine(curNewMovieFolder, infoFileName);
+                File.WriteAllText(infoFilePath, movieFilename);
+                Console.WriteLine($"{msgStart}Created {infoFileName} with movie filename.\n");
+
+                ////// Rename files
+                // Define regular expression to extract "Movie Title (YYYY)"
+                Regex movieRegex = new Regex(@"
+                    ^                   # Start of the string
+                    ([^(]+              # Capture everything before '(' (Movie Title)
+                    \(\d{4}\))          # Capture '(YYYY)' (4-digit year in parentheses)
+                ", RegexOptions.IgnorePatternWhitespace);
+
+                // Extract movie filename and apply regex
+                Match curMovieMatch = movieRegex.Match(movieFilename);
+
+                // If successfully extracted part of the filename
+                if (curMovieMatch.Success)
+                {
+                    // Generate new movie name and add file extension
+                    string newMovieName = curMovieMatch.Value.Trim();
+                    newMovieName += Path.GetExtension(movieFilename);
+
+                    // Generate new movie file path
+                    string newMovieFilePath = Path.Combine(curNewMovieFolder, newMovieName);
+
+                    // Rename file
+                    File.Move(movieFilePaths[0], newMovieFilePath);
+                }
+                else
+                {
+                    throw new Exception("Failed to apply regex pattern to movie");
+                }
+            }
+
         }
     }
 }
