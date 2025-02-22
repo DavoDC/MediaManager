@@ -15,109 +15,141 @@ namespace MediaManager
         private static readonly string newMoviesFolderName = "NEW_MOVIES";
         private static readonly string newMoviesFolderPath = $"{offloadFolderPath}\\{newMoviesFolderName}";
 
-
-
-        // The path back to the project folder
-        //private static readonly string projectPath = "..\\..\\..\\";
-        //public static string ProjectPath { get => projectPath; }
-
-        // The mirror folder name
-        //private static readonly string mirrorFolder = "AUDIO_MIRROR";
-        //public static string MirrorFolder { get => mirrorFolder; }
-
-        // The path to the mirror folder relative to program executable
-        //private static readonly string relMirrorPath = projectPath + "..\\" + mirrorFolder;
+        // Info file name
+        private static readonly string infoFileName = "INFO.txt";
 
         /// <summary>
         /// Main function
         /// </summary>
         /// <param name="args">Arguments given to program</param>
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             // Start message
             Console.WriteLine("\n###### Media Manager ######\n");
 
-            // Path to show
-            //string showPath = "E:\\Visual Media TEST GROUND\\Visual Media - Shows\\Spider-Man Test";
+            // Handle new shows folder
+            HandleNewShowsFolder();
+        }
 
-            //// Get file list
-            //string[] fileList = Directory.GetFiles(showPath, "*", SearchOption.AllDirectories);
+        /// <summary>
+        /// Handle the new shows folder
+        /// </summary>
+        private static void HandleNewShowsFolder()
+        {
+            Console.WriteLine($"Checking {newShowsFolderName} folder...");
 
-            //// 1) HANDLE INFO.txt 
-            //string targetFile = "INFO.txt";
-            //// Check if INFO.txt exists
-            //if (fileList.Any(f => Path.GetFileName(f).Equals(targetFile, StringComparison.OrdinalIgnoreCase)))
-            //{
-            //    Console.WriteLine("INFO.txt already exists. Stopping execution.");
-            //    return;
-            //}
+            // Iterate over new show folders
+            string[] newShowFolders = Directory.GetDirectories(newShowsFolderPath, "*", SearchOption.TopDirectoryOnly);
 
-            //// Filter out INFO.txt if it exists (though unlikely at this point)
-            //string[] otherFiles = fileList
-            //    .Where(f => !Path.GetFileName(f).Equals(targetFile, StringComparison.OrdinalIgnoreCase))
-            //    .Select(f => Path.GetFileName(f)) // Only file names, not full paths
-            //    .ToArray();
+            if (newShowFolders.Length == 0)
+            {
+                Console.WriteLine("\nNo new shows found!");
+            }
 
-            //// Create INFO.txt and write the list of files
-            //string newFilePath = Path.Combine(showPath, targetFile);
-            //File.WriteAllLines(newFilePath, otherFiles);
+            foreach (string curNewShowFolder in newShowFolders)
+            {
+                // Info
+                Console.Write($"- Found show: '{Path.GetFileName(curNewShowFolder)}'\n");
 
-            //Console.WriteLine($"INFO.txt was not found. Created a new one with a list of {otherFiles.Length} files.");
+                // Iterate over new show season folders
+                string[] newShowSeasonFolders = Directory.GetDirectories(curNewShowFolder, "*", SearchOption.TopDirectoryOnly);
 
-            //// 2) RENAME FILES
-            //foreach (string filePath in fileList)
-            //{
-            //    Console.WriteLine(filePath);
+                if (newShowSeasonFolders.Length == 0)
+                {
+                    throw new Exception($"'{curNewShowFolder}' contained no folders");
+                }
 
-            //    // Regular expression to match SXXEXX pattern
-            //    //Regex regex = new Regex(@"S\d{2}E\d{2}", RegexOptions.IgnoreCase);
-            //    //Match match = regex.Match(filePath);
-            //    //if (match.Success)
-            //    //{
-            //    //    Console.WriteLine("Extracted episode: " + match.Value);
-            //    //}
-            //    //else
-            //    //{
-            //    //    Console.WriteLine("No match found.");
-            //    //}
+                foreach (string curNewShowSeasonFolder in newShowSeasonFolders)
+                {
+                    HandleNewShowSeasonFolder(curNewShowSeasonFolder);
+                }
+            }
+        }
 
-            //    string fileName = Path.GetFileName(filePath);
+        /// <summary>
+        /// Handle a season folder of a new show
+        /// </summary>
+        /// <param name="curNewShowSeasonFolderPath">Path to the new show's season folder</param>
+        private static void HandleNewShowSeasonFolder(string curNewShowSeasonFolderPath)
+        {
+            // Message start 
+            string msgStart = " - ";
 
-            //    //Console.WriteLine(fileName);
+            // Info
+            Console.Write($"{msgStart}Found season folder: '{Path.GetFileName(curNewShowSeasonFolderPath)}'\n");
 
-            //    //string originalName = "Your Friendly Neighborhood Spider-Man (2025) - S01E10 - If This Be My Destiny [DSNP WEBDL-720p][EAC3 Atmos 5.1][h264]-FLUX.mkv";
+            // Get list of the season folder's file paths, which should be mainly episodes
+            string[] episodeFilePaths = Directory.GetFiles(curNewShowSeasonFolderPath, "*", SearchOption.AllDirectories);
 
-            //    // Regular expression to extract "SXXEXX - Episode Title"
-            //    Regex regex = new Regex(@"
-            //        (                   # Start capturing group
-            //            S\d{2}E\d{2}     # Matches 'S01E10' (S followed by 2 digits, E followed by 2 digits)
-            //            \s-\s            # Matches ' - ' (space, hyphen, space)
-            //            [^[]+            # Matches everything **before** the first '[' (Episode Title)
-            //        )                   # End capturing group
-            //    ", RegexOptions.IgnorePatternWhitespace); // Allows multiline regex with comments
+            if (episodeFilePaths.Length == 0)
+            {
+                throw new Exception($"{msgStart}'{curNewShowSeasonFolderPath}' contained no files");
+            }
 
-            //    Match match = regex.Match(fileName);
+            // Message start
+            msgStart = $" {msgStart}";
 
-            //    if (match.Success)
-            //    {
-            //        string extension = Path.GetExtension(filePath);
-            //        string newName = match.Value.Trim() + extension;
-            //        //Console.WriteLine("New name: '" + newName + "'");
+            ////// Handle info file
+            //// If info file already exists, skip folder
+            if (episodeFilePaths.Any(f => Path.GetFileName(f).Equals(infoFileName, StringComparison.OrdinalIgnoreCase)))
+            {
+                Console.WriteLine($"{msgStart}{infoFileName} already exists, skipping!\n");
+                return;
+            }
 
-            //        // Actually rename 
-            //        string directory = Path.GetDirectoryName(filePath);
-            //        string newPath = Path.Combine(directory, newName);
-            //        Console.WriteLine($"{newPath}");
+            //// Otherwise if info file doesn't exist, create it
+            // Get list of episode filenames
+            string[] episodeFileNames = episodeFilePaths.Select(f => Path.GetFileName(f)).ToArray();
 
-            //        File.Move(filePath, newPath);
-            //    }
-            //    else
-            //    {
-            //        Console.WriteLine("Pattern not found.");
-            //    }
+            // Create info file in season folder with episode filenames and notify
+            string infoFilePath = Path.Combine(curNewShowSeasonFolderPath, infoFileName);
+            File.WriteAllLines(infoFilePath, episodeFileNames);
+            Console.WriteLine($"{msgStart}Created {infoFileName} with {episodeFileNames.Length} filename(s).");
 
-            //    Console.WriteLine("");
-            //}
+            ////// Rename files
+            // Define regular expression to extract "SXXEXX - Episode Title"
+            Regex episodeRegex = new Regex(@"
+                    (                   # Start capturing group
+                        S\d{2}E\d{2}     # Matches 'S01E10' (S followed by 2 digits, E followed by 2 digits)
+                        \s-\s            # Matches ' - ' (space, hyphen, space)
+                        [^[]+            # Matches everything **before** the first '[' (Episode Title)
+                    )                   # End capturing group
+                ", RegexOptions.IgnorePatternWhitespace); // Allows multiline regex with comments
+
+            // Iterate over episode file paths
+            foreach (string curEpFilePath in episodeFilePaths)
+            {
+                // Extract episode filename and apply regex
+                string curEpFileName = Path.GetFileName(curEpFilePath);
+                Match curEpMatch = episodeRegex.Match(curEpFileName);
+
+                // If successfully extracted part of the filename
+                if (curEpMatch.Success)
+                {
+                    // Generate new episode name and add file extension
+                    string newEpName = curEpMatch.Value.Trim();
+                    newEpName += Path.GetExtension(curEpFilePath);
+
+                    // Get path to where episode file is and check
+                    string? epFolder = Path.GetDirectoryName(curEpFilePath);
+                    if (epFolder == null)
+                    {
+                        throw new Exception("Failed to get episode folder");
+                    }
+
+                    // Generate new episode file path
+                    string newEpFilePath = Path.Combine(epFolder, newEpName);
+
+                    // Rename file
+                    File.Move(curEpFilePath, newEpFilePath);
+                }
+                else
+                {
+                    throw new Exception("Failed to apply regex pattern");
+                }
+            }
+
+            Console.WriteLine("");
         }
     }
 }
