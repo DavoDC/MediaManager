@@ -6,7 +6,7 @@ namespace MediaManager
     {
         //// CONSTANTS
         // Offload folder
-        private static readonly string offloadFolderPath = "E:\\OFFLOAD_TEST_GROUND";
+        private static readonly string offloadFolderPath = "E:\\OFFLOAD";
 
         // New media folders
         private static readonly string newShowsFolderPath = Path.Combine(offloadFolderPath, "NEW_SHOWS");
