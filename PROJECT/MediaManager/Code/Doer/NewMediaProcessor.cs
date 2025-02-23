@@ -1,8 +1,14 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
-namespace MediaManager.Code
+namespace MediaManager
 {
-    internal class NewMediaProcessor
+    /// <summary>
+    /// Process new media in the offload folder
+    /// </summary>
+    internal class NewMediaProcessor : Doer
     {
         //// CONSTANTS
         // Offload folder
@@ -194,7 +200,7 @@ namespace MediaManager.Code
 
             // Generate new folder path
             string newFolderName = match.Value.Trim();
-            string newFolderPath = Path.Combine(Path.GetDirectoryName(folderPath)!, newFolderName);
+            string newFolderPath = Path.Combine(Path.GetDirectoryName(folderPath), newFolderName);
 
             // If new path differs from original, rename folder with new name
             if (folderPath != newFolderPath)
