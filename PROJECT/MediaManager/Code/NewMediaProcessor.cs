@@ -48,8 +48,12 @@ namespace MediaManager.Code
             foreach (var subFolder in subFolders)
             {
                 handler(subFolder);
+
+                RenameFolder(subFolder);
+
                 foldersReadyForIntegration++;
             }
+
             Console.WriteLine($"- {foldersReadyForIntegration} folders ready for integration!\n");
         }
 
@@ -169,6 +173,34 @@ namespace MediaManager.Code
                 {
                     throw new Exception($"Failed to apply regex pattern to: '{fileName}'!");
                 }
+            }
+        }
+
+        /// <summary>
+        /// Renames a top-level media folder based on the movieRegex pattern.
+        /// </summary>
+        /// <param name="folderPath">Path to a movie or show folder (i.e. show folder holding season folders).</param>
+        private void RenameFolder(string folderPath)
+        {
+            // Extract folder name and apply regex
+            string folderName = Path.GetFileName(folderPath);
+            Match match = movieRegex.Match(folderName);
+
+            // If applying regex failed, notify
+            if (!match.Success)
+            {
+                throw new Exception($"Failed to apply regex pattern to folder: '{folderName}'!");
+            }
+
+            // Generate new folder path
+            string newFolderName = match.Value.Trim();
+            string newFolderPath = Path.Combine(Path.GetDirectoryName(folderPath)!, newFolderName);
+
+            // If new path differs from original, rename folder with new name
+            if (folderPath != newFolderPath)
+            {
+                Directory.Move(folderPath, newFolderPath);
+                //Console.WriteLine($"Renamed folder: '{folderName}' -> '{newFolderName}'");
             }
         }
     }
