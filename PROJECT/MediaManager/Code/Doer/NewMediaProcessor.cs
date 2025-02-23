@@ -32,6 +32,9 @@ namespace MediaManager
 
             // Handle new movies
             ProcessMediaFolder(newMoviesFolderPath, HandleMovieFolder);
+
+            // Finish and print time taken
+            FinishAndPrintTimeTaken();
         }
 
         /// <summary>

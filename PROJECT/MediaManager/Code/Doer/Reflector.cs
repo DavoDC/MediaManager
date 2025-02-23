@@ -199,7 +199,7 @@ namespace MediaManager
             Console.WriteLine($" - Recreated: {recreateMirror}");
 
             // Print time taken
-            PrintTimeTaken();
+            FinishAndPrintTimeTaken();
         }
 
         /// <summary>

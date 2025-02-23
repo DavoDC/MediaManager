@@ -74,9 +74,8 @@ namespace MediaManager
             // Check Musivation folder
             CheckMusivationFolder();
 
-            // Print time taken
-            Console.WriteLine("");
-            PrintTimeTaken();
+            // Finish and print time taken
+            FinishAndPrintTimeTaken();
         }
 
         /// <summary>

@@ -47,7 +47,7 @@ namespace MediaManager
 
             // Print statistics
             Console.WriteLine($" - Tags parsed: {audioTags.Count}");
-            PrintTimeTaken();
+            FinishAndPrintTimeTaken();
         }
     }
 }

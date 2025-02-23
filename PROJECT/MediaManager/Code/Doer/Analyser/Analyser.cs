@@ -51,7 +51,7 @@ namespace MediaManager
 
             // Print time taken
             Console.WriteLine("");
-            PrintTimeTaken();
+            FinishAndPrintTimeTaken();
         }
     }
 }

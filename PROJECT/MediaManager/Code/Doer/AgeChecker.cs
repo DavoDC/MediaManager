@@ -84,7 +84,7 @@ namespace MediaManager
             }
 
             // Print time taken
-            PrintTimeTaken();
+            FinishAndPrintTimeTaken();
         }
 
 
