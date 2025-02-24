@@ -5,7 +5,18 @@ namespace MediaManager
 {
     internal class Program
     {
-        //// CONSTANTS/SETTINGS
+        ////// CONSTANTS
+        // Main media folder
+        public static readonly string mediaFolderPath = "E:\\Visual Media";
+
+        // Media folders
+        public static readonly string animeFolderPath = mediaFolderPath + "\\Visual Media - Anime";
+        public static readonly string moviesFolderPath = mediaFolderPath + "\\Visual Media - Movies";
+        public static readonly string showsFolderPath = mediaFolderPath + "\\Visual Media - Shows";
+        public static readonly string universesFolderPath = mediaFolderPath + "\\Visual Media - Universes";
+
+        // Info file
+        public static readonly string infoFileName = "INFO.txt";
 
         // The path back to the project folder
         private static readonly string projectPath = "..\\..\\..\\";
@@ -27,10 +38,17 @@ namespace MediaManager
             try
             {
                 // Start message
-                Console.WriteLine("\n###### Media Manager ######\n");
+                Console.WriteLine("\n###### Media Manager ######");
 
-                // 0) Proces new media
+                // 0) Process new media
+                PrintCheckingFolderMsg(NewMediaProcessor.integrateFolderPath);
                 NewMediaProcessor nmp = new NewMediaProcessor();
+
+                // TODO
+                //PrintCheckingFolderMsg(animeFolderPath);
+                //PrintCheckingFolderMsg(moviesFolderPath);
+                //PrintCheckingFolderMsg(showsFolderPath);
+                //PrintCheckingFolderMsg(universesFolderPath);
 
                 // 1) Check the age of the mirror
                 //AgeChecker ac = new AgeChecker();
@@ -70,6 +88,22 @@ namespace MediaManager
                 Console.WriteLine("\n");
                 Environment.Exit(123);
             }
+        }
+
+        /// <summary>
+        /// Print a message that the folder at the given path is being checked
+        /// </summary>
+        public static void PrintCheckingFolderMsg(string folderPath)
+        {
+            Console.WriteLine($"\nChecking '{Path.GetFileName(folderPath)}' folder...");
+        }
+
+        /// <summary>
+        /// Print an error message
+        /// </summary>
+        public static void PrintErrMsg(string errorMsg)
+        {
+            Console.WriteLine($"ERROR: {errorMsg}");
         }
     }
 }

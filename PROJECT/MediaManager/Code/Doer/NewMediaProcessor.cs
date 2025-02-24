@@ -10,28 +10,24 @@ namespace MediaManager
     /// </summary>
     internal class NewMediaProcessor : Doer
     {
-        //// CONSTANTS
-        // Offload folder
-        private static readonly string offloadFolderPath = "E:\\OFFLOAD";
-
-        // New media folders
-        private static readonly string newShowsFolderPath = Path.Combine(offloadFolderPath, "NEW_SHOWS");
-        private static readonly string newMoviesFolderPath = Path.Combine(offloadFolderPath, "NEW_MOVIES");
-
-        // Info file
-        private static readonly string infoFileName = "INFO.txt";
+        ////// CONSTANTS
+        // Folder paths
+        public static readonly string integrateFolderPath = Program.mediaFolderPath + "\\INTEGRATE";
+        private static readonly string newShowsFolderPath = Path.Combine(integrateFolderPath, "NEW_SHOWS");
+        private static readonly string newMoviesFolderPath = Path.Combine(integrateFolderPath, "NEW_MOVIES");
 
         // Regexes for renaming media
         private static readonly Regex episodeRegex = new Regex(@"S\d{2}E\d{2}\s-\s[^[]+", RegexOptions.IgnorePatternWhitespace);
         private static readonly Regex movieRegex = new Regex(@"^[^(]+\(\d{4}\)", RegexOptions.IgnorePatternWhitespace);
+        private static readonly string regexErr = "Failed to apply regex pattern to:";
 
         public NewMediaProcessor()
         {
             // Handle new shows
-            ProcessMediaFolder(newShowsFolderPath, HandleShowFolder);
+            ProcessMediaFolder("shows", newShowsFolderPath, HandleShowFolder);
 
             // Handle new movies
-            ProcessMediaFolder(newMoviesFolderPath, HandleMovieFolder);
+            ProcessMediaFolder("movies", newMoviesFolderPath, HandleMovieFolder);
 
             // Finish and print time taken
             FinishAndPrintTimeTaken();
@@ -40,16 +36,16 @@ namespace MediaManager
         /// <summary>
         /// Processes a media folder by iterating over its subdirectories and applying the given handler.
         /// </summary>
+        /// <param name="mediaType">The media type (e.g. 'shows' or 'movies').</param>
         /// <param name="folderPath">Path to the media folder.</param>
         /// <param name="handler">Handler function to process each subdirectory.</param>
-        private void ProcessMediaFolder(string folderPath, Action<string> handler)
+        private void ProcessMediaFolder(string mediaType, string folderPath, Action<string> handler)
         {
-            Console.WriteLine($"Checking {Path.GetFileName(folderPath)} folder...");
             string[] subFolders = Directory.GetDirectories(folderPath, "*", SearchOption.TopDirectoryOnly);
 
             if (subFolders.Length == 0)
             {
-                Console.WriteLine("- No new media found!\n");
+                Console.WriteLine($" - No {mediaType} to integrate!");
                 return;
             }
 
@@ -63,7 +59,7 @@ namespace MediaManager
                 foldersReadyForIntegration++;
             }
 
-            Console.WriteLine($"- {foldersReadyForIntegration} folders ready for integration!\n");
+            Console.WriteLine($" - {foldersReadyForIntegration} {mediaType} are ready for integration!");
         }
 
         /// <summary>
@@ -77,7 +73,8 @@ namespace MediaManager
 
             if (seasonFolders.Length == 0)
             {
-                throw new Exception($"'{showFolder}' contained no season folders!");
+                Program.PrintErrMsg($"'{showFolder}' contained no season folders!");
+                return;
             }
 
             foreach (var seasonFolder in seasonFolders)
@@ -97,17 +94,20 @@ namespace MediaManager
 
             if (Directory.GetDirectories(movieFolder).Length > 0)
             {
-                throw new Exception($"'{movieFolder}' movie folder has subfolders!");
+                Program.PrintErrMsg($"'{movieFolder}' movie folder has subfolders!");
+                return;
             }
 
             if (files.Length == 0)
             {
-                throw new Exception($"'{movieFolder}' contains no files!");
+                Program.PrintErrMsg($"'{movieFolder}' contains no files!");
+                return;
             }
 
             if (files.Length > 2)
             {
-                throw new Exception($"'{movieFolder}' contains more than two files!");
+                Program.PrintErrMsg($"'{movieFolder}' contains more than two files!");
+                return;
             }
 
             HandleMediaFolder(movieFolder, movieRegex);
@@ -142,7 +142,7 @@ namespace MediaManager
         private bool HandleInfoFile(string folderPath, string[] filePaths)
         {
             // Return false if the info file already exists
-            if (filePaths.Any(f => Path.GetFileName(f).Equals(infoFileName, StringComparison.OrdinalIgnoreCase)))
+            if (filePaths.Any(f => Path.GetFileName(f).Equals(Program.infoFileName, StringComparison.OrdinalIgnoreCase)))
             {
                 return false;
             }
@@ -153,7 +153,7 @@ namespace MediaManager
             string[] fileNames = filePaths.Select(Path.GetFileName).Where(fn => fn != null).Cast<string>().ToArray();
 
             // Create info file with filenames and notify
-            File.WriteAllLines(Path.Combine(folderPath, infoFileName), fileNames);
+            File.WriteAllLines(Path.Combine(folderPath, Program.infoFileName), fileNames);
             //Console.WriteLine($"- Created {infoFileName} with {fileNames.Length} filename(s).");
 
             // Return true as an info file was created
@@ -180,7 +180,7 @@ namespace MediaManager
                 }
                 else
                 {
-                    throw new Exception($"Failed to apply regex pattern to: '{fileName}'!");
+                    Program.PrintErrMsg($"{regexErr} '{fileName}'!");
                 }
             }
         }
@@ -195,10 +195,11 @@ namespace MediaManager
             string folderName = Path.GetFileName(folderPath);
             Match match = movieRegex.Match(folderName);
 
-            // If applying regex failed, notify
+            // If applying regex failed, notify and stop
             if (!match.Success)
             {
-                throw new Exception($"Failed to apply regex pattern to folder: '{folderName}'!");
+                Program.PrintErrMsg($"{regexErr} '{folderName}'!");
+                return;
             }
 
             // Generate new folder path
