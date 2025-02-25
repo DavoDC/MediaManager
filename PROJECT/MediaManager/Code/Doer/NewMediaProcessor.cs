@@ -54,7 +54,7 @@ namespace MediaManager
             {
                 handler(subFolder);
 
-                RenameFolder(subFolder);
+                //RenameFolder(subFolder);
 
                 foldersReadyForIntegration++;
             }
@@ -187,31 +187,32 @@ namespace MediaManager
 
         /// <summary>
         /// Renames a top-level media folder based on the movieRegex pattern.
+        /// DISABLED - we want to keep movie/show IDs so Plex can recognise them
         /// </summary>
         /// <param name="folderPath">Path to a movie or show folder (i.e. show folder holding season folders).</param>
         private void RenameFolder(string folderPath)
         {
             // Extract folder name and apply regex
-            string folderName = Path.GetFileName(folderPath);
-            Match match = movieRegex.Match(folderName);
+            //string folderName = Path.GetFileName(folderPath);
+            //Match match = movieRegex.Match(folderName);
 
-            // If applying regex failed, notify and stop
-            if (!match.Success)
-            {
-                Program.PrintErrMsg($"{regexErr} '{folderName}'!");
-                return;
-            }
+            //// If applying regex failed, notify and stop
+            //if (!match.Success)
+            //{
+            //    Program.PrintErrMsg($"{regexErr} '{folderName}'!");
+            //    return;
+            //}
 
-            // Generate new folder path
-            string newFolderName = match.Value.Trim();
-            string newFolderPath = Path.Combine(Path.GetDirectoryName(folderPath), newFolderName);
+            //// Generate new folder path
+            //string newFolderName = match.Value.Trim();
+            //string newFolderPath = Path.Combine(Path.GetDirectoryName(folderPath), newFolderName);
 
-            // If new path differs from original, rename folder with new name
-            if (folderPath != newFolderPath)
-            {
-                Directory.Move(folderPath, newFolderPath);
-                //Console.WriteLine($"Renamed folder: '{folderName}' -> '{newFolderName}'");
-            }
+            //// If new path differs from original, rename folder with new name
+            //if (folderPath != newFolderPath)
+            //{
+            //    Directory.Move(folderPath, newFolderPath);
+            //    //Console.WriteLine($"Renamed folder: '{folderName}' -> '{newFolderName}'");
+            //}
         }
     }
 }
