@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -16,18 +17,13 @@ namespace MediaManager
         private static readonly string newShowsFolderPath = Path.Combine(integrateFolderPath, "NEW_SHOWS");
         private static readonly string newMoviesFolderPath = Path.Combine(integrateFolderPath, "NEW_MOVIES");
 
-        // Regexes for renaming media
-        private static readonly Regex episodeRegex = new Regex(@"S\d{2}E\d{2}\s-\s[^[]+", RegexOptions.IgnorePatternWhitespace);
-        private static readonly Regex movieRegex = new Regex(@"^[^(]+\(\d{4}\)", RegexOptions.IgnorePatternWhitespace);
-        private static readonly string regexErr = "Failed to apply regex pattern to:";
-
         public NewMediaProcessor()
         {
             // Handle new shows
-            ProcessMediaFolder("shows", newShowsFolderPath, HandleShowFolder);
+            ProcessMediaFolder("show(s)", newShowsFolderPath, HandleShowFolder);
 
             // Handle new movies
-            ProcessMediaFolder("movies", newMoviesFolderPath, HandleMovieFolder);
+            ProcessMediaFolder("movie(s)", newMoviesFolderPath, HandleMovieFolder);
 
             // Finish and print time taken
             FinishAndPrintTimeTaken();
@@ -54,12 +50,10 @@ namespace MediaManager
             {
                 handler(subFolder);
 
-                //RenameFolder(subFolder);
-
                 foldersReadyForIntegration++;
             }
 
-            Console.WriteLine($" - {foldersReadyForIntegration} {mediaType} are ready for integration!");
+            Console.WriteLine($" - {foldersReadyForIntegration} {mediaType} ready for integration!");
         }
 
         /// <summary>
@@ -68,7 +62,7 @@ namespace MediaManager
         /// <param name="showFolder">Path to the show folder.</param>
         private void HandleShowFolder(string showFolder)
         {
-            //Console.WriteLine($"- Found show: '{Path.GetFileName(showFolder)}'");
+            Console.WriteLine($"- Found show: '{Path.GetFileName(showFolder)}'");
             string[] seasonFolders = Directory.GetDirectories(showFolder, "*", SearchOption.TopDirectoryOnly);
 
             if (seasonFolders.Length == 0)
@@ -79,7 +73,7 @@ namespace MediaManager
 
             foreach (var seasonFolder in seasonFolders)
             {
-                HandleMediaFolder(seasonFolder, episodeRegex);
+                HandleMediaFolder(seasonFolder);
             }
         }
 
@@ -89,7 +83,7 @@ namespace MediaManager
         /// <param name="movieFolder">Path to the movie folder.</param>
         private void HandleMovieFolder(string movieFolder)
         {
-            //Console.WriteLine($"- Found movie: '{Path.GetFileName(movieFolder)}'");
+            Console.WriteLine($"  - Found movie: '{Path.GetFileName(movieFolder)}'");
             string[] files = Directory.GetFiles(movieFolder, "*", SearchOption.AllDirectories);
 
             if (Directory.GetDirectories(movieFolder).Length > 0)
@@ -104,115 +98,94 @@ namespace MediaManager
                 return;
             }
 
-            if (files.Length > 2)
-            {
-                Program.PrintErrMsg($"'{movieFolder}' contains more than two files!");
-                return;
-            }
+            //if (files.Length > 2)
+            //{
+            //    Program.PrintErrMsg($"'{movieFolder}' contains more than two files!");
+            //    return;
+            //}
 
-            HandleMediaFolder(movieFolder, movieRegex);
+            HandleMediaFolder(movieFolder);
         }
 
         /// <summary>
-        /// Handles a media folder by creating an info file and renaming files based on a regex pattern, if needed.
+        /// Handles a media folder.
         /// </summary>
         /// <param name="folderPath">Path to the media folder.</param>
-        /// <param name="mediaRegex">Regular expression to match and rename files.</param>
-        private void HandleMediaFolder(string folderPath, Regex mediaRegex)
+        private void HandleMediaFolder(string folderPath)
         {
             // Get file paths in media folder
             string[] filePaths = Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories);
 
-            // If an info file was created for the folder, rename the files it contains as well
-            if (HandleInfoFile(folderPath, filePaths))
-            {
-                RenameFiles(filePaths, folderPath, mediaRegex);
-            }
-        }
+            // Look for info file path
+            string infoFilePath = filePaths.
+                FirstOrDefault(fp => Path.GetFileName(fp).Equals(Program.infoFileName)) ?? string.Empty;
 
-        /// <summary>
-        /// Handles the creation of an info file in the media folder if it does not already exist.
-        /// The info file will contain a list of filenames (without paths) from the media folder.
-        /// </summary>
-        /// <param name="folderPath">Path to the media folder where the info file will be created.</param>
-        /// <param name="filePaths">List of file paths in the media folder, used to extract filenames.</param>
-        /// <returns>
-        /// True if an info file was created, otherwise false.
-        /// </returns>
-        private bool HandleInfoFile(string folderPath, string[] filePaths)
-        {
-            // Return false if the info file already exists
-            if (filePaths.Any(f => Path.GetFileName(f).Equals(Program.infoFileName, StringComparison.OrdinalIgnoreCase)))
+            // If couldn't find it, notify
+            if (string.IsNullOrEmpty(infoFilePath))
             {
-                return false;
+                Program.PrintErrMsg("Couldn't find info file.\n");
+                return;
             }
 
-            //// Otherwise if the info file doesn't exist, create it
+            // Get list of media files (all files but info file)
+            List<string> mediaFilePaths = new List<string>(filePaths);
+            mediaFilePaths.Remove(infoFilePath);
 
-            // Get array of filenames (that is guaranteed to have no null values, to prevent CS8620)
-            string[] fileNames = filePaths.Select(Path.GetFileName).Where(fn => fn != null).Cast<string>().ToArray();
+            // Read file names from info file
+            string[] infoFileNames = File.ReadAllLines(infoFilePath);
 
-            // Create info file with filenames and notify
-            File.WriteAllLines(Path.Combine(folderPath, Program.infoFileName), fileNames);
-            //Console.WriteLine($"- Created {infoFileName} with {fileNames.Length} filename(s).");
-
-            // Return true as an info file was created
-            return true;
-        }
-
-        /// <summary>
-        /// Renames files in a media folder based on a regex pattern.
-        /// </summary>
-        /// <param name="filePaths">List of file paths to be renamed.</param>
-        /// <param name="folderPath">Path to the media folder.</param>
-        /// <param name="regex">Regular expression used for renaming.</param>
-        private void RenameFiles(string[] filePaths, string folderPath, Regex regex)
-        {
-            foreach (var filePath in filePaths)
+            // If info file name amount doesn't match media file amount 
+            if (infoFileNames.Length != mediaFilePaths.Count)
             {
-                string fileName = Path.GetFileName(filePath);
-                Match match = regex.Match(fileName);
-                if (match.Success)
+                Program.PrintErrMsg($"Found {infoFileNames.Length} info file name(s) " +
+                    $"but {mediaFilePaths.Count} media file(s)\n");
+                return;
+            }
+
+            // Correct file name count 
+            int correctFileNames = 0;
+
+            // For every media path
+            foreach (string mediaFilePath in mediaFilePaths)
+            {
+                // For every info file path
+                foreach (string infoFileName in infoFileNames)
                 {
-                    string newFileName = match.Value.Trim() + Path.GetExtension(filePath);
-                    string newFilePath = Path.Combine(folderPath, newFileName);
-                    File.Move(filePath, newFilePath);
-                }
-                else
-                {
-                    Program.PrintErrMsg($"{regexErr} '{fileName}'!");
+                    // If info file name matches current name
+                    if (infoFileName.Equals(Path.GetFileName(mediaFilePath)))
+                    {
+                        // Notify and skipped
+                        Console.WriteLine("   - File name is already correct!");
+                        correctFileNames++;
+                        continue;
+                    }
+
+                    // Extract current media file name with no extension
+                    string curMediaFileName = Path.GetFileNameWithoutExtension(mediaFilePath);
+
+                    // If the info file name is a longer version of the current name
+                    if (infoFileName.Contains(curMediaFileName))
+                    {
+                        // Generate new path by combining folder with info file name
+                        string newPath = $"{Path.GetDirectoryName(mediaFilePath)}\\{infoFileName}";
+
+                        // Apply the longer name to the file
+                        Directory.Move(mediaFilePath, newPath);
+
+                        // Notify
+                        Console.WriteLine($"   - Renamed '{curMediaFileName}' to '{infoFileName}'!");
+                        correctFileNames++;
+                    }
                 }
             }
-        }
 
-        /// <summary>
-        /// Renames a top-level media folder based on the movieRegex pattern.
-        /// DISABLED - we want to keep movie/show IDs so Plex can recognise them
-        /// </summary>
-        /// <param name="folderPath">Path to a movie or show folder (i.e. show folder holding season folders).</param>
-        private void RenameFolder(string folderPath)
-        {
-            // Extract folder name and apply regex
-            //string folderName = Path.GetFileName(folderPath);
-            //Match match = movieRegex.Match(folderName);
+            // If not all media paths now have correct file names, notify
+            if (correctFileNames != mediaFilePaths.Count)
+            {
+                Console.WriteLine($"  - ISSUE: Not all filenames are correct!!!");
+            }
 
-            //// If applying regex failed, notify and stop
-            //if (!match.Success)
-            //{
-            //    Program.PrintErrMsg($"{regexErr} '{folderName}'!");
-            //    return;
-            //}
-
-            //// Generate new folder path
-            //string newFolderName = match.Value.Trim();
-            //string newFolderPath = Path.Combine(Path.GetDirectoryName(folderPath), newFolderName);
-
-            //// If new path differs from original, rename folder with new name
-            //if (folderPath != newFolderPath)
-            //{
-            //    Directory.Move(folderPath, newFolderPath);
-            //    //Console.WriteLine($"Renamed folder: '{folderName}' -> '{newFolderName}'");
-            //}
+            Console.WriteLine("");
         }
     }
 }
