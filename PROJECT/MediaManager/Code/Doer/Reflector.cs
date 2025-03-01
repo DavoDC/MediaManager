@@ -8,20 +8,28 @@ using System.Text;
 namespace MediaManager
 {
     /// <summary>
-    /// Creates a lightweight 'mirror' of an Audio track folder.
+    /// Creates a lightweight 'mirror' of a Media folder.
     /// </summary>
     internal class Reflector : Doer
     {
         //// CONSTANTS
-        // Actual Audio folder path
-        private static readonly string audioFolderPath = @"C:\Users\David\Audio\";
 
         // Invalid file name characters
         private static readonly char[] invalidChars = Path.GetInvalidFileNameChars();
 
+        // Media file extensions
+        HashSet<string> mediaExtensions = new HashSet<string> { ".mp4", ".mkv", ".m4v", ".avi" };
+
+        // Extensions of other files we want to include the mirror as-is
+        HashSet<string> mirrorExtensions = new HashSet<string> { ".txt", ".lnk", ".url", ".srt", ".docx", ".ass", ".ssa" };
+
+        // Extensions of file we expect to be present, but don't want in the mirror
+        HashSet<string> expectedExtensions = new HashSet<string> { ".ini", ".ffs_db" };
+
         //// VARIABLES
-        string mirrorPath;
-        bool recreateMirror;
+        private string mirrorPath;
+        private bool recreateMirror;
+        private static readonly string mediaFolderPathInside = Program.MediaFolderPath + "\\";
 
         /// <summary>
         /// Construct an audio mirror
@@ -35,7 +43,7 @@ namespace MediaManager
             this.recreateMirror = recreateMirror;
 
             // Notify
-            Console.WriteLine($"\nCreating mirror of '{audioFolderPath}'...");
+            Console.WriteLine($"\nCreating mirror of '{Program.MediaFolderPath}'...");
 
             // Setup folder structure
             CreateFolders();
@@ -53,8 +61,9 @@ namespace MediaManager
         /// </summary>
         public void CreateFolders()
         {
-            // If mirror path is outside of repo
-            if (!mirrorPath.Contains("C:\\Users\\David\\GitHubRepos\\AudioMirror"))
+            // Note: This hardcoded path check is done to prevent folders from outside the repo from being deleted
+            // If mirror path is outside of mirror repo
+            if (!mirrorPath.Contains("C:\\Users\\David\\GitHubRepos\\MediaMirror"))
             {
                 // Throw exception and notify
                 string msg = $"\nMirror path was incorrect, outside the repo:\n{mirrorPath}\n";
@@ -65,20 +74,21 @@ namespace MediaManager
             if (recreateMirror)
             {
                 // Remove the mirror path if it exists, to recreate it
-                if (Directory.Exists(mirrorPath))
+                string fixedMirrorPath = FixLongPath(mirrorPath, true);
+                if (Directory.Exists(fixedMirrorPath))
                 {
-                    Directory.Delete(mirrorPath, true);
+                    Directory.Delete(fixedMirrorPath, true);
                 }
             }
 
-            // For every actual folder
-            string[] realDirs = Directory.GetDirectories(audioFolderPath, "*", SearchOption.AllDirectories);
+            // For every real folder
+            string[] realDirs = Directory.GetDirectories(mediaFolderPathInside, "*", SearchOption.AllDirectories);
             foreach (var directoryPath in realDirs)
             {
-                // Get real relative path
-                string relativePath = GetRelativePath(audioFolderPath, directoryPath);
+                // Get relative path of real folder
+                string relativePath = GetRelativePath(mediaFolderPathInside, directoryPath);
 
-                // Create relative folder within mirror path
+                // Create folder at same location within mirror
                 string newDirectoryPath = Path.Combine(mirrorPath, relativePath);
                 Directory.CreateDirectory(newDirectoryPath);
             }
@@ -92,45 +102,57 @@ namespace MediaManager
         private Tuple<int, int, List<string>> CreateFiles()
         {
             // Holders
-            int mp3FileCount = 0;
+            int mediaFileCount = 0;
             int sanitisationCount = 0;
-            List<string> nonMP3Files = new List<string>();
+            List<string> unexpectedFiles = new List<string>();
 
             // For every actual file
-            string[] realFiles = Directory.GetFiles(audioFolderPath, "*", SearchOption.AllDirectories);
-            foreach (var realFilePath in realFiles)
+            string[] realFiles = Directory.GetFiles(mediaFolderPathInside, "*", SearchOption.AllDirectories);
+            foreach (string realFilePath in realFiles)
             {
-                // Get relative file path
-                string relativePath = GetRelativePath(audioFolderPath, realFilePath);
+                // Get relative file path and extension
+                string relativePath = GetRelativePath(mediaFolderPathInside, realFilePath);
+                string relPathExt = Path.GetExtension(relativePath);
 
-                // For non-MP3 files, add to list and skip
-                if (Path.GetExtension(realFilePath)?.ToLower() != ".mp3")
+                // Get file type info
+                bool isMediaFile = mediaExtensions.Contains(relPathExt);
+                bool isMirrorFile = mirrorExtensions.Contains(relPathExt);
+                bool isExpectedFile = expectedExtensions.Contains(relPathExt);
+
+                // If the file is a media file or other file we want to mirror 
+                if(isMediaFile || isMirrorFile)
                 {
-                    nonMP3Files.Add(relativePath);
-                    continue;
-                }
+                    // Create a mirror file
+                    if (CreateMirrorFile(realFilePath, relativePath, isMediaFile))
+                    {
+                        sanitisationCount++;
+                    }
 
-                // Otherwise, process MP3 file
-                if (CreateFile(realFilePath, relativePath))
+                    if (isMediaFile)
+                    {
+                        mediaFileCount++;
+                    }
+                }
+                else if (!isExpectedFile)
                 {
-                    sanitisationCount++;
+                    // If the file wasn't a media, mirror or expected file,
+                    // add relative path to unexpected list
+                    unexpectedFiles.Add(relativePath);
                 }
-
-                mp3FileCount++;
             }
 
             // Return holders
-            return Tuple.Create(mp3FileCount, sanitisationCount, nonMP3Files);
+            return Tuple.Create(mediaFileCount, sanitisationCount, unexpectedFiles);
         }
 
 
         /// <summary>
-        /// Create a mirrored file (the file contents are just the real path at this stage)
-        /// </summary>
+        /// Create a mirrored file.
         /// <param name="filePath">The actual file path</param>
         /// <param name="relativePath">The relative file path</param>
+        /// <param name="useXmlExt">Whether to create the mirror file as an XML file containing the real path. Otherwise copy as-is</param>
         /// <returns>True if the filename was sanitised</returns>
-        private bool CreateFile(string realFilePath, string relativePath)
+        private bool CreateMirrorFile(string realFilePath, string relativePath, bool useXmlExt)
         {
             // Sanitisation flag
             bool sanitised = false;
@@ -152,14 +174,29 @@ namespace MediaManager
             // Generate the full mirror path
             string fullMirrorPath = Path.Combine(mirrorPath, relativePath);
 
-            // Change extension
-            fullMirrorPath = Path.ChangeExtension(fullMirrorPath, ".xml");
+            // If XML extension requested, change it 
+            if (useXmlExt)
+            {
+                fullMirrorPath = Path.ChangeExtension(fullMirrorPath, ".xml");
+            }
 
             // If the mirrored file doesn't exist already
             if (!File.Exists(fullMirrorPath))
             {
-                // Create mirror file containing real path
-                File.WriteAllText(fullMirrorPath, realFilePath);
+                // Fix long mirror paths 
+                fullMirrorPath = FixLongPath(fullMirrorPath);
+
+                // If XML file requested
+                if (useXmlExt)
+                {
+                    // Create mirror XML file and store real path inside it
+                    File.WriteAllText(fullMirrorPath, realFilePath);
+                }
+                else
+                {
+                    // Otherwise, copy file as-is from real file path to mirror path
+                    File.Copy(realFilePath, fullMirrorPath, true); // 'true' overwrites if the file exists
+                }
             }
 
             // Return sanitised flag
@@ -174,56 +211,31 @@ namespace MediaManager
         private void PrintStats(Tuple<int, int, List<string>> statisticsInfo)
         {
             // Extract info items
-            int mp3FileCount = statisticsInfo.Item1;
+            int mediaFileCount = statisticsInfo.Item1;
             int sanitisedFileNames = statisticsInfo.Item2;
-            List<string> nonMP3Files = statisticsInfo.Item3;
+            List<string> unexpectedFiles = statisticsInfo.Item3;
 
             // Print mirror path
             Console.WriteLine($" - Path: '{mirrorPath}'");
 
             // Print file count
-            Console.WriteLine($" - MP3 file count: {mp3FileCount}");
+            Console.WriteLine($" - Media file count: {mediaFileCount}");
 
-            // Print non-MP3 file info
-            var nonMP3info = ProcessNonMP3(nonMP3Files);
-            Console.WriteLine($" - Non-MP3 files found: {nonMP3info.Item1}");
-            if (nonMP3info.Item2 != null)
+            // Print non-media file info
+            Console.WriteLine($" - Unexpected files found: {unexpectedFiles.Count}");
+            if (unexpectedFiles.Count != 0)
             {
-                Console.WriteLine($"  - Extension list: {nonMP3info.Item2}");
+                Console.WriteLine($"  - Found: {string.Join(",", unexpectedFiles)}");
             }
 
             // Print sanitisation count
-            Console.WriteLine($" - MP3 filenames sanitised: {sanitisedFileNames}");
+            Console.WriteLine($" - Media filenames sanitised: {sanitisedFileNames}");
 
             // Print recreation setting
             Console.WriteLine($" - Recreated: {recreateMirror}");
 
             // Print time taken
             FinishAndPrintTimeTaken();
-        }
-
-        /// <summary>
-        /// Generate an info string from a list of non-MP3 filenames
-        /// </summary>
-        /// <param name="nonMP3Files"></param>
-        /// <returns></returns>
-        private Tuple<string, string> ProcessNonMP3(List<string> nonMP3Files)
-        {
-            // Extract list of extensions
-            var extList = nonMP3Files.Select(fileName => "." + fileName.Split('.')[1]).ToList();
-
-            // Check against expected types
-            var expectedExt = new HashSet<string> { ".ini", ".txt", ".lnk", ".ffs_db" };
-            bool expected = extList.TrueForAll(ext => expectedExt.Contains(ext));
-
-            // Combine and format info
-            string nonMP3infoStr = $"{extList.Count} ({(expected ? "all expected" : "UNEXPECTED!")})";
-
-            // If extensions were unexpected, include in info
-            string extListInfo = expected ? null : string.Join(",", extList);
-
-            // Return info and extensions list
-            return Tuple.Create(nonMP3infoStr, extListInfo);
         }
 
 
@@ -250,6 +262,32 @@ namespace MediaManager
 
             // Return new file name
             return sanitisedFilename;
+        }
+
+
+        /// <summary>
+        /// Fix long paths which cause I/O exceptions
+        /// </summary>
+        /// <param name="longPath">A 'raw' long path</param>
+        /// <param name="force">Force fixing the path regardless of length</param>
+        /// <returns>The fixed path</returns>
+        private string FixLongPath(string longPath, bool force = false)
+        {
+            // If path length is close to the Windows 260 character limit
+            if (longPath.Length > 240 || force)
+            {
+                // Add the UNC prefix to tell Windows to bypass the limit
+                longPath = @"\\?\" + longPath;
+
+                // Normalise slashes (i.e. replace all forward slashes with backslashes)
+                longPath = longPath.Replace('/', '\\');
+
+                // Return new path
+                return longPath;
+            }
+
+            // Return path as is
+            return longPath;
         }
 
 

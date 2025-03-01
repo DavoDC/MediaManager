@@ -13,12 +13,15 @@ namespace MediaManager
     {
         ////// CONSTANTS
         // Folder paths
-        public static readonly string integrateFolderPath = Program.mediaFolderPath + "\\INTEGRATE";
+        public static readonly string integrateFolderPath = "E:\\INTEGRATE";
         private static readonly string newShowsFolderPath = Path.Combine(integrateFolderPath, "SHOWS");
         private static readonly string newMoviesFolderPath = Path.Combine(integrateFolderPath, "MOVIES");
 
         public NewMediaProcessor()
         {
+            // Start message
+            Program.PrintCheckingFolderMsg(integrateFolderPath);
+
             // Handle new shows
             ProcessMediaFolder("show(s)", newShowsFolderPath, HandleShowFolder);
 
@@ -27,7 +30,6 @@ namespace MediaManager
 
             // Finish and print time taken
             FinishAndPrintTimeTaken();
-            Console.WriteLine("");
         }
 
         /// <summary>
@@ -99,11 +101,11 @@ namespace MediaManager
                 return;
             }
 
-            //if (files.Length > 2)
-            //{
-            //    Program.PrintErrMsg($"'{movieFolder}' contains more than two files!");
-            //    return;
-            //}
+            if (files.Length > 2)
+            {
+                Program.PrintErrMsg($"'{movieFolder}' contains more than two files!");
+                return;
+            }
 
             HandleMediaFolder(movieFolder);
         }
@@ -119,7 +121,7 @@ namespace MediaManager
 
             // Look for info file path
             string infoFilePath = filePaths.
-                FirstOrDefault(fp => Path.GetFileName(fp).Equals(Program.infoFileName)) ?? string.Empty;
+                FirstOrDefault(fp => Path.GetFileName(fp).Equals(Program.InfoFileName)) ?? string.Empty;
 
             // If couldn't find it, notify
             if (string.IsNullOrEmpty(infoFilePath))

@@ -25,7 +25,7 @@ namespace MediaManager
         public AgeChecker() 
         {
             // Notify
-            Console.WriteLine($"Checking age of mirror...");
+            Console.WriteLine($"\nChecking age of mirror...");
 
             // Get current date
             DateTime curDate = DateTime.Now;
