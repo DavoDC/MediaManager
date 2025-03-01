@@ -62,7 +62,7 @@ namespace MediaManager
         /// <param name="showFolder">Path to the show folder.</param>
         private void HandleShowFolder(string showFolder)
         {
-            Console.WriteLine($"- Found show: '{Path.GetFileName(showFolder)}'");
+            //Console.WriteLine($"- Found show: '{Path.GetFileName(showFolder)}'");
             string[] seasonFolders = Directory.GetDirectories(showFolder, "*", SearchOption.TopDirectoryOnly);
 
             if (seasonFolders.Length == 0)
@@ -83,7 +83,7 @@ namespace MediaManager
         /// <param name="movieFolder">Path to the movie folder.</param>
         private void HandleMovieFolder(string movieFolder)
         {
-            Console.WriteLine($"  - Found movie: '{Path.GetFileName(movieFolder)}'");
+            //Console.WriteLine($"  - Found movie: '{Path.GetFileName(movieFolder)}'");
             string[] files = Directory.GetFiles(movieFolder, "*", SearchOption.AllDirectories);
 
             if (Directory.GetDirectories(movieFolder).Length > 0)
@@ -123,7 +123,7 @@ namespace MediaManager
             // If couldn't find it, notify
             if (string.IsNullOrEmpty(infoFilePath))
             {
-                Program.PrintErrMsg("Couldn't find info file.\n");
+                // Program.PrintErrMsg("Couldn't find info file.\n");
                 return;
             }
 
@@ -138,7 +138,8 @@ namespace MediaManager
             if (infoFileNames.Length != mediaFilePaths.Count)
             {
                 Program.PrintErrMsg($"Found {infoFileNames.Length} info file name(s) " +
-                    $"but {mediaFilePaths.Count} media file(s)\n");
+                    $"but {mediaFilePaths.Count} media file(s)");
+                Console.Write($"Path: '{folderPath}'");
                 return;
             }
 
@@ -155,7 +156,7 @@ namespace MediaManager
                     if (infoFileName.Equals(Path.GetFileName(mediaFilePath)))
                     {
                         // Notify and skipped
-                        Console.WriteLine("   - File name is already correct!");
+                        //Console.WriteLine("   - File name is already correct!");
                         correctFileNames++;
                         continue;
                     }
@@ -185,7 +186,7 @@ namespace MediaManager
                 Console.WriteLine($"  - ISSUE: Not all filenames are correct!!!");
             }
 
-            Console.WriteLine("");
+            //Console.WriteLine("");
         }
     }
 }
