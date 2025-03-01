@@ -7,15 +7,15 @@ using System.Text.RegularExpressions;
 namespace MediaManager
 {
     /// <summary>
-    /// Process new media in the offload folder
+    /// Process new media so that it is ready for integration into the library
     /// </summary>
     internal class NewMediaProcessor : Doer
     {
         ////// CONSTANTS
         // Folder paths
         public static readonly string integrateFolderPath = Program.mediaFolderPath + "\\INTEGRATE";
-        private static readonly string newShowsFolderPath = Path.Combine(integrateFolderPath, "NEW_SHOWS");
-        private static readonly string newMoviesFolderPath = Path.Combine(integrateFolderPath, "NEW_MOVIES");
+        private static readonly string newShowsFolderPath = Path.Combine(integrateFolderPath, "SHOWS");
+        private static readonly string newMoviesFolderPath = Path.Combine(integrateFolderPath, "MOVIES");
 
         public NewMediaProcessor()
         {
@@ -27,6 +27,7 @@ namespace MediaManager
 
             // Finish and print time taken
             FinishAndPrintTimeTaken();
+            Console.WriteLine("");
         }
 
         /// <summary>

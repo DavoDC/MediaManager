@@ -6,6 +6,23 @@ namespace MediaManager
     internal class Program
     {
         ////// CONSTANTS
+
+        // The relative path from the executable back to the project folder
+        private static readonly string projectPath = "..\\..\\..\\";
+        public static string ProjectPath { get => projectPath; }
+
+        // The relative path to the mirror repo (assumed to be next to this repo)
+        private static readonly string mirrorRepoPath = ProjectPath + "..\\..\\MediaMirror\\";
+        public static string MirrorRepoPath { get => mirrorRepoPath; }
+
+        // The mirror folder name
+        private static readonly string mirrorFolderName = "MEDIA_MIRROR";
+        public static string MirrorFolderName { get => mirrorFolderName; }
+
+        // The relative path to the mirror folder
+        private static readonly string mirrorFolderPath = $"{MirrorRepoPath}\\{MirrorFolderName}";
+        public static string MirrorFolderPath { get => mirrorFolderPath; }
+
         // Main media folder
         public static readonly string mediaFolderPath = "E:\\Visual Media";
 
@@ -17,17 +34,6 @@ namespace MediaManager
 
         // Info file
         public static readonly string infoFileName = "INFO.txt";
-
-        // The path back to the project folder
-        private static readonly string projectPath = "..\\..\\..\\";
-        public static string ProjectPath { get => projectPath; }
-
-        // The mirror folder name
-        private static readonly string mirrorFolder = "MEDIA_MIRROR";
-        public static string MirrorFolder { get => mirrorFolder; }
-
-        // The path to the mirror folder relative to program executable
-        private static readonly string relMirrorPath = projectPath + "..\\..\\MediaMirror\\" + mirrorFolder;
 
         /// <summary>
         /// Main function
@@ -44,14 +50,8 @@ namespace MediaManager
                 PrintCheckingFolderMsg(NewMediaProcessor.integrateFolderPath);
                 NewMediaProcessor nmp = new NewMediaProcessor();
 
-                // TODO
-                //PrintCheckingFolderMsg(animeFolderPath);
-                //PrintCheckingFolderMsg(moviesFolderPath);
-                //PrintCheckingFolderMsg(showsFolderPath);
-                //PrintCheckingFolderMsg(universesFolderPath);
-
                 // 1) Check the age of the mirror
-                //AgeChecker ac = new AgeChecker();
+                AgeChecker ac = new AgeChecker();
 
                 // 2) Create mirror of audio folder
                 // Set mirror path relative to program executable
