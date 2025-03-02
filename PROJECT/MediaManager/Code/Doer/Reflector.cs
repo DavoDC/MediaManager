@@ -18,7 +18,7 @@ namespace MediaManager
         private static readonly char[] invalidChars = Path.GetInvalidFileNameChars();
 
         // Media file extensions
-        HashSet<string> mediaExtensions = new HashSet<string> { ".mp4", ".mkv", ".m4v", ".avi" };
+        public static readonly HashSet<string> mediaExtensions = new HashSet<string> { ".mp4", ".mkv", ".m4v", ".avi" };
 
         // Extensions of other files we want to include the mirror as-is
         HashSet<string> mirrorExtensions = new HashSet<string> { ".txt", ".lnk", ".url", ".srt", ".docx", ".ass", ".ssa" };

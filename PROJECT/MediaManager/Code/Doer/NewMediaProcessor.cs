@@ -116,6 +116,8 @@ namespace MediaManager
         /// <param name="folderPath">Path to the media folder.</param>
         private void HandleMediaFolder(string folderPath)
         {
+            //Console.WriteLine(folderPath);
+
             // Get file paths in media folder
             string[] filePaths = Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories);
 
@@ -130,21 +132,23 @@ namespace MediaManager
                 return;
             }
 
-            // Get list of media files (all files but info file)
-            List<string> mediaFilePaths = new List<string>(filePaths);
-            mediaFilePaths.Remove(infoFilePath);
+            // Get list of media files - only files that have a media extension
+            List<string> mediaFilePaths = filePaths
+                .Where(filePath => Reflector.mediaExtensions.Contains(Path.GetExtension(filePath))).ToList();
 
             // Read file names from info file
             string[] infoFileNames = File.ReadAllLines(infoFilePath);
 
             // If info file name amount doesn't match media file amount 
-            if (infoFileNames.Length != mediaFilePaths.Count)
-            {
-                Program.PrintErrMsg($"Found {infoFileNames.Length} info file name(s) " +
-                    $"but {mediaFilePaths.Count} media file(s)");
-                Console.Write($"Path: '{folderPath}'");
-                return;
-            }
+            //if (infoFileNames.Length != mediaFilePaths.Count)
+            //{
+            //    Program.PrintErrMsg($"Found {infoFileNames.Length} info file name(s) " +
+            //        $"but {mediaFilePaths.Count} media file(s)");
+            //    Console.Write($"Path: '{folderPath}'\n");
+            //    return;
+
+            //    throw new Exception();
+            //}
 
             // Correct file name count 
             int correctFileNames = 0;
@@ -156,9 +160,9 @@ namespace MediaManager
                 foreach (string infoFileName in infoFileNames)
                 {
                     // If info file name matches current name
-                    if (infoFileName.Equals(Path.GetFileName(mediaFilePath)))
+                    if (Path.GetFileNameWithoutExtension(infoFileName).Equals(Path.GetFileNameWithoutExtension(mediaFilePath)))
                     {
-                        // Notify and skipped
+                        // Notify and skip
                         //Console.WriteLine("   - File name is already correct!");
                         correctFileNames++;
                         continue;
@@ -174,22 +178,32 @@ namespace MediaManager
                         string newPath = $"{Path.GetDirectoryName(mediaFilePath)}\\{infoFileName}";
 
                         // Apply the longer name to the file
-                        Directory.Move(mediaFilePath, newPath);
+                        try
+                        {
+                            Directory.Move(mediaFilePath, newPath);
+                        }
+                        catch (Exception ex)
+                        {
+                            
+                            Console.WriteLine("error:" + ex.Message);
+                        }
+                        
+
+
 
                         // Notify
-                        Console.WriteLine($"   - Renamed '{curMediaFileName}' to '{infoFileName}'!");
+                        //Console.WriteLine($"   - Renamed '{curMediaFileName}' to '{infoFileName}'!");
                         correctFileNames++;
                     }
                 }
             }
 
             // If not all media paths now have correct file names, notify
-            if (correctFileNames != mediaFilePaths.Count)
-            {
-                Console.WriteLine($"  - ISSUE: Not all filenames are correct!!!");
-            }
-
-            //Console.WriteLine("");
+            //if (correctFileNames != mediaFilePaths.Count)
+            //{
+            //    Console.WriteLine($"  - ISSUE: Not all filenames are correct!!!");
+            //    Console.Write($"Path: '{folderPath}'\n");
+            //}
         }
     }
 }

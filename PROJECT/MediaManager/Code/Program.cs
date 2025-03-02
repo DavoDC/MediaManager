@@ -24,18 +24,12 @@ namespace MediaManager
         public static string MirrorFolderPath { get => mirrorFolderPath; }
 
         // Main media folder
-        private static readonly string mediaFolderPath = "E:\\Visual Media";
+        private static readonly string mediaFolderPath = "E:\\Visual_Media";
         public static string MediaFolderPath { get => mediaFolderPath; }
 
         // Info file name
         private static readonly string infoFileName = "INFO.txt";
         public static string InfoFileName { get => infoFileName; }
-
-        // Media folders
-        //public static readonly string animeFolderPath = mediaFolderPath + "\\Visual Media - Anime";
-        //public static readonly string moviesFolderPath = mediaFolderPath + "\\Visual Media - Movies";
-        //public static readonly string showsFolderPath = mediaFolderPath + "\\Visual Media - Shows";
-        //public static readonly string universesFolderPath = mediaFolderPath + "\\Visual Media - Universes";
 
         /// <summary>
         /// Main function
@@ -55,7 +49,7 @@ namespace MediaManager
                 string mirrorPath = Path.GetFullPath(Path.Combine(progExecPath, MirrorFolderPath));
 
                 // 0) Process new media
-                NewMediaProcessor nmp = new NewMediaProcessor();
+                //NewMediaProcessor nmp = new NewMediaProcessor();
 
                 // 1) Check the age of the mirror
                 AgeChecker ac = new AgeChecker();
@@ -75,10 +69,10 @@ namespace MediaManager
                 //LibChecker lc = new LibChecker(p.audioTags);
 
                 // Print total time
-                TimeSpan totalTime = nmp.ExecutionTime + ac.ExecutionTime + refl.ExecutionTime;
-                // + p.ExecutionTime; 
+                TimeSpan totalTime = ac.ExecutionTime + refl.ExecutionTime;
+                // + p.ExecutionTime; nmp.ExecutionTime
                 //totalTime += a.ExecutionTime + lc.ExecutionTime;
-                Console.WriteLine("\nTotal time taken: " + Doer.ConvertTimeSpanToString(totalTime));
+                //Console.WriteLine("\nTotal time taken: " + Doer.ConvertTimeSpanToString(totalTime));
 
                 // Finish message
                 Console.WriteLine("\nFinished!\n");
