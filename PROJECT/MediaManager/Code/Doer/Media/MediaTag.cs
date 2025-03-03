@@ -13,7 +13,20 @@ namespace MediaManager.Code.Modules
         Regex showFolderRegex = new Regex(@"^(?<Title>.*?)\s\((?<Year>\d{4})\)\s\{(?<TVDBID>tvdb-\d+)\}$");
 
         // Regex for anime episodes (e.g. "A Certain Magical Index (2008) - S01E01 - 001 - Academy City [HDTV-720p][8bit][x264][AAC 2.0][JA]")
-        Regex animeEpRegex = new Regex(@"^(?<Title>.+?)\s*-\s*S(?<Season>\d{2})E(?<Episode>\d{2})\s*-\s*(?<AbsoluteEpisode>\d{3})\s*-\s*(?<CleanTitle>.+?)\s*(?:\[(?<CustomFormats>[^\]]+)\])?\s*(?:\[(?<QualityTitle>[^\]]+)\])?\s*(?:\[(?<VideoDynamicRange>[^\]]+)\])?\s*(?:\[(?<VideoBitDepth>\d+)bit\])?\s*(?:\[(?<VideoCodec>[^\]]+)\])?\s*(?:\[(?<AudioCodec>[^\] ]+)\s*(?<AudioChannels>[\d.]+)\])?\s*(?:\[(?<AudioLanguages>[^\]]+)\])?\s*(?:-(?<ReleaseGroup>[^\]]+))?$");
+        Regex animeEpRegex = new Regex(@"
+                ^(?<Title>.+?)\s*-\s*
+                S(?<Season>\d{2})E(?<Episode>\d{2})\s*-\s*
+                (?<AbsoluteEpisode>\d{3})\s*-\s*
+                (?<CleanTitle>.+?)\s*
+                (?:\[(?<CustomFormats>[^\]]+)\])?\s*
+                (?:\[(?<QualityTitle>[^\]]+)\])?\s*
+                (?:\[(?<VideoDynamicRange>[^\]]+)\])?\s*
+                (?:\[(?<VideoBitDepth>\d+)bit\])?\s*
+                (?:\[(?<VideoCodec>[^\]]+)\])?\s*
+                (?:\[(?<AudioCodec>[^\] ]+)\s*(?<AudioChannels>[\d.]+)\])?\s*
+                (?:\[(?<AudioLanguages>[^\]]+)\])?\s*
+                (?:-(?<ReleaseGroup>[^\]]+))?$
+            ", RegexOptions.IgnorePatternWhitespace);
 
         /// <summary>
         /// Construct a tag
