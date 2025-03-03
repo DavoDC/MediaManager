@@ -18,12 +18,11 @@ namespace MediaManager.Code.Modules
                 S(?<Season>\d{2})E(?<Episode>\d{2})\s*-\s*
                 (?<AbsoluteEpisode>\d{3})\s*-\s*
                 (?<EpisodeTitle>.+?)\s*
-                (?:\[(?<CustomFormats>[^\]]+)\])?\s*
-                (?:\[(?<QualityTitle>[^\]]+)\])?\s*
-                (?:\[(?<VideoDynamicRange>[^\]]+)\])?\s*
+                (?:\[(?<CustomFormats>[^]\[]*?)\s*(?<QualityTitle>[^]\[]*)\])?\s*
+                (?:\[(?<VideoDynamicRange>HDR|SDR|Dolby Vision|HLG)\])?\s*
                 (?:\[(?<VideoBitDepth>\d+)bit\])?\s*
-                (?:\[(?<VideoCodec>[^\]]+)\])?\s*
-                (?:\[(?<AudioCodec>[^\] ]+)\s*(?<AudioChannels>[\d.]+)\])?\s*
+                (?:\[(?<VideoCodec>x264|x265|AV1|VP9|H\.264|H\.265)\])?\s*
+                (?:\[(?<AudioCodec>[^\]\s]+)\s+(?<AudioChannels>[\d.]+)\])?\s*
                 (?:\[(?<AudioLanguages>[^\]]+)\])?\s*
                 (?:-(?<ReleaseGroup>[^\]]+))?$
             ", RegexOptions.IgnorePatternWhitespace);
@@ -130,13 +129,13 @@ namespace MediaManager.Code.Modules
                 string episode = string.IsNullOrEmpty(match.Groups["Episode"].Value) ? "Unknown" : match.Groups["Episode"].Value;
                 string absoluteEpisode = string.IsNullOrEmpty(match.Groups["AbsoluteEpisode"].Value) ? "Unknown" : match.Groups["AbsoluteEpisode"].Value;
                 string episodeTitle = string.IsNullOrEmpty(match.Groups["EpisodeTitle"].Value) ? "Unknown" : match.Groups["EpisodeTitle"].Value;
-                string customFormats = string.IsNullOrEmpty(match.Groups["CustomFormats"].Value) ? "Unknown" : match.Groups["CustomFormats"].Value;
+                string customFormats = string.IsNullOrEmpty(match.Groups["CustomFormats"].Value) ? "Unknown" : match.Groups["CustomFormats"].Value; // Note: Almost always Unknown
                 string qualityTitle = string.IsNullOrEmpty(match.Groups["QualityTitle"].Value) ? "Unknown" : match.Groups["QualityTitle"].Value;
-                string videoDynamicRange = string.IsNullOrEmpty(match.Groups["VideoDynamicRange"].Value) ? "Unknown" : match.Groups["VideoDynamicRange"].Value;
-                string videoBitDepth = string.IsNullOrEmpty(match.Groups["VideoBitDepth"].Value) ? "Unknown" : match.Groups["VideoBitDepth"].Value; // Note: Almost always Unknown
+                string videoDynamicRange = string.IsNullOrEmpty(match.Groups["VideoDynamicRange"].Value) ? "Unknown" : match.Groups["VideoDynamicRange"].Value; // Note: Almost always Unknown
+                string videoBitDepth = string.IsNullOrEmpty(match.Groups["VideoBitDepth"].Value) ? "Unknown" : match.Groups["VideoBitDepth"].Value; 
                 string videoCodec = string.IsNullOrEmpty(match.Groups["VideoCodec"].Value) ? "Unknown" : match.Groups["VideoCodec"].Value;
-                string audioCodec = string.IsNullOrEmpty(match.Groups["AudioCodec"].Value) ? "Unknown" : match.Groups["AudioCodec"].Value; // Note: Almost always Unknown
-                string audioChannels = string.IsNullOrEmpty(match.Groups["AudioChannels"].Value) ? "Unknown" : match.Groups["AudioChannels"].Value; // Note: Almost always Unknown
+                string audioCodec = string.IsNullOrEmpty(match.Groups["AudioCodec"].Value) ? "Unknown" : match.Groups["AudioCodec"].Value; 
+                string audioChannels = string.IsNullOrEmpty(match.Groups["AudioChannels"].Value) ? "Unknown" : match.Groups["AudioChannels"].Value;
                 string audioLanguages = string.IsNullOrEmpty(match.Groups["AudioLanguages"].Value) ? "Unknown" : match.Groups["AudioLanguages"].Value;
                 string releaseGroup = string.IsNullOrEmpty(match.Groups["ReleaseGroup"].Value) ? "Unknown" : match.Groups["ReleaseGroup"].Value;
 
@@ -150,7 +149,7 @@ namespace MediaManager.Code.Modules
                 //Console.WriteLine($"- Custom Formats: {customFormats}");
                 //Console.WriteLine($"- Quality Title: {qualityTitle}");
                 //Console.WriteLine($"- Video Dynamic Range: {videoDynamicRange}");
-                //Console.WriteLine($"- Video Bit Depth: {videoBitDepth}"); 
+                //Console.WriteLine($"- Video Bit Depth: {videoBitDepth}");
                 //Console.WriteLine($"- Video Codec: {videoCodec}");
                 //Console.WriteLine($"- Audio Codec: {audioCodec}");
                 //Console.WriteLine($"- Audio Channels: {audioChannels}");
