@@ -30,16 +30,44 @@ namespace MediaManager.Code.Modules
                 if (tag != null)
                 {
                     // CREATE AN XML FILE
-                    // Set XML elements to metadata values
-                    //SetElementValue("Title", tag.Title);
-                    //SetElementValue("Artists", tag.Artists);
-                    //SetElementValue("Album", tag.Album);
-                    //SetElementValue("Year", tag.Year);
-                    //SetElementValue("TrackNumber", tag.TrackNumber);
-                    //SetElementValue("Genres", tag.Genres);
-                    //SetElementValue("Length", tag.Length);
-                    //SetElementValue("AlbumCoverCount", tag.AlbumCoverCount);
-                    //SetElementValue("Compilation", tag.Compilation);
+
+                    // Set XML elements to metadata values for common properties
+                    SetElementValue("Type", tag.Type);
+                    SetElementValue("Title", tag.Title);
+                    SetElementValue("ReleaseYear", tag.ReleaseYear);
+                    SetElementValue("DatabaseLink", tag.DatabaseLink);
+                    SetElementValue("Extension", tag.Extension);
+                    SetElementValue("CustomFormats", tag.CustomFormats);
+                    SetElementValue("QualityTitle", tag.QualityTitle);
+                    SetElementValue("VideoDynamicRange", tag.VideoDynamicRange);
+                    SetElementValue("VideoCodec", tag.VideoCodec);
+                    SetElementValue("AudioCodec", tag.AudioCodec);
+                    SetElementValue("AudioChannels", tag.AudioChannels);
+                    SetElementValue("ReleaseGroup", tag.ReleaseGroup);
+
+                    // Check if the media type is show or anime, and add those properties
+                    if (tag.Type == "Show" || tag.Type == "Anime")
+                    {
+                        SetElementValue("SeasonType", tag.SeasonType);
+                        SetElementValue("SeasonNum", tag.SeasonNum);
+                        SetElementValue("EpisodeNum", tag.EpisodeNum);
+                        SetElementValue("EpisodeTitle", tag.EpisodeTitle);
+                    }
+
+                    // Check if the media type is anime, and add anime-specific properties
+                    if (tag.Type == "Anime")
+                    {
+                        SetElementValue("AbsEpisodeNum", tag.AbsEpisodeNum);
+                        SetElementValue("VideoBitDepth", tag.VideoBitDepth);
+                        SetElementValue("AudioLanguages", tag.AudioLanguages);
+                    }
+
+                    // Check if the media type is movie, and add movie-specific properties
+                    if (tag.Type == "Movie")
+                    {
+                        SetElementValue("Edition", tag.Edition);
+                        SetElementValue("ThreeDInfo", tag.ThreeDInfo);
+                    }
 
                     // Save file
                     xmlDoc.Save(mirrorFilePath);
@@ -51,15 +79,42 @@ namespace MediaManager.Code.Modules
                     rootElement = xmlDoc.DocumentElement;
 
                     // Read data from XML and set properties
-                    //Title = GetElementValue("Title");
-                    //Artists = GetElementValue("Artists");
-                    //Album = GetElementValue("Album");
-                    //Year = GetElementValue("Year");
-                    //TrackNumber = GetElementValue("TrackNumber");
-                    //Genres = GetElementValue("Genres");
-                    //Length = GetElementValue("Length");
-                    //AlbumCoverCount = GetElementValue("AlbumCoverCount");
-                    //Compilation = GetElementValue("Compilation");
+                    Title = GetElementValue("Title");
+                    Type = GetElementValue("Type");
+                    ReleaseYear = GetElementValue("ReleaseYear");
+                    DatabaseLink = GetElementValue("DatabaseLink");
+                    Extension = GetElementValue("Extension");
+                    CustomFormats = GetElementValue("CustomFormats");
+                    QualityTitle = GetElementValue("QualityTitle");
+                    VideoDynamicRange = GetElementValue("VideoDynamicRange");
+                    VideoCodec = GetElementValue("VideoCodec");
+                    AudioCodec = GetElementValue("AudioCodec");
+                    AudioChannels = GetElementValue("AudioChannels");
+                    ReleaseGroup = GetElementValue("ReleaseGroup");
+
+                    // Check if the media type is show or anime, and add those properties
+                    if (Type.Equals("Show") || Type.Equals("Anime"))
+                    {
+                        SeasonType = GetElementValue("SeasonType");
+                        SeasonNum = GetElementValue("SeasonNum");
+                        EpisodeNum = GetElementValue("EpisodeNum");
+                        EpisodeTitle = GetElementValue("EpisodeTitle");
+                    }
+
+                    // Check if the media type is anime, and add anime-specific properties
+                    if (Type.Equals("Anime"))
+                    {
+                        AbsEpisodeNum = GetElementValue("AbsEpisodeNum");
+                        VideoBitDepth = GetElementValue("VideoBitDepth");
+                        AudioLanguages = GetElementValue("AudioLanguages");
+                    }
+
+                    // Check if the media type is movie, and add movie-specific properties
+                    if (Type.Equals("Movie"))
+                    {
+                        Edition = GetElementValue("Edition");
+                        ThreeDInfo = GetElementValue("ThreeDInfo");
+                    }
                 }
             }
             catch (Exception)

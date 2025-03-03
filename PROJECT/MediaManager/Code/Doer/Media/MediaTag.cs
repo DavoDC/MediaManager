@@ -1,6 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text.RegularExpressions;
+using File = System.IO.File;
 
 namespace MediaManager.Code.Modules
 {
@@ -12,10 +12,13 @@ namespace MediaManager.Code.Modules
         // Regex for anime/show folders (e.g. "A Certain Magical Index (2008) {tvdb-83322}")
         Regex showFolderRegex = new Regex(@"^(?<Title>.*?)\s\((?<Year>\d{4})\)\s\{(?<TVDBID>tvdb-\d+)\}$");
 
+        // Anime episode format in Sonarr
+        // {Series TitleYear} - S{season:00}E{episode:00} - {absolute:000} - {Episode CleanTitle} [{Custom Formats }{Quality Title}]{[MediaInfo VideoDynamicRangeType]}[{MediaInfo VideoBitDepth}bit]
+        // {[MediaInfo VideoCodec]}[{Mediainfo AudioCodec} { Mediainfo AudioChannels}]{MediaInfo AudioLanguages}{-Release Group}
         // Regex for anime episodes (e.g. "A Certain Magical Index (2008) - S01E01 - 001 - Academy City [HDTV-720p][8bit][x264][AAC 2.0][JA]")
         Regex animeEpRegex = new Regex(@"
-                ^(?<Title>.+?)\s*-\s*
-                S(?<Season>\d{2})E(?<Episode>\d{2})\s*-\s*
+                ^(?<Title>.+?)\s*(?:\((?<ReleaseYear>\d{4})\))?\s*-\s*
+                S(?<SeasonNum>\d{2})E(?<EpisodeNum>\d{2})\s*-\s*
                 (?<AbsoluteEpisode>\d{3})\s*-\s*
                 (?<EpisodeTitle>.+?)\s*
                 (?:\[(?<CustomFormats>[^]\[]*?)\s*(?<QualityTitle>[^]\[]*)\])?\s*
@@ -26,6 +29,14 @@ namespace MediaManager.Code.Modules
                 (?:\[(?<AudioLanguages>[^\]]+)\])?\s*
                 (?:-(?<ReleaseGroup>[^\]]+))?$
             ", RegexOptions.IgnorePatternWhitespace);
+
+        // Show episode format in Sonarr
+        // {Series TitleYear} - S{season:00}E{episode:00} - {Episode CleanTitle} [{Custom Formats }{Quality Title}]{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[MediaInfo VideoCodec]}{-Release Group}
+        // TODO?
+
+        // Movie format in Radarr
+        // {Movie CleanTitle} {(Release Year)} {tmdb-{TmdbId}} {edition-{Edition Tags}} {[Custom Formats]}{[Quality Title]}{[MediaInfo 3D]}{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[Mediainfo VideoCodec]}{-Release Group}
+        // TODO?
 
         /// <summary>
         /// Construct a tag
@@ -52,12 +63,11 @@ namespace MediaManager.Code.Modules
                 ProcessFolderPath();
                 ProcessFileName();
 
-                //Console.WriteLine("Fin\n");
-
-                //throw new NotImplementedException();
+                // Extract media extension from real file path
+                Extension = Path.GetExtension(realFilePath);
 
                 // Overwrite mirror file contents with XML content
-                //MediaXML xmlFileOut = new MediaXML(mirrorFilePath, this);
+                MediaXML xmlFileOut = new MediaXML(mirrorFilePath, this);
             }
             else
             {
@@ -66,8 +76,20 @@ namespace MediaManager.Code.Modules
                 // Read in XML data
                 // MediaXML xmlFileIn = new MediaXML(mirrorFilePath);
 
-                //    // Set properties using XML file data
-                //    //Title = xmlFileIn.Title;
+
+                // Set tag properties using XML file data
+                // TODO
+
+                // EXAMPLES
+                //    Title = xmlFileIn.Title;
+                //    Artists = xmlFileIn.Artists;
+                //    Album = xmlFileIn.Album;
+                //    Year = xmlFileIn.Year;
+                //    TrackNumber = xmlFileIn.TrackNumber;
+                //    Genres = xmlFileIn.Genres;
+                //    Length = xmlFileIn.Length;
+                //    AlbumCoverCount = xmlFileIn.AlbumCoverCount;
+                //    Compilation = xmlFileIn.Compilation;
             }
         }
 
@@ -80,94 +102,148 @@ namespace MediaManager.Code.Modules
             string[] folderPathParts = folderPath.Split('\\');
 
             // Extract and save the media's type
-            Type = folderPathParts[1].Replace("s", "");  // e.g. Anime/Movies/Shows
+            string rawMediaType = folderPathParts[1];
+            Type = rawMediaType.Replace("s", "");  // e.g. Anime/Movies/Shows
 
-            // Get media folder name parts
+            // Process media folder
             string mediaFolderName = folderPathParts[2];  // e.g. A folder name (e.g. "A Certain Magical Index (2008) {tvdb-83322}", "8 Mile (2002) {tmdb-65}", etc.)
-
-            // Match the input string
             Match mediaFolderMatch = showFolderRegex.Match(mediaFolderName);
-
             if (mediaFolderMatch.Success)
             {
                 // Extract each part
-                string title = mediaFolderMatch.Groups["Title"].Value;
-                string year = mediaFolderMatch.Groups["Year"].Value;
-                string tvdbID = mediaFolderMatch.Groups["TVDBID"].Value;
+                Title = mediaFolderMatch.Groups["Title"].Value;
+                ReleaseYear = mediaFolderMatch.Groups["Year"].Value;
 
-                // Get ID parts 
-                string[] idParts = tvdbID.Split('-');
-
-                // Output the parts
-                //Console.WriteLine($"Title: {title}");
-                //Console.WriteLine($"Year: {year}");
-                //Console.WriteLine($"TVDB ID: https://thetvdb.com/search?query={idParts[1]}");
+                // Handle database ID
+                string[] databaseIDParts = mediaFolderMatch.Groups["TVDBID"].Value.Split('-');
+                string databaseIDType = databaseIDParts[0];
+                string databaseIDValue = databaseIDParts[1];
+                if (databaseIDType.Equals("tvdb"))
+                {
+                    DatabaseLink = $"https://www.thetvdb.com/dereferrer/series/{databaseIDValue}";
+                }
+                else if (databaseIDType.Equals("tmdb"))
+                {
+                    DatabaseLink = $"https://www.themoviedb.org/movie/{databaseIDValue}";
+                }
+                else
+                {
+                    Prog.PrintErrMsg($"Unknown database ID type encountered: {databaseIDType}");
+                }
             }
             else
             {
-                Console.WriteLine("No match found.");
+                Prog.PrintErrMsg($"Could not parse media folder: {mediaFolderName}");
             }
 
+            // Get season/specials folder or movie filename
+            // e.g. A season folder (e.g. "Season 01") or movie file (e.g "8 Mile (2002) {tmdb-65} [Bluray-720p][EAC3 5.1][x264]-playHD")
+            string seasonFolderOrMovieFile = folderPathParts[3];
 
-            // Get season folder or movie filename
-            string part2 = folderPathParts[3];  // e.g. A season folder (e.g. "Season 01") or movie file (e.g "8 Mile (2002) {tmdb-65} [Bluray-720p][EAC3 5.1][x264]-playHD")
-            //Console.WriteLine("Season: " + part2);
+            // If this an anime or show
+            if(rawMediaType.Equals(Prog.AnimeFolderName) || rawMediaType.Equals(Prog.ShowFolderName))
+            {
+                // This is a kind of season folder
+                if (seasonFolderOrMovieFile.Contains("Season"))
+                {
+                    SeasonType = "Regular";
+                    SeasonNum = seasonFolderOrMovieFile.Split(' ')[1];
+                }
+                else if (seasonFolderOrMovieFile.Equals("Specials"))
+                {
+                    SeasonType = "Special";
+                    SeasonNum = "00";
+                }
+                else
+                {
+                    Prog.PrintErrMsg($"Unknown season type encountered: {seasonFolderOrMovieFile}");
+                }
+            }
         }
 
         private void ProcessFileName()
         {
-            // Process filename
+            // Get file name without extension
             string filename = Path.GetFileNameWithoutExtension(RelPath);
 
-            Match match = animeEpRegex.Match(filename);
-
-            if (match.Success)
+            // If this is an anime
+            if (Type.Equals(Prog.AnimeFolderName))
             {
-                // Extract filename parts and assign them to variables with "Unknown" for missing data
-                string title = string.IsNullOrEmpty(match.Groups["Title"].Value) ? "Unknown" : match.Groups["Title"].Value;
-                string season = string.IsNullOrEmpty(match.Groups["Season"].Value) ? "Unknown" : match.Groups["Season"].Value;
-                string episode = string.IsNullOrEmpty(match.Groups["Episode"].Value) ? "Unknown" : match.Groups["Episode"].Value;
-                string absoluteEpisode = string.IsNullOrEmpty(match.Groups["AbsoluteEpisode"].Value) ? "Unknown" : match.Groups["AbsoluteEpisode"].Value;
-                string episodeTitle = string.IsNullOrEmpty(match.Groups["EpisodeTitle"].Value) ? "Unknown" : match.Groups["EpisodeTitle"].Value;
-                string customFormats = string.IsNullOrEmpty(match.Groups["CustomFormats"].Value) ? "Unknown" : match.Groups["CustomFormats"].Value; // Note: Almost always Unknown
-                string qualityTitle = string.IsNullOrEmpty(match.Groups["QualityTitle"].Value) ? "Unknown" : match.Groups["QualityTitle"].Value;
-                string videoDynamicRange = string.IsNullOrEmpty(match.Groups["VideoDynamicRange"].Value) ? "Unknown" : match.Groups["VideoDynamicRange"].Value; // Note: Almost always Unknown
-                string videoBitDepth = string.IsNullOrEmpty(match.Groups["VideoBitDepth"].Value) ? "Unknown" : match.Groups["VideoBitDepth"].Value; 
-                string videoCodec = string.IsNullOrEmpty(match.Groups["VideoCodec"].Value) ? "Unknown" : match.Groups["VideoCodec"].Value;
-                string audioCodec = string.IsNullOrEmpty(match.Groups["AudioCodec"].Value) ? "Unknown" : match.Groups["AudioCodec"].Value; 
-                string audioChannels = string.IsNullOrEmpty(match.Groups["AudioChannels"].Value) ? "Unknown" : match.Groups["AudioChannels"].Value;
-                string audioLanguages = string.IsNullOrEmpty(match.Groups["AudioLanguages"].Value) ? "Unknown" : match.Groups["AudioLanguages"].Value;
-                string releaseGroup = string.IsNullOrEmpty(match.Groups["ReleaseGroup"].Value) ? "Unknown" : match.Groups["ReleaseGroup"].Value;
+                // Try to extract anime info
+                Match animeMatch = animeEpRegex.Match(filename);
+                if (animeMatch.Success)
+                {
+                    // Ensure episode show title matches one from folder found earlier
+                    CheckMismatch(animeMatch, "Title", Title);
 
-                // Output the filename variables
-                //Console.WriteLine("Filename: " + filename);
-                //Console.WriteLine($"- Series Title: {title}");
-                //Console.WriteLine($"- Season: {season}");
-                //Console.WriteLine($"- Episode: {episode}");
-                //Console.WriteLine($"- Absolute Episode: {absoluteEpisode}");
-                //Console.WriteLine($"- Episode Title: {episodeTitle}");
-                //Console.WriteLine($"- Custom Formats: {customFormats}");
-                //Console.WriteLine($"- Quality Title: {qualityTitle}");
-                //Console.WriteLine($"- Video Dynamic Range: {videoDynamicRange}");
-                //Console.WriteLine($"- Video Bit Depth: {videoBitDepth}");
-                //Console.WriteLine($"- Video Codec: {videoCodec}");
-                //Console.WriteLine($"- Audio Codec: {audioCodec}");
-                //Console.WriteLine($"- Audio Channels: {audioChannels}");
-                //Console.WriteLine($"- Audio Languages: {audioLanguages}");
-                //Console.WriteLine($"- Release Group: {releaseGroup}");
-                //Console.WriteLine("");
+                    // Ensure episode release year matches one from folder found earlier
+                    CheckMismatch(animeMatch, "ReleaseYear", ReleaseYear);
+
+                    // Ensure episode season num matches one from folder found earlier
+                    CheckMismatch(animeMatch, "SeasonNum", SeasonNum);
+
+                    // Save fields
+                    EpisodeNum = GetGroupValue(animeMatch, "Episode");
+                    AbsEpisodeNum = GetGroupValue(animeMatch, "AbsoluteEpisode");
+                    EpisodeTitle = GetGroupValue(animeMatch, "EpisodeTitle");
+                    CustomFormats = GetGroupValue(animeMatch, "CustomFormats"); // Note: Almost always Unknown
+                    QualityTitle = GetGroupValue(animeMatch, "QualityTitle");
+                    VideoDynamicRange = GetGroupValue(animeMatch, "VideoDynamicRange"); // Note: Almost always Unknown
+                    VideoBitDepth = GetGroupValue(animeMatch, "VideoBitDepth");
+                    VideoCodec = GetGroupValue(animeMatch, "VideoCodec");
+                    AudioCodec = GetGroupValue(animeMatch, "AudioCodec");
+                    AudioChannels = GetGroupValue(animeMatch, "AudioChannels");
+                    AudioLanguages = GetGroupValue(animeMatch, "AudioLanguages");
+                    ReleaseGroup = GetGroupValue(animeMatch, "ReleaseGroup");             
+                }
+                else
+                {
+                    Prog.PrintErrMsg($"Could not parse anime: {RelPath}");
+                }
+            }
+            else if (Prog.ShowFolderName.Contains(Type))
+            {
+                // Else if this is a show
+                // TODO
+            }
+            else if (Prog.MovieFolderName.Contains(Type))
+            {
+                // Else if this is a movie
+                // TODO
             }
             else
             {
-                Console.WriteLine("No match found.");
-                Console.WriteLine("Relpath: " + RelPath);
-                Console.WriteLine("Filename: " + filename);
-                Console.WriteLine("");
+                Prog.PrintErrMsg($"Unexpected media type: {RelPath}");
             }
+        }
 
+        /// <summary>
+        /// Retrieves the value of a specified group from a regex match, or returns a default value if the group is empty or null.
+        /// </summary>
+        /// <param name="match">The regex match object containing the groups to extract data from.</param>
+        /// <param name="groupName">The name of the group whose value is to be retrieved.</param>
+        /// <param name="defaultValue">The default value to return if the group value is empty or null (default is "Unknown").</param>
+        /// <returns>The value of the specified group, or the default value if the group is empty or null.</returns>
+        public string GetGroupValue(Match match, string groupName, string defaultValue = "Unknown")
+        {
+            return string.IsNullOrEmpty(match.Groups[groupName].Value) ? defaultValue : match.Groups[groupName].Value;
+        }
 
-            // Extract extension from real file path
-            //string extension = Path.GetExtension(realFilePath);
+        /// <summary>
+        /// Compares a specific group value from the filename match with the corresponding expected value 
+        /// and prints an error message if they don't match.
+        /// </summary>
+        /// <param name="animeMatch">The match object containing the filename data.</param>
+        /// <param name="groupName">The name of the group to retrieve from the match.</param>
+        /// <param name="expectedValue">The expected value to compare against.</param>
+        private void CheckMismatch(Match animeMatch, string groupName, string expectedValue)
+        {
+            // If the value doesn't match the expected value, print an error message
+            if (!GetGroupValue(animeMatch, groupName).Equals(expectedValue))
+            {
+                // Print an error message
+                Prog.PrintErrMsg($"Folder and episode '{groupName}' mismatch: {RelPath}");
+            }
         }
     }
 }
