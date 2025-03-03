@@ -25,8 +25,12 @@ namespace MediaManager
             // Initialise tag list
             MediaTags = new List<MediaTag>();
 
+            // TEMP
+            // ONLY DOING ANIME FOR NOW
+            string animeMirrorPath = Path.Combine(mirrorPath, Prog.AnimeFolderName);
+
             // For every mirrored file
-            string[] mirrorFiles = Directory.GetFiles(mirrorPath, "*", SearchOption.AllDirectories);
+            string[] mirrorFiles = Directory.GetFiles(animeMirrorPath, "*", SearchOption.AllDirectories);
             foreach (string mirrorFilePath in mirrorFiles)
             {
                 // If XML file found

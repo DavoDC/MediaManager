@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
 
 namespace MediaManager.Code.Modules
 {
@@ -13,49 +12,51 @@ namespace MediaManager.Code.Modules
         // Regex for anime/show folders (e.g. "A Certain Magical Index (2008) {tvdb-83322}")
         Regex showFolderRegex = new Regex(@"^(?<Title>.*?)\s\((?<Year>\d{4})\)\s\{(?<TVDBID>tvdb-\d+)\}$");
 
+        // Regex for anime episodes (e.g. "A Certain Magical Index (2008) - S01E01 - 001 - Academy City [HDTV-720p][8bit][x264][AAC 2.0][JA]")
+        Regex animeEpRegex = new Regex(@"^(?<Title>.+?)\s*-\s*S(?<Season>\d{2})E(?<Episode>\d{2})\s*-\s*(?<AbsoluteEpisode>\d{3})\s*-\s*(?<CleanTitle>.+?)\s*(?:\[(?<CustomFormats>[^\]]+)\])?\s*(?:\[(?<QualityTitle>[^\]]+)\])?\s*(?:\[(?<VideoDynamicRange>[^\]]+)\])?\s*(?:\[(?<VideoBitDepth>\d+)bit\])?\s*(?:\[(?<VideoCodec>[^\]]+)\])?\s*(?:\[(?<AudioCodec>[^\] ]+)\s*(?<AudioChannels>[\d.]+)\])?\s*(?:\[(?<AudioLanguages>[^\]]+)\])?\s*(?:-(?<ReleaseGroup>[^\]]+))?$");
+
         /// <summary>
         /// Construct a tag
         /// </summary>
         /// <param name="mirrorFilePath">The mirror file path</param>
         public MediaTag(string mirrorFilePath)
         {
-            // Always initialise relative path
+            // Initialise relative path (always)
             int relStartPos = mirrorFilePath.LastIndexOf(Prog.MirrorFolderName);
             RelPath = mirrorFilePath.Remove(0, relStartPos + Prog.MirrorFolderName.Length);
-           
-            // Get file contents of mirror file (should be a single file path)
+
+            // Get file contents of mirror file (should be one real file path)
             string[] fileContents = File.ReadAllLines(mirrorFilePath);
+            bool mirrorFileContainsOnePath = fileContents.Length == 1;
+            
+            // Check validity of real file path
             string realFilePath = Reflector.FixLongPath(fileContents[0]);
+            bool mirrorFilePathIsValid = File.Exists(realFilePath);
 
-            //// If mirror file does not contain a single, valid file path
-            if (fileContents.Length != 1 || !File.Exists(realFilePath))
+            // If the mirror contains a single, valid path
+            if (mirrorFileContainsOnePath && mirrorFilePathIsValid)
             {
-                Console.WriteLine("found file that will interpret as valid XML!!!!");
-                Console.WriteLine(mirrorFilePath);
+                // Initialise fields using folder path and filename
+                ProcessFolderPath();
+                ProcessFileName();
 
-                // Then the mirror file already has XML content
-                // So load metadata from XML instead
+                //Console.WriteLine("Fin\n");
+
+                //throw new NotImplementedException();
+
+                // Overwrite mirror file contents with XML content
+                //MediaXML xmlFileOut = new MediaXML(mirrorFilePath, this);
+            }
+            else
+            {
+                // Else if the mirror file is a valid XML file
 
                 // Read in XML data
-                //MediaXML xmlFileIn = new MediaXML(mirrorFilePath);
+                // MediaXML xmlFileIn = new MediaXML(mirrorFilePath);
 
-                // Set properties using XML file data
-                //Title = xmlFileIn.Title;
-
-                // Stop
-                return;
+                //    // Set properties using XML file data
+                //    //Title = xmlFileIn.Title;
             }
-
-            //// Otherwise, if the mirror file contains a single valid path
-
-            // Initialise fields using folder path and filename
-            ProcessFolderPath();
-            ProcessFileName();
-            Console.WriteLine("fin\n");
-            throw new NotImplementedException();
-
-            // Overwrite mirror file contents with metadata
-            //MediaXML xmlFileOut = new MediaXML(mirrorFilePath, this);
         }
 
         private void ProcessFolderPath()
@@ -86,9 +87,9 @@ namespace MediaManager.Code.Modules
                 string[] idParts = tvdbID.Split('-');
 
                 // Output the parts
-                Console.WriteLine($"Title: {title}");
-                Console.WriteLine($"Year: {year}");
-                Console.WriteLine($"TVDB ID: https://thetvdb.com/search?query={idParts[1]}");
+                //Console.WriteLine($"Title: {title}");
+                //Console.WriteLine($"Year: {year}");
+                //Console.WriteLine($"TVDB ID: https://thetvdb.com/search?query={idParts[1]}");
             }
             else
             {
@@ -98,20 +99,15 @@ namespace MediaManager.Code.Modules
 
             // Get season folder or movie filename
             string part2 = folderPathParts[3];  // e.g. A season folder (e.g. "Season 01") or movie file (e.g "8 Mile (2002) {tmdb-65} [Bluray-720p][EAC3 5.1][x264]-playHD")
-            Console.WriteLine("Season: " + part2);
+            //Console.WriteLine("Season: " + part2);
         }
 
         private void ProcessFileName()
         {
             // Process filename
             string filename = Path.GetFileNameWithoutExtension(RelPath);
-            Console.WriteLine("filename: " + filename); // e.g. "A Certain Magical Index (2008) - S01E01 - 001 - Academy City [HDTV-720p][8bit][x264][AAC 2.0][JA]"
 
-            // Regular expression to extract anime filename parts
-            string filenamePattern = @"(?<Title>^[^-\[]+)(?:\s*-\s*S(?<Season>\d{2})E(?<Episode>\d{2})\s*-\s*(?<AbsoluteEpisode>\d{3})\s*-\s*(?<CleanTitle>[^[]+))\s*(?:\[(?<CustomFormats>[^]]+)\])?\s*(?:\[(?<QualityTitle>[^]]+)\])?\s*(?:\[(?<VideoDynamicRange>[^]]+)\])?\s*(?:\[(?<VideoBitDepth>\d+)bit\])?\s*(?:\[(?<VideoCodec>[^]]+)\])?\s*(?:\[(?<AudioCodec>[^ ]+)\s*(?<AudioChannels>\d+)\])?\s*(?:\[(?<AudioLanguages>[^\]]+)\])?\s*(?:-(?<ReleaseGroup>[^]]+))?$";
-
-            Regex regex = new Regex(filenamePattern);
-            Match match = regex.Match(filename);
+            Match match = animeEpRegex.Match(filename);
 
             if (match.Success)
             {
@@ -124,33 +120,37 @@ namespace MediaManager.Code.Modules
                 string customFormats = string.IsNullOrEmpty(match.Groups["CustomFormats"].Value) ? "Unknown" : match.Groups["CustomFormats"].Value;
                 string qualityTitle = string.IsNullOrEmpty(match.Groups["QualityTitle"].Value) ? "Unknown" : match.Groups["QualityTitle"].Value;
                 string videoDynamicRange = string.IsNullOrEmpty(match.Groups["VideoDynamicRange"].Value) ? "Unknown" : match.Groups["VideoDynamicRange"].Value;
-                string videoBitDepth = string.IsNullOrEmpty(match.Groups["VideoBitDepth"].Value) ? "Unknown" : match.Groups["VideoBitDepth"].Value;
+                string videoBitDepth = string.IsNullOrEmpty(match.Groups["VideoBitDepth"].Value) ? "Unknown" : match.Groups["VideoBitDepth"].Value; // Note: Almost always Unknown
                 string videoCodec = string.IsNullOrEmpty(match.Groups["VideoCodec"].Value) ? "Unknown" : match.Groups["VideoCodec"].Value;
-                string audioCodec = string.IsNullOrEmpty(match.Groups["AudioCodec"].Value) ? "Unknown" : match.Groups["AudioCodec"].Value;
-                string audioChannels = string.IsNullOrEmpty(match.Groups["AudioChannels"].Value) ? "Unknown" : match.Groups["AudioChannels"].Value;
+                string audioCodec = string.IsNullOrEmpty(match.Groups["AudioCodec"].Value) ? "Unknown" : match.Groups["AudioCodec"].Value; // Note: Almost always Unknown
+                string audioChannels = string.IsNullOrEmpty(match.Groups["AudioChannels"].Value) ? "Unknown" : match.Groups["AudioChannels"].Value; // Note: Almost always Unknown
                 string audioLanguages = string.IsNullOrEmpty(match.Groups["AudioLanguages"].Value) ? "Unknown" : match.Groups["AudioLanguages"].Value;
                 string releaseGroup = string.IsNullOrEmpty(match.Groups["ReleaseGroup"].Value) ? "Unknown" : match.Groups["ReleaseGroup"].Value;
 
                 // Output the filename variables
-                Console.WriteLine("\nFilename Parts:");
-                Console.WriteLine($"Series Title: {title}");
-                Console.WriteLine($"Season: {season}");
-                Console.WriteLine($"Episode: {episode}");
-                Console.WriteLine($"Absolute Episode: {absoluteEpisode}");
-                Console.WriteLine($"Episode Title: {episodeTitle}");
-                Console.WriteLine($"Custom Formats: {customFormats}");
-                Console.WriteLine($"Quality Title: {qualityTitle}");
-                Console.WriteLine($"Video Dynamic Range: {videoDynamicRange}");
-                Console.WriteLine($"Video Bit Depth: {videoBitDepth}");
-                Console.WriteLine($"Video Codec: {videoCodec}");
-                Console.WriteLine($"Audio Codec: {audioCodec}");
-                Console.WriteLine($"Audio Channels: {audioChannels}");
-                Console.WriteLine($"Audio Languages: {audioLanguages}");
-                Console.WriteLine($"Release Group: {releaseGroup}");
+                //Console.WriteLine("Filename: " + filename);
+                //Console.WriteLine($"- Series Title: {title}");
+                //Console.WriteLine($"- Season: {season}");
+                //Console.WriteLine($"- Episode: {episode}");
+                //Console.WriteLine($"- Absolute Episode: {absoluteEpisode}");
+                //Console.WriteLine($"- Episode Title: {episodeTitle}");
+                //Console.WriteLine($"- Custom Formats: {customFormats}");
+                //Console.WriteLine($"- Quality Title: {qualityTitle}");
+                //Console.WriteLine($"- Video Dynamic Range: {videoDynamicRange}");
+                //Console.WriteLine($"- Video Bit Depth: {videoBitDepth}"); 
+                //Console.WriteLine($"- Video Codec: {videoCodec}");
+                //Console.WriteLine($"- Audio Codec: {audioCodec}");
+                //Console.WriteLine($"- Audio Channels: {audioChannels}");
+                //Console.WriteLine($"- Audio Languages: {audioLanguages}");
+                //Console.WriteLine($"- Release Group: {releaseGroup}");
+                //Console.WriteLine("");
             }
             else
             {
                 Console.WriteLine("No match found.");
+                Console.WriteLine("Relpath: " + RelPath);
+                Console.WriteLine("Filename: " + filename);
+                Console.WriteLine("");
             }
 
 
