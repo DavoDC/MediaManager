@@ -156,11 +156,13 @@ namespace MediaManager.Code.Modules
         /// </summary>
         /// <param name="elementName">The name of the XML element.</param>
         /// <returns>The value of the XML element, or an empty string if the element is not found.</returns>
-        private string GetElementValue(string elementName)
+        public string GetElementValue(string elementName)
         {
             var existingElement = GetXmlElement(elementName);
             return existingElement?.InnerText ?? string.Empty;
         }
+
+        //private string GetXmlValue(string value) => string.IsNullOrEmpty(value) ? "Unknown" : value;
 
 
         /// <summary>

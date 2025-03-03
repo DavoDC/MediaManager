@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
 using File = System.IO.File;
 
@@ -11,6 +12,9 @@ namespace MediaManager.Code.Modules
     {
         // Regex for anime/show folders (e.g. "A Certain Magical Index (2008) {tvdb-83322}")
         Regex showFolderRegex = new Regex(@"^(?<Title>.*?)\s\((?<Year>\d{4})\)\s\{(?<TVDBID>tvdb-\d+)\}$");
+
+        // Regex for movie folders (e.g. "8 Mile (2002) {tmdb-65}")
+        Regex movieFolderRegex = new Regex(@"^(?<Title>.*?)\s\((?<Year>\d{4})\)\s\{(?<TMDBID>tmdb-\d+)\}$");
 
         // Anime episode format in Sonarr
         // {Series TitleYear} - S{season:00}E{episode:00} - {absolute:000} - {Episode CleanTitle} [{Custom Formats }{Quality Title}]{[MediaInfo VideoDynamicRangeType]}[{MediaInfo VideoBitDepth}bit]
@@ -32,11 +36,34 @@ namespace MediaManager.Code.Modules
 
         // Show episode format in Sonarr
         // {Series TitleYear} - S{season:00}E{episode:00} - {Episode CleanTitle} [{Custom Formats }{Quality Title}]{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[MediaInfo VideoCodec]}{-Release Group}
-        // TODO?
+        // Regex for shows (e.g. "The Office (US) (2005) - S01E01 - Pilot [HDTV-720p][x264][AAC 2.0][en]")
+        Regex showEpRegex = new Regex(@"
+            ^(?<Title>.+?)\s*(?:\((?<ReleaseYear>\d{4})\))?\s*-\s*
+            S(?<SeasonNum>\d{2})E(?<EpisodeNum>\d{2})\s*-\s*
+            (?<EpisodeTitle>.+?)\s*
+            (?:\[(?<CustomFormats>[^]\[]*?)\s*(?<QualityTitle>[^]\[]*)\])?\s*
+            (?:\[(?<VideoDynamicRange>HDR|SDR|Dolby Vision|HLG)\])?\s*
+            (?:\[(?<VideoBitDepth>\d+)bit\])?\s*
+            (?:\[(?<VideoCodec>x264|x265|AV1|VP9|H\.264|H\.265)\])?\s*
+            (?:\[(?<AudioCodec>[^\]\s]+)\s+(?<AudioChannels>[\d.]+)\])?\s*
+            (?:\[(?<AudioLanguages>[^\]]+)\])?\s*
+            (?:-(?<ReleaseGroup>[^\]]+))?$",
+            RegexOptions.IgnorePatternWhitespace);
 
         // Movie format in Radarr
         // {Movie CleanTitle} {(Release Year)} {tmdb-{TmdbId}} {edition-{Edition Tags}} {[Custom Formats]}{[Quality Title]}{[MediaInfo 3D]}{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[Mediainfo VideoCodec]}{-Release Group}
-        // TODO?
+        // Regex for movies (e.g. "8 Mile (2002) {tmdb-65} [Bluray-720p][EAC3 5.1][x264]-playHD")
+        Regex movieEpRegex = new Regex(@"
+            ^(?<Title>.+?)\s*\((?<ReleaseYear>\d{4})\)\s*
+            \{(?<DBID>tmdb-\d+)\}\s*
+            (?:\[(?<CustomFormats>[^]\[]*?)\s*(?<QualityTitle>[^]\[]*)\])?\s*
+            (?:\[(?<VideoDynamicRange>HDR|SDR|Dolby Vision|HLG)\])?\s*
+            (?:\[(?<VideoBitDepth>\d+)bit\])?\s*
+            (?:\[(?<VideoCodec>x264|x265|AV1|VP9|H\.264|H\.265)\])?\s*
+            (?:\[(?<AudioCodec>[^\]\s]+)\s+(?<AudioChannels>[\d.]+)\])?\s*
+            (?:\[(?<AudioLanguages>[^\]]+)\])?\s*
+            (?:-(?<ReleaseGroup>[^\]]+))?$",
+            RegexOptions.IgnorePatternWhitespace);
 
         /// <summary>
         /// Construct a tag
@@ -74,29 +101,36 @@ namespace MediaManager.Code.Modules
                 // Else if the mirror file is a valid XML file
 
                 // Read in XML data
-                // MediaXML xmlFileIn = new MediaXML(mirrorFilePath);
-
+                MediaXML xmlFileIn = new MediaXML(mirrorFilePath);
 
                 // Set tag properties using XML file data
-                // TODO
-
-                // EXAMPLES
-                //    Title = xmlFileIn.Title;
-                //    Artists = xmlFileIn.Artists;
-                //    Album = xmlFileIn.Album;
-                //    Year = xmlFileIn.Year;
-                //    TrackNumber = xmlFileIn.TrackNumber;
-                //    Genres = xmlFileIn.Genres;
-                //    Length = xmlFileIn.Length;
-                //    AlbumCoverCount = xmlFileIn.AlbumCoverCount;
-                //    Compilation = xmlFileIn.Compilation;
+                Title = xmlFileIn.GetElementValue("Title");
+                ReleaseYear = xmlFileIn.GetElementValue("ReleaseYear");
+                DatabaseLink = xmlFileIn.GetElementValue("DatabaseLink");
+                Extension = xmlFileIn.GetElementValue("Extension");
+                CustomFormats = xmlFileIn.GetElementValue("CustomFormats");
+                QualityTitle = xmlFileIn.GetElementValue("QualityTitle");
+                VideoDynamicRange = xmlFileIn.GetElementValue("VideoDynamicRange");
+                VideoCodec = xmlFileIn.GetElementValue("VideoCodec");
+                AudioCodec = xmlFileIn.GetElementValue("AudioCodec");
+                AudioChannels = xmlFileIn.GetElementValue("AudioChannels");
+                AudioLanguages = xmlFileIn.GetElementValue("AudioLanguages");
+                ReleaseGroup = xmlFileIn.GetElementValue("ReleaseGroup");
+                SeasonType = xmlFileIn.GetElementValue("SeasonType");
+                SeasonNum = xmlFileIn.GetElementValue("SeasonNum");
+                EpisodeNum = xmlFileIn.GetElementValue("EpisodeNum");
+                EpisodeTitle = xmlFileIn.GetElementValue("EpisodeTitle");
+                AbsEpisodeNum = xmlFileIn.GetElementValue("AbsEpisodeNum");
+                VideoBitDepth = xmlFileIn.GetElementValue("VideoBitDepth");
             }
         }
 
         private void ProcessFolderPath()
         {
             // Get full relative path but without filename
-            string folderPath = Path.GetDirectoryName(RelPath);  // e.g. "C:\Anime\A Certain Magical Index(2008) { tvdb - 83322}\Season 01"
+            // e.g. "\Anime\A Certain Magical Index (2008) {tvdb-83322}\Season 01"
+            // or "\Movies\8 Mile (2002) {tmdb-65}\"
+            string folderPath = Path.GetDirectoryName(RelPath);
 
             // Split the relative path by backslashes to extract path parts
             string[] folderPathParts = folderPath.Split('\\');
@@ -105,59 +139,93 @@ namespace MediaManager.Code.Modules
             string rawMediaType = folderPathParts[1];
             Type = rawMediaType.Replace("s", "");  // e.g. Anime/Movies/Shows
 
-            // Process media folder
-            string mediaFolderName = folderPathParts[2];  // e.g. A folder name (e.g. "A Certain Magical Index (2008) {tvdb-83322}", "8 Mile (2002) {tmdb-65}", etc.)
-            Match mediaFolderMatch = showFolderRegex.Match(mediaFolderName);
-            if (mediaFolderMatch.Success)
-            {
-                // Extract each part
-                Title = mediaFolderMatch.Groups["Title"].Value;
-                ReleaseYear = mediaFolderMatch.Groups["Year"].Value;
+            // Get media folder (e.g. "A Certain Magical Index (2008) {tvdb-83322}", "8 Mile (2002) {tmdb-65}", etc.)
+            string mediaFolderName = folderPathParts[2];
 
-                // Handle database ID
-                string[] databaseIDParts = mediaFolderMatch.Groups["TVDBID"].Value.Split('-');
-                string databaseIDType = databaseIDParts[0];
-                string databaseIDValue = databaseIDParts[1];
-                if (databaseIDType.Equals("tvdb"))
+            // Handle Anime/Show Folders
+            if (rawMediaType.Equals(Prog.AnimeFolderName) || rawMediaType.Equals(Prog.ShowFolderName))
+            {
+                // Process anime/show folder using the showFolderRegex
+                Match mediaFolderMatch = showFolderRegex.Match(mediaFolderName);
+
+                if (mediaFolderMatch.Success)
                 {
-                    DatabaseLink = $"https://www.thetvdb.com/dereferrer/series/{databaseIDValue}";
-                }
-                else if (databaseIDType.Equals("tmdb"))
-                {
-                    DatabaseLink = $"https://www.themoviedb.org/movie/{databaseIDValue}";
+                    // Extract each part
+                    Title = mediaFolderMatch.Groups["Title"].Value;
+                    ReleaseYear = mediaFolderMatch.Groups["Year"].Value;
+
+                    // Handle database ID
+                    string[] databaseIDParts = mediaFolderMatch.Groups["TVDBID"].Value.Split('-');
+                    string databaseIDType = databaseIDParts[0];
+                    string databaseIDValue = databaseIDParts[1];
+                    if (databaseIDType.Equals("tvdb"))
+                    {
+                        DatabaseLink = $"https://www.thetvdb.com/dereferrer/series/{databaseIDValue}";
+                    }
+                    else if (databaseIDType.Equals("tmdb"))
+                    {
+                        DatabaseLink = $"https://www.themoviedb.org/movie/{databaseIDValue}";
+                    }
+                    else
+                    {
+                        Prog.PrintErrMsg($"Unknown database ID type encountered: {databaseIDType}");
+                    }
                 }
                 else
                 {
-                    Prog.PrintErrMsg($"Unknown database ID type encountered: {databaseIDType}");
+                    Prog.PrintErrMsg($"Could not parse media folder: {mediaFolderName}");
                 }
-            }
-            else
-            {
-                Prog.PrintErrMsg($"Could not parse media folder: {mediaFolderName}");
-            }
 
-            // Get season/specials folder or movie filename
-            // e.g. A season folder (e.g. "Season 01") or movie file (e.g "8 Mile (2002) {tmdb-65} [Bluray-720p][EAC3 5.1][x264]-playHD")
-            string seasonFolderOrMovieFile = folderPathParts[3];
-
-            // If this an anime or show
-            if(rawMediaType.Equals(Prog.AnimeFolderName) || rawMediaType.Equals(Prog.ShowFolderName))
-            {
-                // This is a kind of season folder
-                if (seasonFolderOrMovieFile.Contains("Season"))
+                // Get season/specials folder (e.g. "Season 01", "Specials")
+                string seasonFolder = folderPathParts[3];
+                if (seasonFolder.Contains("Season"))
                 {
                     SeasonType = "Regular";
-                    SeasonNum = seasonFolderOrMovieFile.Split(' ')[1];
+                    SeasonNum = seasonFolder.Split(' ')[1];
                 }
-                else if (seasonFolderOrMovieFile.Equals("Specials"))
+                else if (seasonFolder.Equals("Specials"))
                 {
                     SeasonType = "Special";
                     SeasonNum = "00";
                 }
                 else
                 {
-                    Prog.PrintErrMsg($"Unknown season type encountered: {seasonFolderOrMovieFile}");
+                    Prog.PrintErrMsg($"Unknown season type encountered: {seasonFolder}");
                 }
+            }
+            // Handle Movie Folders (TMDB)
+            else if (rawMediaType.Equals(Prog.MovieFolderName))
+            {
+                // Process movie folder using the movieFolderRegex
+                Match mediaFolderMatch = movieFolderRegex.Match(mediaFolderName);
+
+                if (mediaFolderMatch.Success)
+                {
+                    // Extract each part
+                    Title = mediaFolderMatch.Groups["Title"].Value;
+                    ReleaseYear = mediaFolderMatch.Groups["Year"].Value;
+
+                    // Handle database ID (TMDB)
+                    string[] databaseIDParts = mediaFolderMatch.Groups["TMDBID"].Value.Split('-');
+                    string databaseIDType = databaseIDParts[0];
+                    string databaseIDValue = databaseIDParts[1];
+                    if (databaseIDType.Equals("tmdb"))
+                    {
+                        DatabaseLink = $"https://www.themoviedb.org/movie/{databaseIDValue}";
+                    }
+                    else
+                    {
+                        Prog.PrintErrMsg($"Unknown database ID type encountered: {databaseIDType}");
+                    }
+                }
+                else
+                {
+                    Prog.PrintErrMsg($"Could not parse media folder: {mediaFolderName}");
+                }
+            }
+            else
+            {
+                Prog.PrintErrMsg($"Unknown media type encountered: {rawMediaType}");
             }
         }
 
@@ -165,36 +233,13 @@ namespace MediaManager.Code.Modules
         {
             // Get file name without extension
             string filename = Path.GetFileNameWithoutExtension(RelPath);
-
-            // If this is an anime
-            if (Type.Equals(Prog.AnimeFolderName))
+            if (Prog.AnimeFolderName.Contains(Type))
             {
-                // Try to extract anime info
+                // Extract anime info using the anime regex
                 Match animeMatch = animeEpRegex.Match(filename);
                 if (animeMatch.Success)
                 {
-                    // Ensure episode show title matches one from folder found earlier
-                    CheckMismatch(animeMatch, "Title", Title);
-
-                    // Ensure episode release year matches one from folder found earlier
-                    CheckMismatch(animeMatch, "ReleaseYear", ReleaseYear);
-
-                    // Ensure episode season num matches one from folder found earlier
-                    CheckMismatch(animeMatch, "SeasonNum", SeasonNum);
-
-                    // Save fields
-                    EpisodeNum = GetGroupValue(animeMatch, "Episode");
-                    AbsEpisodeNum = GetGroupValue(animeMatch, "AbsoluteEpisode");
-                    EpisodeTitle = GetGroupValue(animeMatch, "EpisodeTitle");
-                    CustomFormats = GetGroupValue(animeMatch, "CustomFormats"); // Note: Almost always Unknown
-                    QualityTitle = GetGroupValue(animeMatch, "QualityTitle");
-                    VideoDynamicRange = GetGroupValue(animeMatch, "VideoDynamicRange"); // Note: Almost always Unknown
-                    VideoBitDepth = GetGroupValue(animeMatch, "VideoBitDepth");
-                    VideoCodec = GetGroupValue(animeMatch, "VideoCodec");
-                    AudioCodec = GetGroupValue(animeMatch, "AudioCodec");
-                    AudioChannels = GetGroupValue(animeMatch, "AudioChannels");
-                    AudioLanguages = GetGroupValue(animeMatch, "AudioLanguages");
-                    ReleaseGroup = GetGroupValue(animeMatch, "ReleaseGroup");             
+                    ExtractAnimeInfo(animeMatch);
                 }
                 else
                 {
@@ -203,19 +248,91 @@ namespace MediaManager.Code.Modules
             }
             else if (Prog.ShowFolderName.Contains(Type))
             {
-                // Else if this is a show
-                // TODO
+                // Extract show info using the show regex
+                Match showMatch = showEpRegex.Match(filename);
+                if (showMatch.Success)
+                {
+                    ExtractShowInfo(showMatch);
+                }
+                else
+                {
+                    Prog.PrintErrMsg($"Could not parse show: {RelPath}");
+                }
             }
             else if (Prog.MovieFolderName.Contains(Type))
             {
-                // Else if this is a movie
-                // TODO
+                // Extract movie info using the movie regex
+                Match movieMatch = movieEpRegex.Match(filename);
+                if (movieMatch.Success)
+                {
+                    ExtractMovieInfo(movieMatch);
+                }
+                else
+                {
+                    Prog.PrintErrMsg($"Could not parse movie: {RelPath}");
+                }
             }
             else
             {
                 Prog.PrintErrMsg($"Unexpected media type: {RelPath}");
             }
         }
+
+        private void ExtractAnimeInfo(Match animeMatch)
+        {
+            CheckMismatch(animeMatch, "Title", Title);
+            CheckMismatch(animeMatch, "ReleaseYear", ReleaseYear);
+            CheckMismatch(animeMatch, "SeasonNum", SeasonNum);
+
+            EpisodeNum = GetGroupValue(animeMatch, "EpisodeNum");
+            AbsEpisodeNum = GetGroupValue(animeMatch, "AbsoluteEpisode");
+            EpisodeTitle = GetGroupValue(animeMatch, "EpisodeTitle");
+            CustomFormats = GetGroupValue(animeMatch, "CustomFormats");
+            QualityTitle = GetGroupValue(animeMatch, "QualityTitle");
+            VideoDynamicRange = GetGroupValue(animeMatch, "VideoDynamicRange");
+            VideoBitDepth = GetGroupValue(animeMatch, "VideoBitDepth");
+            VideoCodec = GetGroupValue(animeMatch, "VideoCodec");
+            AudioCodec = GetGroupValue(animeMatch, "AudioCodec");
+            AudioChannels = GetGroupValue(animeMatch, "AudioChannels");
+            AudioLanguages = GetGroupValue(animeMatch, "AudioLanguages");
+            ReleaseGroup = GetGroupValue(animeMatch, "ReleaseGroup");
+        }
+
+        private void ExtractShowInfo(Match showMatch)
+        {
+            CheckMismatch(showMatch, "Title", Title);
+            CheckMismatch(showMatch, "ReleaseYear", ReleaseYear);
+            CheckMismatch(showMatch, "SeasonNum", SeasonNum);
+
+            EpisodeNum = GetGroupValue(showMatch, "EpisodeNum");
+            EpisodeTitle = GetGroupValue(showMatch, "EpisodeTitle");
+            CustomFormats = GetGroupValue(showMatch, "CustomFormats");
+            QualityTitle = GetGroupValue(showMatch, "QualityTitle");
+            VideoDynamicRange = GetGroupValue(showMatch, "VideoDynamicRange");
+            VideoBitDepth = GetGroupValue(showMatch, "VideoBitDepth");
+            VideoCodec = GetGroupValue(showMatch, "VideoCodec");
+            AudioCodec = GetGroupValue(showMatch, "AudioCodec");
+            AudioChannels = GetGroupValue(showMatch, "AudioChannels");
+            AudioLanguages = GetGroupValue(showMatch, "AudioLanguages");
+            ReleaseGroup = GetGroupValue(showMatch, "ReleaseGroup");
+        }
+
+        private void ExtractMovieInfo(Match movieMatch)
+        {
+            CheckMismatch(movieMatch, "Title", Title);
+            CheckMismatch(movieMatch, "ReleaseYear", ReleaseYear);
+
+            CustomFormats = GetGroupValue(movieMatch, "CustomFormats");
+            QualityTitle = GetGroupValue(movieMatch, "QualityTitle");
+            VideoDynamicRange = GetGroupValue(movieMatch, "VideoDynamicRange");
+            VideoBitDepth = GetGroupValue(movieMatch, "VideoBitDepth");
+            VideoCodec = GetGroupValue(movieMatch, "VideoCodec");
+            AudioCodec = GetGroupValue(movieMatch, "AudioCodec");
+            AudioChannels = GetGroupValue(movieMatch, "AudioChannels");
+            AudioLanguages = GetGroupValue(movieMatch, "AudioLanguages");
+            ReleaseGroup = GetGroupValue(movieMatch, "ReleaseGroup");
+        }
+
 
         /// <summary>
         /// Retrieves the value of a specified group from a regex match, or returns a default value if the group is empty or null.
