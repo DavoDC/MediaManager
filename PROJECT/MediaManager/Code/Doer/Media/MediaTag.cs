@@ -17,7 +17,7 @@ namespace MediaManager.Code.Modules
                 ^(?<Title>.+?)\s*-\s*
                 S(?<Season>\d{2})E(?<Episode>\d{2})\s*-\s*
                 (?<AbsoluteEpisode>\d{3})\s*-\s*
-                (?<CleanTitle>.+?)\s*
+                (?<EpisodeTitle>.+?)\s*
                 (?:\[(?<CustomFormats>[^\]]+)\])?\s*
                 (?:\[(?<QualityTitle>[^\]]+)\])?\s*
                 (?:\[(?<VideoDynamicRange>[^\]]+)\])?\s*
@@ -129,7 +129,7 @@ namespace MediaManager.Code.Modules
                 string season = string.IsNullOrEmpty(match.Groups["Season"].Value) ? "Unknown" : match.Groups["Season"].Value;
                 string episode = string.IsNullOrEmpty(match.Groups["Episode"].Value) ? "Unknown" : match.Groups["Episode"].Value;
                 string absoluteEpisode = string.IsNullOrEmpty(match.Groups["AbsoluteEpisode"].Value) ? "Unknown" : match.Groups["AbsoluteEpisode"].Value;
-                string episodeTitle = string.IsNullOrEmpty(match.Groups["CleanTitle"].Value) ? "Unknown" : match.Groups["CleanTitle"].Value;
+                string episodeTitle = string.IsNullOrEmpty(match.Groups["EpisodeTitle"].Value) ? "Unknown" : match.Groups["EpisodeTitle"].Value;
                 string customFormats = string.IsNullOrEmpty(match.Groups["CustomFormats"].Value) ? "Unknown" : match.Groups["CustomFormats"].Value;
                 string qualityTitle = string.IsNullOrEmpty(match.Groups["QualityTitle"].Value) ? "Unknown" : match.Groups["QualityTitle"].Value;
                 string videoDynamicRange = string.IsNullOrEmpty(match.Groups["VideoDynamicRange"].Value) ? "Unknown" : match.Groups["VideoDynamicRange"].Value;
