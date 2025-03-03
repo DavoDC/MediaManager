@@ -29,7 +29,7 @@ namespace MediaManager.Code.Modules
         /// <param name="name">The name of the statistics category</param>
         /// <param name="audioTagsIn">The list of audio tags inputted</param>
         /// <param name="func">Function that returns the property</param>
-        public StatList(string name, List<TrackTag> audioTagsIn, Func<TrackTag, string> func)
+        public StatList(string name, List<MediaTag> audioTagsIn, Func<MediaTag, string> func)
         {
             // Save name
             this.name = name;
@@ -80,7 +80,7 @@ namespace MediaManager.Code.Modules
         /// <param name="audioTagsIn">The list of audio tags inputted</param>
         /// <param name="func">A function that extracts a property from a given audio tag.</param>
         /// <returns>List of key-value pairs (property-frequency_count pairs), sorted in descending order by count.</returns>
-        public static StringIntFreqDist GetSortedFreqDist(List<TrackTag> audioTagsIn, Func<TrackTag, string> func)
+        public static StringIntFreqDist GetSortedFreqDist(List<MediaTag> audioTagsIn, Func<MediaTag, string> func)
         {
             // A dictionary that maps each unique item to how many there are
             var itemVariants = new Dictionary<string, int>();

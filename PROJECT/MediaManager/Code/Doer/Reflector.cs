@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace MediaManager
@@ -17,19 +18,23 @@ namespace MediaManager
         // Invalid file name characters
         private static readonly char[] invalidChars = Path.GetInvalidFileNameChars();
 
-        // Media file extensions
-        public static readonly HashSet<string> mediaExtensions = new HashSet<string> { ".mp4", ".mkv", ".m4v", ".avi" };
+        // Extensions of files we expect to be present, but don't want in the mirror
+        private static readonly HashSet<string> expectedExtensions = new HashSet<string> { ".lnk", ".ini", ".ffs_db" };
 
-        // Extensions of other files we want to include the mirror as-is
-        HashSet<string> mirrorExtensions = new HashSet<string> { ".txt", ".lnk", ".url", ".srt", ".docx", ".ass", ".ssa" };
+        // Extensions of media files that we want XML files for in the mirror
+        private static readonly HashSet<string> mediaExtensions = new HashSet<string> { ".mp4", ".mkv", ".m4v", ".avi" };
 
-        // Extensions of file we expect to be present, but don't want in the mirror
-        HashSet<string> expectedExtensions = new HashSet<string> { ".ini", ".ffs_db" };
+        // Extensions of other files that we can copy as-is into the mirror
+        private static readonly HashSet<string> copyExtensions = new HashSet<string> { ".ass", ".srt" };
+        public static HashSet<string> CopyExtensions { get => copyExtensions; }
+
+        // Extensions of files we want in the mirror
+        private static readonly HashSet<string> mirrorExtensions = new HashSet<string>(mediaExtensions.Union(copyExtensions));
 
         //// VARIABLES
         private string mirrorPath;
         private bool recreateMirror;
-        private static readonly string mediaFolderPathInside = Program.MediaFolderPath + "\\";
+        private static readonly string mediaFolderPathInside = Prog.MediaFolderPath + "\\";
 
         /// <summary>
         /// Construct an audio mirror
@@ -43,7 +48,7 @@ namespace MediaManager
             this.recreateMirror = recreateMirror;
 
             // Notify
-            Console.WriteLine($"\nCreating mirror of '{Program.MediaFolderPath}'...");
+            Console.WriteLine($"\nCreating mirror of '{Prog.MediaFolderPath}'...");
 
             // Setup folder structure
             CreateFolders();
@@ -114,29 +119,28 @@ namespace MediaManager
                 string relativePath = GetRelativePath(mediaFolderPathInside, realFilePath);
                 string relPathExt = Path.GetExtension(relativePath);
 
-                // Get file type info
-                bool isMediaFile = mediaExtensions.Contains(relPathExt);
-                bool isMirrorFile = mirrorExtensions.Contains(relPathExt);
-                bool isExpectedFile = expectedExtensions.Contains(relPathExt);
-
-                // If the file is a media file or other file we want to mirror 
-                if(isMediaFile || isMirrorFile)
+                // If this is a file we want to mirror
+                if(mirrorExtensions.Contains(relPathExt))
                 {
-                    // Create a mirror file
+                    // Check if its a media file 
+                    bool isMediaFile = mediaExtensions.Contains(relPathExt);
+
+                    // Create a mirror file for it
                     if (CreateMirrorFile(realFilePath, relativePath, isMediaFile))
                     {
                         sanitisationCount++;
                     }
 
+                    // Increment media file count 
                     if (isMediaFile)
                     {
                         mediaFileCount++;
                     }
                 }
-                else if (!isExpectedFile)
+                else if (!expectedExtensions.Contains(relPathExt))
                 {
-                    // If the file wasn't a media, mirror or expected file,
-                    // add relative path to unexpected list
+                    // Else if the file was not a file we want to mirror, and it wasn't expected,
+                    // add its relative path to unexpected list
                     unexpectedFiles.Add(relativePath);
                 }
             }
@@ -162,7 +166,7 @@ namespace MediaManager
             string sanitisedFilename = SanitiseFilename(fileName);
 
             // If file name was sanitised
-            if (fileName != sanitisedFilename)
+            if (!fileName.Equals(sanitisedFilename))
             {
                 // Replace filename in path with sanitised version
                 relativePath = relativePath.Replace(fileName, sanitisedFilename);
@@ -174,7 +178,7 @@ namespace MediaManager
             // Generate the full mirror path
             string fullMirrorPath = Path.Combine(mirrorPath, relativePath);
 
-            // If XML extension requested, change it 
+            // If XML extension requested, change the path's extension
             if (useXmlExt)
             {
                 fullMirrorPath = Path.ChangeExtension(fullMirrorPath, ".xml");
@@ -225,7 +229,19 @@ namespace MediaManager
             Console.WriteLine($" - Unexpected files found: {unexpectedFiles.Count}");
             if (unexpectedFiles.Count != 0)
             {
-                Console.WriteLine($"  - Found: {string.Join(",", unexpectedFiles)}");
+                // Get of unique extensions
+                HashSet<string> uniqueExtensions = unexpectedFiles
+                    .Select(file => Path.GetExtension(file).ToLower()) // Extract and normalize extensions
+                    .Where(ext => !string.IsNullOrEmpty(ext)) // Exclude empty extensions
+                    .ToHashSet();
+                Console.WriteLine($"  - Extensions: {string.Join(",", uniqueExtensions)}");
+
+                // Print paths
+                Console.WriteLine($"  - Paths: ");
+                foreach (string unexpectedFilePath in unexpectedFiles)
+                {
+                    Console.WriteLine($"   - {unexpectedFilePath}");
+                }
             }
 
             // Print sanitisation count
@@ -271,7 +287,7 @@ namespace MediaManager
         /// <param name="longPath">A 'raw' long path</param>
         /// <param name="force">Force fixing the path regardless of length</param>
         /// <returns>The fixed path</returns>
-        private string FixLongPath(string longPath, bool force = false)
+        public static string FixLongPath(string longPath, bool force = false)
         {
             // If path length is close to the Windows 260 character limit
             if (longPath.Length > 240 || force)
@@ -297,7 +313,7 @@ namespace MediaManager
         /// <param name="basePath">The base path.</param>
         /// <param name="targetPath">The target path.</param>
         /// <returns>The relative path from the base path to the target path.</returns>
-        private string GetRelativePath(string basePath, string targetPath)
+        public static string GetRelativePath(string basePath, string targetPath)
         {
             // Convert paths to URIs for accurate relative path calculation
             Uri baseUri = new Uri(basePath);

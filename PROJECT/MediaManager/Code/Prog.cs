@@ -3,10 +3,16 @@ using System.IO;
 
 namespace MediaManager
 {
-    internal class Program
+    /// <summary>
+    /// The main class where program execution begins.
+    /// </summary>
+    internal class Prog
     {
-        ////// CONSTANTS
+        ////// CONSTANTS //////
 
+        /// <summary>
+        /// Paths
+        /// </summary>
         // The relative path from the executable back to the project folder
         private static readonly string projectPath = "..\\..\\..\\";
         public static string ProjectPath { get => projectPath; }
@@ -27,14 +33,24 @@ namespace MediaManager
         private static readonly string mediaFolderPath = "E:\\Visual_Media";
         public static string MediaFolderPath { get => mediaFolderPath; }
 
-        // Info file name
-        private static readonly string infoFileName = "INFO.txt";
-        public static string InfoFileName { get => infoFileName; }
+        // The anime folder name
+        private static readonly string animeFolderName = "Anime";
+        public static string AnimeFolderName { get => animeFolderName; }
+
+        // The movie folder name
+        private static readonly string movieFolderName = "Movies";
+        public static string MovieFolderName { get => movieFolderName; }
+
+        // The shows folder name
+        private static readonly string showFolderName = "Shows";
+        public static string ShowFolderName { get => showFolderName; }
+
+
 
         /// <summary>
-        /// Main function
+        /// The program's entry point, automatically invoked when the application starts. 
         /// </summary>
-        /// <param name="args">Arguments given to program</param>
+        /// <param name="args">Command-line arguments.</param>
         static void Main(string[] args)
         {
             try
@@ -48,11 +64,11 @@ namespace MediaManager
                 // Set mirror path relative to the executable
                 string mirrorPath = Path.GetFullPath(Path.Combine(progExecPath, MirrorFolderPath));
 
-                // 0) Process new media
-                //NewMediaProcessor nmp = new NewMediaProcessor();
-
                 // 1) Check the age of the mirror
                 AgeChecker ac = new AgeChecker();
+
+                // Force recreating mirror (e.g. during development)
+                ac.recreateMirror = true;
 
                 // 2) Create mirror of media folder
                 // Note: XML files created at this stage just contain paths to the actual file, not metadata info.
@@ -60,7 +76,7 @@ namespace MediaManager
 
                 // 3) Parse metadata into XML files and tag list
                 // Note: The file contents get overwritten with actual XML content in this stage.
-                //Parser p = new Parser(mirrorPath);
+                Parser p = new Parser(mirrorPath);
 
                 // 4) Analyse metadata and print statistics
                 //Analyser a = new Analyser(p.audioTags);
@@ -69,7 +85,7 @@ namespace MediaManager
                 //LibChecker lc = new LibChecker(p.audioTags);
 
                 // Print total time
-                TimeSpan totalTime = ac.ExecutionTime + refl.ExecutionTime;
+                //TimeSpan totalTime = ac.ExecutionTime + refl.ExecutionTime;
                 // + p.ExecutionTime; nmp.ExecutionTime
                 //totalTime += a.ExecutionTime + lc.ExecutionTime;
                 //Console.WriteLine("\nTotal time taken: " + Doer.ConvertTimeSpanToString(totalTime));
@@ -86,14 +102,6 @@ namespace MediaManager
                 Console.WriteLine("\n");
                 Environment.Exit(123);
             }
-        }
-
-        /// <summary>
-        /// Print a message that the folder at the given path is being checked
-        /// </summary>
-        public static void PrintCheckingFolderMsg(string folderPath)
-        {
-            Console.WriteLine($"\nChecking '{Path.GetFileName(folderPath)}' folder...");
         }
 
         /// <summary>

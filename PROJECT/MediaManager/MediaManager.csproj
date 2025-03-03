@@ -62,19 +62,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Code\Doer\Analyser\Analyser.cs" />
-    <Compile Include="Code\Doer\Analyser\Statistic.cs" />
-    <Compile Include="Code\Doer\Analyser\StatList.cs" />
-    <Compile Include="Code\Doer\LibChecker.cs" />
+    <Compile Include="Code\NotIntegrated\Analyser\Analyser.cs" />
+    <Compile Include="Code\NotIntegrated\Analyser\Statistic.cs" />
+    <Compile Include="Code\NotIntegrated\Analyser\StatList.cs" />
+    <Compile Include="Code\NotIntegrated\LibChecker.cs" />
     <Compile Include="Code\Doer\AgeChecker.cs" />
     <Compile Include="Code\Doer\Doer.cs" />
     <Compile Include="Code\Doer\Reflector.cs" />
-    <Compile Include="Code\Doer\NewMediaProcessor.cs" />
-    <Compile Include="Code\Track\Track.cs" />
-    <Compile Include="Code\Track\TrackTag.cs" />
-    <Compile Include="Code\Track\TrackXML.cs" />
+    <Compile Include="Code\Doer\Media\MediaFile.cs" />
+    <Compile Include="Code\Doer\Media\MediaTag.cs" />
+    <Compile Include="Code\Doer\Media\MediaXML.cs" />
     <Compile Include="Code\Doer\Parser.cs" />
-    <Compile Include="Code\Program.cs" />
+    <Compile Include="Code\Prog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -4,26 +4,26 @@ using System.Xml;
 namespace MediaManager.Code.Modules
 {
     /// <summary>
-    /// An audio track's metadata stored as an XML file
+    /// A media file's metadata stored as an XML file
     /// </summary>
-    internal class TrackXML : Track
+    internal class MediaXML : MediaFile
     {
         // Private fields
         private XmlDocument xmlDoc;
         private XmlElement rootElement;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="TrackXML"/> class.
+        /// Initialises a new instance of the <see cref="MediaXML"/> class.
         /// </summary>
         /// <param name="mirrorFilePath">The path to the mirror file.</param>
-        /// <param name="tag">The audio metadata. Null if not given</param>
-        public TrackXML(string mirrorFilePath, TrackTag tag = null)
+        /// <param name="tag">The file's metadata. Null if not given</param>
+        public MediaXML(string mirrorFilePath, MediaTag tag = null)
         {
             try
             {
                 // Initialise XML document
                 xmlDoc = new XmlDocument();
-                rootElement = xmlDoc.CreateElement("Track");
+                rootElement = xmlDoc.CreateElement("Media");
                 xmlDoc.AppendChild(rootElement);
 
                 // If tag provided
@@ -31,15 +31,15 @@ namespace MediaManager.Code.Modules
                 {
                     // CREATE AN XML FILE
                     // Set XML elements to metadata values
-                    SetElementValue("Title", tag.Title);
-                    SetElementValue("Artists", tag.Artists);
-                    SetElementValue("Album", tag.Album);
-                    SetElementValue("Year", tag.Year);
-                    SetElementValue("TrackNumber", tag.TrackNumber);
-                    SetElementValue("Genres", tag.Genres);
-                    SetElementValue("Length", tag.Length);
-                    SetElementValue("AlbumCoverCount", tag.AlbumCoverCount);
-                    SetElementValue("Compilation", tag.Compilation);
+                    //SetElementValue("Title", tag.Title);
+                    //SetElementValue("Artists", tag.Artists);
+                    //SetElementValue("Album", tag.Album);
+                    //SetElementValue("Year", tag.Year);
+                    //SetElementValue("TrackNumber", tag.TrackNumber);
+                    //SetElementValue("Genres", tag.Genres);
+                    //SetElementValue("Length", tag.Length);
+                    //SetElementValue("AlbumCoverCount", tag.AlbumCoverCount);
+                    //SetElementValue("Compilation", tag.Compilation);
 
                     // Save file
                     xmlDoc.Save(mirrorFilePath);
@@ -51,15 +51,15 @@ namespace MediaManager.Code.Modules
                     rootElement = xmlDoc.DocumentElement;
 
                     // Read data from XML and set properties
-                    Title = GetElementValue("Title");
-                    Artists = GetElementValue("Artists");
-                    Album = GetElementValue("Album");
-                    Year = GetElementValue("Year");
-                    TrackNumber = GetElementValue("TrackNumber");
-                    Genres = GetElementValue("Genres");
-                    Length = GetElementValue("Length");
-                    AlbumCoverCount = GetElementValue("AlbumCoverCount");
-                    Compilation = GetElementValue("Compilation");
+                    //Title = GetElementValue("Title");
+                    //Artists = GetElementValue("Artists");
+                    //Album = GetElementValue("Album");
+                    //Year = GetElementValue("Year");
+                    //TrackNumber = GetElementValue("TrackNumber");
+                    //Genres = GetElementValue("Genres");
+                    //Length = GetElementValue("Length");
+                    //AlbumCoverCount = GetElementValue("AlbumCoverCount");
+                    //Compilation = GetElementValue("Compilation");
                 }
             }
             catch (Exception)

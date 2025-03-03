@@ -6,47 +6,48 @@ using System.IO;
 namespace MediaManager
 {
     /// <summary>
-    /// Parses audio track metadata into XML files.
+    /// Parses media metadata into XML files.
     /// </summary>
     internal class Parser : Doer
     {
         // Properties
-        public List<TrackTag> audioTags { get; }
+        public List<MediaTag> MediaTags { get; }
 
         /// <summary>
         /// Construct a parser
         /// </summary>
-        /// <param name="mirrorPath">The audio mirror folder path</param>
+        /// <param name="mirrorPath">The mirror folder path</param>
         public Parser(string mirrorPath)
         {
             // Notify
-            Console.WriteLine("\nParsing audio metadata...");
+            Console.WriteLine("\nParsing media metadata...");
 
             // Initialise tag list
-            audioTags = new List<TrackTag>();
+            MediaTags = new List<MediaTag>();
 
             // For every mirrored file
             string[] mirrorFiles = Directory.GetFiles(mirrorPath, "*", SearchOption.AllDirectories);
-            foreach (var mirrorFilePath in mirrorFiles)
+            foreach (string mirrorFilePath in mirrorFiles)
             {
-                // Skip the README file
-                if (Path.GetFileName(mirrorFilePath).Equals("README.md"))
+                // If XML file found
+                string mirrorFileExt = Path.GetExtension(mirrorFilePath);
+                if (mirrorFileExt.Equals(".xml"))
                 {
-                    continue;
-                }
+                    // Apply long path fix 
+                    string fixedMirrorFilePath = Reflector.FixLongPath(mirrorFilePath);
 
-                // If non-XML file found (other than README), notify
-                if (Path.GetExtension(mirrorFilePath) != ".xml" )
+                    // Convert to tag and add to list
+                    MediaTags.Add(new MediaTag(fixedMirrorFilePath));
+                }
+                else if (!Reflector.CopyExtensions.Contains(mirrorFileExt))
                 {
-                    throw new ArgumentException($"Non-XML file found in mirror folder: {mirrorFilePath}");
+                    // Else if not a different kind of file we wanted in the mirror, throw exception
+                    throw new ArgumentException($"Unexpected file found in mirror folder: {mirrorFilePath}");
                 }
-
-                // Get audio file tag and add to list 
-                audioTags.Add(new TrackTag(mirrorFilePath));
             }
 
             // Print statistics
-            Console.WriteLine($" - Tags parsed: {audioTags.Count}");
+            Console.WriteLine($" - Files parsed: {MediaTags.Count}");
             FinishAndPrintTimeTaken();
         }
     }

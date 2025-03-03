@@ -14,7 +14,7 @@ namespace MediaManager
         public bool recreateMirror { get; set; }
 
         // The path to the last run info file
-        private static readonly string lastRunInfoFilePath = Program.MirrorRepoPath + "LastRunInfo.txt";
+        private static readonly string lastRunInfoFilePath = Prog.MirrorRepoPath + "LastRunInfo.txt";
 
         // If the mirror is older than this amount of time, it is considered outdated
         private static readonly TimeSpan ageThreshold = TimeSpan.FromDays(7);
