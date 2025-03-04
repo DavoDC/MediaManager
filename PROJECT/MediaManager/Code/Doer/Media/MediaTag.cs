@@ -40,8 +40,7 @@ namespace MediaManager.Code.Modules
                 (?:\[(?<VideoCodec>x264|x265|AV1|VP9|H\.264|H\.265)\])?\s*
                 (?:\[(?<AudioCodec>[^\]\s]+)\s+(?<AudioChannels>[\d.]+)\])?\s*
                 (?:\[(?<AudioLanguages>[^\]]+)\])?\s*
-                (?:-(?<ReleaseGroup>[^\]]+))?$
-            ", RegexOptions.IgnorePatternWhitespace);
+                (?:-(?<ReleaseGroup>[^\]]+))?$", RegexOptions.IgnorePatternWhitespace);
 
         /// <summary>
         /// This regex represents the naming format that Sonarr uses for TV show episode filenames:
@@ -58,8 +57,7 @@ namespace MediaManager.Code.Modules
             (?:\[(?<VideoCodec>x264|x265|AV1|VP9|H\.264|H\.265)\])?\s*
             (?:\[(?<AudioCodec>[^\]\s]+)\s+(?<AudioChannels>[\d.]+)\])?\s*
             (?:\[(?<AudioLanguages>[^\]]+)\])?\s*
-            (?:-(?<ReleaseGroup>[^\]]+))?$",
-            RegexOptions.IgnorePatternWhitespace);
+            (?:-(?<ReleaseGroup>[^\]]+))?$", RegexOptions.IgnorePatternWhitespace);
 
         /// <summary>
         /// This regex represents the naming format that Radarr uses for movies:
@@ -70,15 +68,17 @@ namespace MediaManager.Code.Modules
             ^(?<Title>.+?)\s*\((?<ReleaseYear>\d{4})\)\s*
             \{(?<DBID>tmdb-\d+)\}\s*
             (?:\{edition-(?<Edition>[^}]+)\}\s*)?
-            (?:\[(?<CustomFormats>[^]\[]*?)\s*(?<QualityTitle>[^]\[]*)\])?\s*
-            (?:\[(?<VideoDynamicRange>HDR|SDR|Dolby Vision|HLG)\])?\s*
-            (?:\[(?<ThreeD>3D)\])?\s*
-            (?:\[(?<VideoBitDepth>\d+)bit\])?\s*
-            (?:\[(?<VideoCodec>x264|x265|AV1|VP9|H\.264|H\.265)\])?\s*
-            (?:\[(?<AudioCodec>[^\]\s]+)\s+(?<AudioChannels>[\d.]+)\])?\s*
-            (?:\[(?<AudioLanguages>[^\]]+)\])?\s*
-            (?:-(?<ReleaseGroup>[^\]]+))?$",
-            RegexOptions.IgnorePatternWhitespace);
+            (?:\[(?<CustomFormats>[^]\[]+)\])?
+            (?:\[(?<QualityTitle>[^]\[]+)\])?
+            (?:\[(?<VideoDynamicRange>HDR|SDR|Dolby Vision|HLG)\])?  
+            (?:\[(?<ThreeD>3D)\])?  
+            (?:\[(?<VideoBitDepth>\d+)bit\])? 
+            (?:\[(?<VideoCodec>x264|x265|AV1|VP9|H\.264|H\.265|ProRes)\])?  
+            (?:\[(?<AudioCodec>[^\]\s]+)\s+(?<AudioChannels>[\d.]+)\])?
+            (?:\[(?<AudioLanguages>[^\]]+)\])?
+            (?:-(?<ReleaseGroup>[^\]]+))?$", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase);
+
+
 
         /// <summary>
         /// Construct a tag
@@ -123,9 +123,11 @@ namespace MediaManager.Code.Modules
                 ReleaseYear = xmlFileIn.GetElementValue("ReleaseYear");
                 DatabaseLink = xmlFileIn.GetElementValue("DatabaseLink");
                 Extension = xmlFileIn.GetElementValue("Extension");
+                Edition = xmlFileIn.GetElementValue("Edition");
                 CustomFormats = xmlFileIn.GetElementValue("CustomFormats");
                 QualityTitle = xmlFileIn.GetElementValue("QualityTitle");
                 VideoDynamicRange = xmlFileIn.GetElementValue("VideoDynamicRange");
+                ThreeDInfo = xmlFileIn.GetElementValue("ThreeD");
                 VideoCodec = xmlFileIn.GetElementValue("VideoCodec");
                 AudioCodec = xmlFileIn.GetElementValue("AudioCodec");
                 AudioChannels = xmlFileIn.GetElementValue("AudioChannels");
@@ -284,7 +286,8 @@ namespace MediaManager.Code.Modules
                 }
                 else
                 {
-                    Prog.PrintErrMsg($"Could not parse movie: {RelPath}");
+                    Prog.PrintErrMsg($"Could not parse movie: {filename}");
+                    throw new Exception("Fix parsing");
                 }
             }
             else
@@ -337,9 +340,11 @@ namespace MediaManager.Code.Modules
             CheckMismatch(movieMatch, "Title", Title);
             CheckMismatch(movieMatch, "ReleaseYear", ReleaseYear);
 
+            CustomFormats = GetGroupValue(movieMatch, "Edition");
             CustomFormats = GetGroupValue(movieMatch, "CustomFormats");
             QualityTitle = GetGroupValue(movieMatch, "QualityTitle");
             VideoDynamicRange = GetGroupValue(movieMatch, "VideoDynamicRange");
+            ThreeDInfo = GetGroupValue(movieMatch, "ThreeD");
             VideoBitDepth = GetGroupValue(movieMatch, "VideoBitDepth");
             VideoCodec = GetGroupValue(movieMatch, "VideoCodec");
             AudioCodec = GetGroupValue(movieMatch, "AudioCodec");
@@ -370,8 +375,14 @@ namespace MediaManager.Code.Modules
         /// <param name="expectedValue">The expected value to compare against.</param>
         private void CheckMismatch(Match animeMatch, string groupName, string expectedValue)
         {
-            // If the value doesn't match the expected value, print an error message
-            if (!GetGroupValue(animeMatch, groupName).Equals(expectedValue))
+            // Get value from filename, sanitised
+            string filenameVal = Reflector.SanitiseFilename(GetGroupValue(animeMatch, groupName));
+
+            // Get expected value (from folder), sanitised
+            expectedValue = Reflector.SanitiseFilename(expectedValue);
+
+            // If the filename value doesn't match the folder value, print an error message
+            if (!filenameVal.Equals(expectedValue))
             {
                 // Print an error message
                 Prog.PrintErrMsg($"Folder and episode '{groupName}' mismatch: {RelPath}");
