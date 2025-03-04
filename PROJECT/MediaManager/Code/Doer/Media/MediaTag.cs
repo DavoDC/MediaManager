@@ -10,16 +10,25 @@ namespace MediaManager.Code.Modules
     /// </summary>
     internal class MediaTag : MediaFile
     {
-        // Regex for anime/show folders (e.g. "A Certain Magical Index (2008) {tvdb-83322}")
+        /// <summary>
+        /// This regex represents the naming format that Sonarr uses for series (anime/show) folders:
+        /// {Series TitleYear} {tvdb-{TvdbId}}
+        /// Example: "Clarkson's Farm (2021) {tvdb-378165}"
+        /// </summary>
         Regex showFolderRegex = new Regex(@"^(?<Title>.*?)\s\((?<Year>\d{4})\)\s\{(?<TVDBID>tvdb-\d+)\}$");
 
-        // Regex for movie folders (e.g. "8 Mile (2002) {tmdb-65}")
+        /// <summary>
+        /// This regex represents the naming format that Radarr uses for movie folders:
+        /// {Movie CleanTitle} ({Release Year}) {tmdb-{TmdbId}}
+        /// Example: "Shrek the Third (2007) {tmdb-810}"
+        /// </summary>
         Regex movieFolderRegex = new Regex(@"^(?<Title>.*?)\s\((?<Year>\d{4})\)\s\{(?<TMDBID>tmdb-\d+)\}$");
 
-        // Anime episode format in Sonarr
-        // {Series TitleYear} - S{season:00}E{episode:00} - {absolute:000} - {Episode CleanTitle} [{Custom Formats }{Quality Title}]{[MediaInfo VideoDynamicRangeType]}[{MediaInfo VideoBitDepth}bit]
-        // {[MediaInfo VideoCodec]}[{Mediainfo AudioCodec} { Mediainfo AudioChannels}]{MediaInfo AudioLanguages}{-Release Group}
-        // Regex for anime episodes (e.g. "A Certain Magical Index (2008) - S01E01 - 001 - Academy City [HDTV-720p][8bit][x264][AAC 2.0][JA]")
+        /// <summary>
+        /// This regex represents the naming format that Sonarr uses for anime episode filenames:
+        /// {Series TitleYear} - S{season:00}E{episode:00} - {absolute:000} - {Episode CleanTitle} [{Custom Formats }{Quality Title}]{[MediaInfo VideoDynamicRangeType]}[{MediaInfo VideoBitDepth}bit]{[MediaInfo VideoCodec]}[{Mediainfo AudioCodec} { Mediainfo AudioChannels}]{MediaInfo AudioLanguages}{-Release Group}
+        /// Example: "DAN DA DAN (2024) - S01E11 - 011 - First Love [WEBDL-1080p][8bit][x264][AAC 2.0][JA+EN]-MALD"
+        /// </summary>
         Regex animeEpRegex = new Regex(@"
                 ^(?<Title>.+?)\s*(?:\((?<ReleaseYear>\d{4})\))?\s*-\s*
                 S(?<SeasonNum>\d{2})E(?<EpisodeNum>\d{2})\s*-\s*
@@ -34,9 +43,11 @@ namespace MediaManager.Code.Modules
                 (?:-(?<ReleaseGroup>[^\]]+))?$
             ", RegexOptions.IgnorePatternWhitespace);
 
-        // Show episode format in Sonarr
-        // {Series TitleYear} - S{season:00}E{episode:00} - {Episode CleanTitle} [{Custom Formats }{Quality Title}]{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[MediaInfo VideoCodec]}{-Release Group}
-        // Regex for shows (e.g. "The Office (US) (2005) - S01E01 - Pilot [HDTV-720p][x264][AAC 2.0][en]")
+        /// <summary>
+        /// This regex represents the naming format that Sonarr uses for TV show episode filenames:
+        /// {Series TitleYear} - S{season:00}E{episode:00} - {Episode CleanTitle} [{Custom Formats }{Quality Title}]{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[MediaInfo VideoCodec]}{-Release Group}
+        /// Example: "Gen V (2023) - S01E06 - Jumanji [AMZN WEBDL-720p][EAC3 5.1][h264]-NTb"
+        /// </summary>
         Regex showEpRegex = new Regex(@"
             ^(?<Title>.+?)\s*(?:\((?<ReleaseYear>\d{4})\))?\s*-\s*
             S(?<SeasonNum>\d{2})E(?<EpisodeNum>\d{2})\s*-\s*
@@ -50,14 +61,18 @@ namespace MediaManager.Code.Modules
             (?:-(?<ReleaseGroup>[^\]]+))?$",
             RegexOptions.IgnorePatternWhitespace);
 
-        // Movie format in Radarr
-        // {Movie CleanTitle} {(Release Year)} {tmdb-{TmdbId}} {edition-{Edition Tags}} {[Custom Formats]}{[Quality Title]}{[MediaInfo 3D]}{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[Mediainfo VideoCodec]}{-Release Group}
-        // Regex for movies (e.g. "8 Mile (2002) {tmdb-65} [Bluray-720p][EAC3 5.1][x264]-playHD")
-        Regex movieEpRegex = new Regex(@"
+        /// <summary>
+        /// This regex represents the naming format that Radarr uses for movies:
+        /// {Movie CleanTitle} {(Release Year)} {tmdb-{TmdbId}} {edition-{Edition Tags}} {[Custom Formats]}{[Quality Title]}{[MediaInfo 3D]}{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[Mediainfo VideoCodec]}{-Release Group}
+        /// Example: "Doctor Strange in the Multiverse of Madness (2022) {tmdb-453395} {edition-Imax} [DSNP IMAX Enhanced][WEBDL-720p][EAC3 Atmos 5.1][h264]-playWEB"
+        /// </summary>
+        Regex movieRegex = new Regex(@"
             ^(?<Title>.+?)\s*\((?<ReleaseYear>\d{4})\)\s*
             \{(?<DBID>tmdb-\d+)\}\s*
+            (?:\{edition-(?<Edition>[^}]+)\}\s*)?
             (?:\[(?<CustomFormats>[^]\[]*?)\s*(?<QualityTitle>[^]\[]*)\])?\s*
             (?:\[(?<VideoDynamicRange>HDR|SDR|Dolby Vision|HLG)\])?\s*
+            (?:\[(?<ThreeD>3D)\])?\s*
             (?:\[(?<VideoBitDepth>\d+)bit\])?\s*
             (?:\[(?<VideoCodec>x264|x265|AV1|VP9|H\.264|H\.265)\])?\s*
             (?:\[(?<AudioCodec>[^\]\s]+)\s+(?<AudioChannels>[\d.]+)\])?\s*
@@ -262,7 +277,7 @@ namespace MediaManager.Code.Modules
             else if (Prog.MovieFolderName.Contains(Type))
             {
                 // Extract movie info using the movie regex
-                Match movieMatch = movieEpRegex.Match(filename);
+                Match movieMatch = movieRegex.Match(filename);
                 if (movieMatch.Success)
                 {
                     ExtractMovieInfo(movieMatch);

@@ -68,7 +68,7 @@ namespace MediaManager
                 AgeChecker ac = new AgeChecker();
 
                 // Force recreating mirror (e.g. during development)
-                ac.recreateMirror = true;
+                //ac.recreateMirror = true;
 
                 // 2) Create mirror of media folder
                 // Note: XML files created at this stage just contain paths to the actual file, not metadata info.

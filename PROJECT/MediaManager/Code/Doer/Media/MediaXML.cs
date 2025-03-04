@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Xml;
 
 namespace MediaManager.Code.Modules
@@ -75,7 +76,15 @@ namespace MediaManager.Code.Modules
                 else
                 {
                     // If no tag, LOAD EXISTING XML FILE
-                    xmlDoc.Load(mirrorFilePath);
+
+                    // Open the file using FileStream to avoid URI parsing issues for long paths
+                    using (FileStream fs = new FileStream(mirrorFilePath, FileMode.Open, FileAccess.Read))
+                    {
+                        using (XmlReader reader = XmlReader.Create(fs))
+                        {
+                            xmlDoc.Load(reader);
+                        }
+                    }
                     rootElement = xmlDoc.DocumentElement;
 
                     // Read data from XML and set properties
@@ -117,12 +126,14 @@ namespace MediaManager.Code.Modules
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 // Create error message and throw new exception with it
                 string errMsg = "Error occurred while ";
                 errMsg += $"{(tag != null ? "creating NEW" : "loading EXISTING")} XML file!";
                 errMsg += $"\n'mirrorFilePath' was: {mirrorFilePath}";
+                errMsg += $"\nError: {e.Message}";
+                errMsg += $"\nStack Trace: {e.StackTrace}";
                 throw new XmlException(errMsg);
             }
         }
