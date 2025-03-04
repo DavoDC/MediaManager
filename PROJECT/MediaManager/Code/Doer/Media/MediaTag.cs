@@ -78,8 +78,6 @@ namespace MediaManager.Code.Modules
             (?:\[(?<AudioLanguages>[^\]]+)\])?
             (?:-(?<ReleaseGroup>[^\]]+))?$", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase);
 
-
-
         /// <summary>
         /// Construct a tag
         /// </summary>

@@ -62,10 +62,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Code\NotIntegrated\Analyser\Analyser.cs" />
-    <Compile Include="Code\NotIntegrated\Analyser\Statistic.cs" />
-    <Compile Include="Code\NotIntegrated\Analyser\StatList.cs" />
-    <Compile Include="Code\NotIntegrated\LibChecker.cs" />
     <Compile Include="Code\Doer\AgeChecker.cs" />
     <Compile Include="Code\Doer\Doer.cs" />
     <Compile Include="Code\Doer\Reflector.cs" />
