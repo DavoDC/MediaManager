@@ -68,13 +68,13 @@ namespace MediaManager.Code.Modules
             ^(?<Title>.+?)\s*\((?<ReleaseYear>\d{4})\)\s*
             \{(?<DBID>tmdb-\d+)\}\s*
             (?:\{edition-(?<Edition>[^}]+)\}\s*)?
-            (?:\[(?<CustomFormats>[^]\[]+)\])?
-            (?:\[(?<QualityTitle>[^]\[]+)\])?
-            (?:\[(?<VideoDynamicRange>HDR|SDR|Dolby Vision|HLG)\])?  
-            (?:\[(?<ThreeD>3D)\])?  
-            (?:\[(?<VideoBitDepth>\d+)bit\])? 
-            (?:\[(?<VideoCodec>x264|x265|AV1|VP9|H\.264|H\.265|ProRes)\])?  
-            (?:\[(?<AudioCodec>[^\]\s]+)\s+(?<AudioChannels>[\d.]+)\])?
+            (?:\[(?<CustomFormats>[^\]]+)\])?
+            (?:\[(?<QualityTitle>[^\]]+)\])?
+            (?:\[(?<VideoDynamicRange>HDR|SDR|Dolby Vision|HLG)\])?
+            (?:\[(?<ThreeD>3D)\])?
+            (?:\[(?<VideoBitDepth>\d+)bit\])?
+            (?:\[(?<VideoCodec>x264|x265|AV1|VP9|H\.264|H\.265|ProRes)\])?
+            (?:\[(?<AudioCodec>[^\]\s]+(?:\s+[^\]\s]+)*)\s+(?<AudioChannels>[\d.]+)\])?
             (?:\[(?<AudioLanguages>[^\]]+)\])?
             (?:-(?<ReleaseGroup>[^\]]+))?$", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase);
 
@@ -340,7 +340,7 @@ namespace MediaManager.Code.Modules
             CheckMismatch(movieMatch, "Title", Title);
             CheckMismatch(movieMatch, "ReleaseYear", ReleaseYear);
 
-            CustomFormats = GetGroupValue(movieMatch, "Edition");
+            Edition = GetGroupValue(movieMatch, "Edition");
             CustomFormats = GetGroupValue(movieMatch, "CustomFormats");
             QualityTitle = GetGroupValue(movieMatch, "QualityTitle");
             VideoDynamicRange = GetGroupValue(movieMatch, "VideoDynamicRange");
