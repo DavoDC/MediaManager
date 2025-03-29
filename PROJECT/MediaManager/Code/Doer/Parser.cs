@@ -11,7 +11,7 @@ namespace MediaManager
     internal class Parser : Doer
     {
         // Properties
-        public List<MediaTag> MediaTags { get; }
+        //public List<MediaTag> MediaTags { get; }
 
         /// <summary>
         /// Construct a parser
@@ -23,7 +23,7 @@ namespace MediaManager
             Console.WriteLine("\nParsing media metadata...");
 
             // Initialise tag list
-            MediaTags = new List<MediaTag>();
+            //MediaTags = new List<MediaTag>();
 
             // For every mirrored file
             string[] mirrorFiles = Directory.GetFiles(mirrorPath, "*", SearchOption.AllDirectories);
@@ -37,7 +37,7 @@ namespace MediaManager
                     string fixedMirrorFilePath = Reflector.FixLongPath(mirrorFilePath);
 
                     // Convert to tag and add to list
-                    MediaTags.Add(new MediaTag(fixedMirrorFilePath));
+                    //MediaTags.Add(new MediaTag(fixedMirrorFilePath));
                 }
                 else if (!Reflector.CopyExtensions.Contains(mirrorFileExt))
                 {
@@ -47,7 +47,7 @@ namespace MediaManager
             }
 
             // Print statistics
-            Console.WriteLine($" - Files parsed: {MediaTags.Count}");
+            //Console.WriteLine($" - Files parsed: {MediaTags.Count}");
             FinishAndPrintTimeTaken();
         }
     }
