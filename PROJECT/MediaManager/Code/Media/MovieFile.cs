@@ -49,11 +49,7 @@ namespace MediaManager.Code.Modules
         /// <param name="mirrorFilePath"></param>
         public MovieFile(string mirrorFilePath) : base(mirrorFilePath)
         {
-            // If this media's type is not a movie, notify
-            if (!Type.Equals("Movie"))
-            {
-                Prog.PrintErrMsg($"Non-Movie mirror file path given to MovieFile constructor: {mirrorFilePath}");
-            }
+            CheckType("Movie");
         }
 
         /// <summary>
@@ -96,7 +92,7 @@ namespace MediaManager.Code.Modules
         /// </summary>
         public override void InitialiseFieldsUsingMediaFileName()
         {
-            // Try to applying movie file regex to media's filename
+            // Try applying movie file regex to media's filename
             Match movieMatch = movieRegex.Match(MediaFileName);
 
             // If regex matched media filename

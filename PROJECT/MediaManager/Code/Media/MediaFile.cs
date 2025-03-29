@@ -202,7 +202,7 @@ namespace MediaManager.Code.Modules
 
             // Extract and save the media's type
             string rawMediaType = folderPathParts[1]; // e.g. Anime/Movies/Shows
-            Type = rawMediaType.Replace("s", "");
+            Type = rawMediaType.Replace("s", ""); // e.g. Anime/Movie/Show
 
             // Get media folder name
             // e.g. "A Certain Magical Index (2008) {tvdb-83322}", "8 Mile (2002) {tmdb-65}", etc.
@@ -305,6 +305,20 @@ namespace MediaManager.Code.Modules
             var newElement = XMLDoc.CreateElement(elementName);
             newElement.InnerText = elementValue;
             XMLRootElement.AppendChild(newElement);
+        }
+
+        /// <summary>
+        /// Check media type (from path) against what is expected, and notify if not.
+        /// </summary>
+        /// <param name="expectedTypeS">The expected type as a string (e.g. movie, show, anime)</param>
+        public void CheckType(string expectedTypeS)
+        {
+            // If this media's type does not match what is expected
+            if (!Type.ToLower().Equals(expectedTypeS.ToLower()))
+            {
+                // Print error message
+                Prog.PrintErrMsg($"Non-{expectedTypeS} mirror file path given to {expectedTypeS} file constructor: {MirrorFilePath}");
+            }
         }
 
         /// <summary>

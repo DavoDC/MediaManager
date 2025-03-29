@@ -16,19 +16,25 @@ namespace MediaManager
         public List<MovieFile> MovieFiles { get; }
 
         /// <summary>
+        /// A list of episode file objects
+        /// </summary>
+        public List<EpisodeFile> EpisodeFiles { get; }
+
+        /// <summary>
         /// Construct a parser
         /// </summary>
-        /// <param name="mirrorPath">The mirror folder path</param>
-        public Parser(string mirrorPath)
+        /// <param name="mirrorFolderPath">The mirror folder path</param>
+        public Parser(string mirrorFolderPath)
         {
             // Notify
             Console.WriteLine("\nParsing media metadata...");
 
-            // Initialise movie file list
+            // Initialise file lists
             MovieFiles = new List<MovieFile>();
+            EpisodeFiles = new List<EpisodeFile>(); // TODO
 
             // Get mirrored movie folder path
-            string mirrorMovieFolderPath = Path.Combine(mirrorPath, Prog.MovieFolderName);
+            string mirrorMovieFolderPath = Path.Combine(mirrorFolderPath, Prog.MovieFolderName);
 
             // For every mirrored movie file
             string[] mirrorMovieFiles = Directory.GetFiles(mirrorMovieFolderPath, "*", SearchOption.AllDirectories);
@@ -52,5 +58,33 @@ namespace MediaManager
             Console.WriteLine($" - Files parsed: {MovieFiles.Count}");
             FinishAndPrintTimeTaken();
         }
+
+        private void ParseMediaTypeFiles(string mirrorFolderPath, string mediaFolderName)
+        {
+            // Get mirror folder path
+            string mirrorMediaFolderPath = Path.Combine(mirrorFolderPath, mediaFolderName);
+
+            // For every mirror file
+            string[] mirrorFiles = Directory.GetFiles(mirrorMediaFolderPath, "*", SearchOption.AllDirectories);
+            foreach (string mirrorFilePath in mirrorFiles)
+            {
+                // If XML file found
+                string mirrorFileExt = Path.GetExtension(mirrorFilePath);
+                if (mirrorFileExt.Equals(".xml"))
+                {
+                    // Convert to media file and add to list
+                    //MovieFiles.Add(new MovieFile(mirrorFilePath));
+                }
+                else if (!Reflector.CopyExtensions.Contains(mirrorFileExt))
+                {
+                    // Else if not an XML file and not a different kind of file we wanted in the mirror, throw exception
+                    throw new ArgumentException($"Unexpected file found in mirror folder: {mirrorFilePath}");
+                }
+            }
+        }
+
+        // TEST
+        //template T
+        //public void AddToMediaList(List<T> mediaFileList)
     }
 }
