@@ -23,7 +23,7 @@ namespace MediaManager
         /// <summary>
         /// A list of anime file objects
         /// </summary>
-        //public List<AnimeFile> AnimeFiles { get; }
+        public List<AnimeFile> AnimeFiles { get; }
 
         /// <summary>
         /// Construct a parser
@@ -40,10 +40,10 @@ namespace MediaManager
             ShowFiles = ParseMediaTypeFiles<ShowFile>(Prog.ShowFolderName);
 
             // Initialise anime file list
-            //AnimeFiles = ParseMediaTypeFiles<AnimeFile>(Prog.AnimeFolderName);
+            AnimeFiles = ParseMediaTypeFiles<AnimeFile>(Prog.AnimeFolderName);
 
             // Print total number of files parsed
-            int totalFilesParsed = MovieFiles.Count + ShowFiles.Count; //+ AnimeFiles.Count;
+            int totalFilesParsed = MovieFiles.Count + ShowFiles.Count + AnimeFiles.Count;
             PrintFilesParsed("Total", totalFilesParsed);
 
             // Finish
