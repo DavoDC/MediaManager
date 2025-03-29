@@ -3,7 +3,7 @@
 
 ## Refactor
 Refactor code into show types to make easier to extend
-DO THIS FIRST BEFORE ANYTHING
+DO THIS FIRST BEFORE ANYTHING, think about most
 
 
 ## Analyser

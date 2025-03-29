@@ -208,9 +208,9 @@ namespace MediaManager.Code.Modules
                     Prog.PrintErrMsg($"Unknown season type encountered: {seasonFolder}");
                 }
             }
-            // Handle Movie Folders (TMDB)
-            else if (rawMediaType.Equals(Prog.MovieFolderName))
+            else if (rawMediaType.Equals(Prog.MovieFolderName))  
             {
+                // Handle Movie Folders
                 // Process movie folder using the movieFolderRegex
                 Match mediaFolderMatch = movieFolderRegex.Match(mediaFolderName);
 
@@ -248,6 +248,8 @@ namespace MediaManager.Code.Modules
         {
             // Get file name without extension
             string filename = Path.GetFileNameWithoutExtension(RelPath);
+
+            // Process filename based on media type
             if (Prog.AnimeFolderName.Contains(Type))
             {
                 // Extract anime info using the anime regex
@@ -255,6 +257,20 @@ namespace MediaManager.Code.Modules
                 if (animeMatch.Success)
                 {
                     ExtractAnimeInfo(animeMatch);
+                }
+                else if (SeasonType.Equals("Special"))
+                {
+                    // Else if anime parsing failed, and episode is a special,
+                    // try parsing anime special using the show episode regex
+                    Match animeSpecialMatch = showEpRegex.Match(filename);
+                    if (animeSpecialMatch.Success)
+                    {
+                        ExtractAnimeInfo(animeSpecialMatch);
+                    }
+                    else
+                    {
+                        Prog.PrintErrMsg($"Could not parse anime special: {RelPath}");
+                    }
                 }
                 else
                 {
@@ -285,7 +301,6 @@ namespace MediaManager.Code.Modules
                 else
                 {
                     Prog.PrintErrMsg($"Could not parse movie: {filename}");
-                    throw new Exception("Fix parsing");
                 }
             }
             else
@@ -301,7 +316,6 @@ namespace MediaManager.Code.Modules
             CheckMismatch(animeMatch, "SeasonNum", SeasonNum);
 
             EpisodeNum = GetGroupValue(animeMatch, "EpisodeNum");
-            AbsEpisodeNum = GetGroupValue(animeMatch, "AbsoluteEpisode");
             EpisodeTitle = GetGroupValue(animeMatch, "EpisodeTitle");
             CustomFormats = GetGroupValue(animeMatch, "CustomFormats");
             QualityTitle = GetGroupValue(animeMatch, "QualityTitle");
@@ -312,6 +326,8 @@ namespace MediaManager.Code.Modules
             AudioChannels = GetGroupValue(animeMatch, "AudioChannels");
             AudioLanguages = GetGroupValue(animeMatch, "AudioLanguages");
             ReleaseGroup = GetGroupValue(animeMatch, "ReleaseGroup");
+
+            AbsEpisodeNum = GetGroupValue(animeMatch, "AbsoluteEpisode");
         }
 
         private void ExtractShowInfo(Match showMatch)

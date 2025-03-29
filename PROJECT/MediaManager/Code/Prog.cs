@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace MediaManager
 {
@@ -68,7 +69,7 @@ namespace MediaManager
                 AgeChecker ac = new AgeChecker();
 
                 // Force recreating mirror (e.g. during development)
-                //ac.recreateMirror = true;
+                ac.recreateMirror = true;
 
                 // 2) Create mirror of media folder
                 // Note: XML files created at this stage just contain paths to the actual file, not metadata info.
@@ -85,10 +86,9 @@ namespace MediaManager
                 //LibChecker lc = new LibChecker(p.audioTags);
 
                 // Print total time
-                //TimeSpan totalTime = ac.ExecutionTime + refl.ExecutionTime;
-                // + p.ExecutionTime; nmp.ExecutionTime
+                TimeSpan totalTime = ac.ExecutionTime + refl.ExecutionTime + p.ExecutionTime;
                 //totalTime += a.ExecutionTime + lc.ExecutionTime;
-                //Console.WriteLine("\nTotal time taken: " + Doer.ConvertTimeSpanToString(totalTime));
+                Console.WriteLine("\nTotal time taken: " + Doer.ConvertTimeSpanToString(totalTime));
 
                 // Finish message
                 Console.WriteLine("\nFinished!\n");
