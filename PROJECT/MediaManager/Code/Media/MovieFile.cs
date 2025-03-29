@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace MediaManager.Code.Modules
 {
@@ -34,10 +33,14 @@ namespace MediaManager.Code.Modules
                     (?:\[(?<AudioLanguages>[^\]]+)\])?
                     (?:-(?<ReleaseGroup>[^\]]+))?$", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase);
 
-        // The movie's edition/cut information
+        /// <summary>
+        /// The movie's edition/cut information (e.g. Directors Cut)
+        /// </summary>
         public string Edition { get; set; }
 
-        // The movie's 3D info
+        /// <summary>
+        /// The movie's 3D info
+        /// </summary>
         public string ThreeDInfo { get; set; }
 
         /// <summary>
@@ -51,37 +54,12 @@ namespace MediaManager.Code.Modules
             {
                 Prog.PrintErrMsg($"Non-Movie mirror file path given to MovieFile constructor: {mirrorFilePath}");
             }
-
-            // If converting mirror file to valid XML
-            if (ConvertToValidXML) {
-
-                // Initialise fields using folder and file name
-                ProcessMovieFolderName();
-                ProcessMovieFileName();
-
-                // Add common properties to the XML object
-                SetCommonPropertiesInXML();
-
-                // Add movie-specific properties to the XML object
-                SetElementValue("Edition", Edition);
-                SetElementValue("ThreeDInfo", ThreeDInfo);
-
-                // Overwrite mirror file contents with XML content by saving the XML object
-                XMLDoc.Save(mirrorFilePath);
-            }
-            else
-            {
-                // TODO
-                // Else if the mirror file is already a valid XML file
-                // Read in XML data
-                // Initialise fields using XML file data
-            }
         }
 
         /// <summary>
         /// Initialise fields by parsing the movie's folder name
         /// </summary>
-        public void ProcessMovieFolderName()
+        public override void InitialiseFieldsUsingMediaFolderName()
         {
             // Try to apply movie folder regex to media folder name (e.g. "8 Mile (2002) {tmdb-65}")
             Match mediaFolderMatch = movieFolderRegex.Match(MediaFolderName);
@@ -116,7 +94,7 @@ namespace MediaManager.Code.Modules
         /// <summary>
         /// Initialise fields using the movie's filename
         /// </summary>
-        public void ProcessMovieFileName()
+        public override void InitialiseFieldsUsingMediaFileName()
         {
             // Try to applying movie file regex to media's filename
             Match movieMatch = movieRegex.Match(MediaFileName);
@@ -146,6 +124,35 @@ namespace MediaManager.Code.Modules
                 // Else if the regex did not match the format of the media's filename
                 Prog.PrintErrMsg($"Could not parse movie: {MediaFileName}");
             }
+        }
+
+        /// <summary>
+        /// Add fields specific to movies to the XML document
+        /// </summary>
+        public override void AddSpecificFieldsToXMLDoc()
+        {
+            SetElementValue("Edition", Edition);
+            SetElementValue("ThreeDInfo", ThreeDInfo);
+        }
+
+        /// <summary>
+        /// Initialise fields specific to movies using the XML document
+        /// </summary>
+        public override void InitialiseSpecificFieldsUsingXML()
+        {
+            Edition = GetElementValue("Edition");
+            ThreeDInfo = GetElementValue("ThreeDInfo");
+        }
+
+        /// <summary>
+        /// Get fields specific to movies as a string
+        /// </summary>
+        public override string GetSpecificPropString()
+        {
+            string movieProps = "";
+            movieProps += $"Edition: {Edition ?? "NULL"}\n";
+            movieProps += $"ThreeDInfo: {ThreeDInfo ?? "NULL"}\n";
+            return movieProps;
         }
     }
 }

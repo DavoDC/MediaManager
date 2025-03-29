@@ -6,12 +6,14 @@ using System.IO;
 namespace MediaManager
 {
     /// <summary>
-    /// Parses media metadata into XML files.
+    /// Parses media metadata to generate media file objects and XML files
     /// </summary>
     internal class Parser : Doer
     {
-        // List of movie files
-        //public List<MediaTag> MediaTags { get; }
+        /// <summary>
+        /// A list of movie file objects
+        /// </summary>
+        public List<MovieFile> MovieFiles { get; }
 
         /// <summary>
         /// Construct a parser
@@ -22,44 +24,33 @@ namespace MediaManager
             // Notify
             Console.WriteLine("\nParsing media metadata...");
 
-            // Initialise tag list
-            //MediaTags = new List<MediaTag>();
+            // Initialise movie file list
+            MovieFiles = new List<MovieFile>();
 
-            // For every mirrored file
-            string[] mirrorFiles = Directory.GetFiles(mirrorPath, "*", SearchOption.AllDirectories);
-            foreach (string mirrorFilePath in mirrorFiles)
+            // Get mirrored movie folder path
+            string mirrorMovieFolderPath = Path.Combine(mirrorPath, Prog.MovieFolderName);
+
+            // For every mirrored movie file
+            string[] mirrorMovieFiles = Directory.GetFiles(mirrorMovieFolderPath, "*", SearchOption.AllDirectories);
+            foreach (string mirrorMovieFilePath in mirrorMovieFiles)
             {
                 // If XML file found
-                string mirrorFileExt = Path.GetExtension(mirrorFilePath);
-                if (mirrorFileExt.Equals(".xml"))
+                string mirrorMovieFileExt = Path.GetExtension(mirrorMovieFilePath);
+                if (mirrorMovieFileExt.Equals(".xml"))
                 {
-                    // Apply long path fix 
-                    string fixedMirrorFilePath = Reflector.FixLongPath(mirrorFilePath);
-
-                    // Parse XML file
-                    ParseXMLFile(fixedMirrorFilePath);
+                    // Convert to movie file and add to list
+                    MovieFiles.Add(new MovieFile(mirrorMovieFilePath));
                 }
-                else if (!Reflector.CopyExtensions.Contains(mirrorFileExt))
+                else if (!Reflector.CopyExtensions.Contains(mirrorMovieFileExt))
                 {
                     // Else if not a different kind of file we wanted in the mirror, throw exception
-                    throw new ArgumentException($"Unexpected file found in mirror folder: {mirrorFilePath}");
+                    throw new ArgumentException($"Unexpected file found in mirror folder: {mirrorMovieFilePath}");
                 }
             }
 
             // Print statistics
-            //Console.WriteLine($" - Files parsed: {MediaTags.Count}");
+            Console.WriteLine($" - Files parsed: {MovieFiles.Count}");
             FinishAndPrintTimeTaken();
-        }
-        
-        /// <summary>
-        /// Parse an XML file's metadata and add the resulting object to a list
-        /// </summary>
-        /// <param name="mirrorFilePath">A fixed mirror file path</param>
-        public void ParseXMLFile(string mirrorFilePath)
-        {
-            //MediaTags.Add(new MediaTag(fixedMirrorFilePath));
-
-            //Console.WriteLine(mirrorFilePath);
         }
     }
 }

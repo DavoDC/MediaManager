@@ -9,14 +9,20 @@ namespace MediaManager.Code.Modules
     /// <summary>
     /// A media file's metadata
     /// </summary>
-    internal class MediaFile
+    internal abstract class MediaFile
     {
         /// <summary>
         /// Properties initialised in base class
         /// </summary>
+        
+        // The path to the mirror file of the media file 
+        public string MirrorFilePath { get; set; }
 
         // The media file's relative path within the library folder
-        public string RelPath { get; set; }
+        public string RelativeFilePath { get; set; }
+
+        // The path to the real media file
+        public string RealFilePath { get; set; }
 
         /// <summary>
         /// Whether the file needs to be converted to valid XML.
@@ -86,108 +92,150 @@ namespace MediaManager.Code.Modules
         /// <param name="mirrorFilePath">The mirror file path</param>
         public MediaFile(string mirrorFilePath)
         {
+            // Save mirror file path
+            MirrorFilePath = Reflector.FixLongPath(mirrorFilePath);
+
             // Initialise relative path to file
             int relStartPos = mirrorFilePath.LastIndexOf(Prog.MirrorFolderName);
-            RelPath = mirrorFilePath.Remove(0, relStartPos + Prog.MirrorFolderName.Length);
+            RelativeFilePath = mirrorFilePath.Remove(0, relStartPos + Prog.MirrorFolderName.Length);
 
             // Initialise XML document object
-            XmlDocument xmlDoc = new XmlDocument();
-            XmlElement rootElement = xmlDoc.CreateElement("Media");
-            xmlDoc.AppendChild(rootElement);
+            XMLDoc = new XmlDocument();
+            XMLRootElement = XMLDoc.CreateElement("Media");
+            XMLDoc.AppendChild(XMLRootElement);
 
-            // Get file contents of mirror file
-            string[] fileContents = File.ReadAllLines(mirrorFilePath);
-            bool mirrorFileContainsOnePath = fileContents.Length == 1;
-
-            // Check validity of real file path
-            string realFilePath = Reflector.FixLongPath(fileContents[0]);
-            bool mirrorFilePathIsValid = File.Exists(realFilePath);
-
-            // the file needs to be converted to a valid XML file if the mirror file contains a single, valid path
-            ConvertToValidXML = mirrorFileContainsOnePath && mirrorFilePathIsValid;
-
-            // If the file needs to be converted to valid XML
-            if (ConvertToValidXML)
+            // If the file needs to be converted to a valid XML file
+            if (DoesFileNeedToBeConvertedToValidXML())
             {
-                //// Initialise fields, and leave rest to child classes
-                
-                // Extract media extension from real file path
-                Extension = Path.GetExtension(realFilePath);
-
-                // Get full relative path but without filename
-                // e.g. "\Anime\A Certain Magical Index (2008) {tvdb-83322}\Season 01"
-                // or "\Movies\8 Mile (2002) {tmdb-65}\"
-                string folderPath = Path.GetDirectoryName(RelPath);
-
-                // Split the relative path by backslashes to extract path parts
-                string[] folderPathParts = folderPath.Split('\\');
-
-                // Extract and save the media's type
-                string rawMediaType = folderPathParts[1]; // e.g. Anime/Movies/Shows
-                Type = rawMediaType.Replace("s", "");
-
-                // Get media folder name
-                // e.g. "A Certain Magical Index (2008) {tvdb-83322}", "8 Mile (2002) {tmdb-65}", etc.
-                MediaFolderName = folderPathParts[2];
-
-                // Get media file name without extension
-                MediaFileName = Path.GetFileNameWithoutExtension(RelPath);
+                // Generate a valid XML file
+                GenerateXMLFile();
             }
             else
             {
-                //// TODO In children
-                ////                // Else if the mirror file is a valid XML file
-                ////                // Read in XML data
-                ////                MediaXML xmlFileIn = new MediaXML(mirrorFilePath);
-                ////                // Set tag properties using XML file data
-                ////                Title = xmlFileIn.GetElementValue("Title");
-                //// SOME XML ACTIONS SHOULD BE HERE - common
-                //    // If no tag, LOAD EXISTING XML FILE
-                //    // Open the file using FileStream to avoid URI parsing issues for long paths
-                //    using (FileStream fs = new FileStream(mirrorFilePath, FileMode.Open, FileAccess.Read))
-                //    {
-                //        using (XmlReader reader = XmlReader.Create(fs))
-                //        {
-                //            xmlDoc.Load(reader);
-                //        }
-                //    }
-                //    rootElement = xmlDoc.DocumentElement;
-                //    // Read data from XML and set common properties
-                //    Title = GetElementValue("Title");
-                //    Type = GetElementValue("Type");
-                //    ReleaseYear = GetElementValue("ReleaseYear");
-                //    DatabaseLink = GetElementValue("DatabaseLink");
-                //    Extension = GetElementValue("Extension");
-                //    CustomFormats = GetElementValue("CustomFormats");
-                //    QualityTitle = GetElementValue("QualityTitle");
-                //    VideoDynamicRange = GetElementValue("VideoDynamicRange");
-                //    VideoCodec = GetElementValue("VideoCodec");
-                //    AudioCodec = GetElementValue("AudioCodec");
-                //    AudioChannels = GetElementValue("AudioChannels");
-                //    ReleaseGroup = GetElementValue("ReleaseGroup")
-                //    // If the media type is show or anime, retrieve show/anime-specific properties
-                //    if (Type.Equals("Show") || Type.Equals("Anime"))
-                //    {
-                //        SeasonType = GetElementValue("SeasonType");
-                //        SeasonNum = GetElementValue("SeasonNum");
-                //        EpisodeNum = GetElementValue("EpisodeNum");
-                //        EpisodeTitle = GetElementValue("EpisodeTitle");
-                //    }
-                //    // If the media type is anime, retrieve anime-specific properties
-                //    if (Type.Equals("Anime"))
-                //    {
-                //        AbsEpisodeNum = GetElementValue("AbsEpisodeNum");
-                //        VideoBitDepth = GetElementValue("VideoBitDepth");
-                //        AudioLanguages = GetElementValue("AudioLanguages");
-                //    }
-                //    // If the media type is movie, retrieve movie-specific properties
-                //    if (Type.Equals("Movie"))
-                //    {
-                //        Edition = GetElementValue("Edition");
-                //        ThreeDInfo = GetElementValue("ThreeDInfo");
-                //    }
-                //}
+                // Else if the file is already valid XML, load it up
+                LoadXMLFile();
             }
+
+            // TESTING
+            //PrintAllProperties();
+        }
+
+        /// <summary>
+        /// Generate a valid XML file that stores the file's metadata
+        /// </summary>
+        public void GenerateXMLFile()
+        {
+            // Initialise all fields
+            InitialiseSimpleCommonFields();
+            InitialiseFieldsUsingMediaFolderName();
+            InitialiseFieldsUsingMediaFileName();
+
+            // Add common fields to the XML object
+            SetElementValue("Type", Type);
+            SetElementValue("Title", Title);
+            SetElementValue("ReleaseYear", ReleaseYear);
+            SetElementValue("DatabaseLink", DatabaseLink);
+            SetElementValue("Extension", Extension);
+            SetElementValue("CustomFormats", CustomFormat);
+            SetElementValue("QualityTitle", QualityTitle);
+            SetElementValue("VideoDynamicRange", VideoDynamicRange);
+            SetElementValue("VideoCodec", VideoCodec);
+            SetElementValue("AudioCodec", AudioCodec);
+            SetElementValue("AudioChannels", AudioChannels);
+            SetElementValue("ReleaseGroup", ReleaseGroup);
+
+            // Add specific fields to the XML object
+            AddSpecificFieldsToXMLDoc();
+
+            // Save the XML object, overwriting the mirror file contents with valid XML content
+            XMLDoc.Save(MirrorFilePath);
+        }
+
+        /// <summary>
+        /// Read in metadata information from an XML file and use it to initialise this class's fields
+        /// </summary>
+        public void LoadXMLFile()
+        {
+            // Open the XML file using FileStream to avoid URI parsing issues for long paths
+            using (FileStream fs = new FileStream(MirrorFilePath, FileMode.Open, FileAccess.Read))
+            {
+                using (XmlReader reader = XmlReader.Create(fs))
+                {
+                    XMLDoc.Load(reader);
+                }
+            }
+            XMLRootElement = XMLDoc.DocumentElement;
+
+            // Initialise common fields using XML data
+            Title = GetElementValue("Title");
+            Type = GetElementValue("Type");
+            ReleaseYear = GetElementValue("ReleaseYear");
+            DatabaseLink = GetElementValue("DatabaseLink");
+            Extension = GetElementValue("Extension");
+            CustomFormat = GetElementValue("CustomFormats");
+            QualityTitle = GetElementValue("QualityTitle");
+            VideoDynamicRange = GetElementValue("VideoDynamicRange");
+            VideoCodec = GetElementValue("VideoCodec");
+            AudioCodec = GetElementValue("AudioCodec");
+            AudioChannels = GetElementValue("AudioChannels");
+            ReleaseGroup = GetElementValue("ReleaseGroup");
+
+            // Initialise specific fields using XML data
+            InitialiseSpecificFieldsUsingXML();
+        }
+
+        /// <summary>
+        /// Initialise simple common fields
+        /// </summary>
+        public void InitialiseSimpleCommonFields()
+        {
+            // Extract media extension from real file path
+            Extension = Path.GetExtension(RealFilePath);
+
+            // Get full relative path but without filename
+            // e.g. "\Anime\A Certain Magical Index (2008) {tvdb-83322}\Season 01"
+            // or "\Movies\8 Mile (2002) {tmdb-65}\"
+            string folderPath = Path.GetDirectoryName(RelativeFilePath);
+
+            // Split the relative path by backslashes to extract path parts
+            string[] folderPathParts = folderPath.Split('\\');
+
+            // Extract and save the media's type
+            string rawMediaType = folderPathParts[1]; // e.g. Anime/Movies/Shows
+            Type = rawMediaType.Replace("s", "");
+
+            // Get media folder name
+            // e.g. "A Certain Magical Index (2008) {tvdb-83322}", "8 Mile (2002) {tmdb-65}", etc.
+            MediaFolderName = folderPathParts[2];
+
+            // Get media file name without extension
+            MediaFileName = Path.GetFileNameWithoutExtension(RelativeFilePath);
+        }
+
+        /// <returns>A string representation of all file properties.</returns>
+        public string ToAllPropertiesString()
+        {
+            // Add common properties to string
+            string props = "";
+            props += $"RelativeFilePath: {RelativeFilePath ?? "NULL"}\n";
+            props += $"Type: {Type ?? "NULL"}\n";
+            props += $"Title: {Title ?? "NULL"}\n";
+            props += $"ReleaseYear: {ReleaseYear ?? "NULL"}\n";
+            props += $"DatabaseLink: {DatabaseLink ?? "NULL"}\n";
+            props += $"Extension: {Extension ?? "NULL"}\n";
+            props += $"CustomFormats: {CustomFormat ?? "NULL"}\n";
+            props += $"QualityTitle: {QualityTitle ?? "NULL"}\n";
+            props += $"VideoDynamicRange: {VideoDynamicRange ?? "NULL"}\n";
+            props += $"VideoCodec: {VideoCodec ?? "NULL"}\n";
+            props += $"AudioCodec: {AudioCodec ?? "NULL"}\n";
+            props += $"AudioChannels: {AudioChannels ?? "NULL"}\n";
+            props += $"ReleaseGroup: {ReleaseGroup ?? "NULL"}\n";
+
+            // Add specific properties to string
+            props += GetSpecificPropString();
+
+            // Return all properties as a string 
+            return props;
         }
 
         /// <summary>
@@ -209,20 +257,32 @@ namespace MediaManager.Code.Modules
             if (!filenameVal.Equals(expectedValue))
             {
                 // Print an error message
-                Prog.PrintErrMsg($"Folder and episode '{groupName}' mismatch: {RelPath}");
+                Prog.PrintErrMsg($"Folder and episode '{groupName}' mismatch: {RelativeFilePath}");
             }
         }
 
         /// <summary>
-        /// Retrieves the value of a specified group from a regex match, or returns a default value if the group is empty or null.
+        /// This function helps distinguish between:
+        /// - Mirror files that have been freshly reflected, and only contain a single valid real file path, and no XML content.
+        /// - Mirror files that were previously parsed, and contain valid XML content with the file's metadata.
         /// </summary>
-        /// <param name="match">The regex match object containing the groups to extract data from.</param>
-        /// <param name="groupName">The name of the group whose value is to be retrieved.</param>
-        /// <param name="defaultValue">The default value to return if the group value is empty or null (default is "Unknown").</param>
-        /// <returns>The value of the specified group, or the default value if the group is empty or null.</returns>
-        public static string GetGroupValue(Match match, string groupName, string defaultValue = "Unknown")
+        /// <returns>True if the file needs to be converted to a valid XML file</returns>
+        public bool DoesFileNeedToBeConvertedToValidXML()
         {
-            return string.IsNullOrEmpty(match.Groups[groupName].Value) ? defaultValue : match.Groups[groupName].Value;
+            // Get file contents of mirror file
+            string[] mirrorFileContents = File.ReadAllLines(MirrorFilePath);
+
+            // Check whether mirror file contains one line
+            bool mirrorFileContainsOneLine = mirrorFileContents.Length == 1;
+
+            // Extract real file path from mirror file contents
+            RealFilePath = Reflector.FixLongPath(mirrorFileContents[0]);
+
+            // Check if the real path extracted is valid
+            bool mirrorFilePathIsValid = File.Exists(RealFilePath);
+
+            // If the mirror file contains a single, valid path, then it needs to be converted to a valid XML file
+            return mirrorFileContainsOneLine && mirrorFilePathIsValid;
         }
 
         /// <summary>
@@ -241,12 +301,23 @@ namespace MediaManager.Code.Modules
                 return;
             }
 
-            // If element does not exist, create a new one
+            // If element does not exist, create a new one and add it
             var newElement = XMLDoc.CreateElement(elementName);
             newElement.InnerText = elementValue;
             XMLRootElement.AppendChild(newElement);
         }
 
+        /// <summary>
+        /// Retrieves the value of a specified group from a regex match, or returns a default value if the group is empty or null.
+        /// </summary>
+        /// <param name="match">The regex match object containing the groups to extract data from.</param>
+        /// <param name="groupName">The name of the group whose value is to be retrieved.</param>
+        /// <param name="defaultValue">The default value to return if the group value is empty or null (default is "Unknown").</param>
+        /// <returns>The value of the specified group, or the default value if the group is empty or null.</returns>
+        public static string GetGroupValue(Match match, string groupName, string defaultValue = "Unknown")
+        {
+            return string.IsNullOrEmpty(match.Groups[groupName].Value) ? defaultValue : match.Groups[groupName].Value;
+        }
 
         /// <summary>
         /// Gets the value of the specified XML element.
@@ -270,49 +341,36 @@ namespace MediaManager.Code.Modules
         }
 
         /// <summary>
-        /// Add the common properties to the XML object.
-        /// Called when converting a mirror file to valid XML.
-        /// </summary>
-        public void SetCommonPropertiesInXML()
-        {
-            SetElementValue("Type", Type);
-            SetElementValue("Title", Title);
-            SetElementValue("ReleaseYear", ReleaseYear);
-            SetElementValue("DatabaseLink", DatabaseLink);
-            SetElementValue("Extension", Extension);
-            SetElementValue("CustomFormat", CustomFormat);
-            SetElementValue("QualityTitle", QualityTitle);
-            SetElementValue("VideoDynamicRange", VideoDynamicRange);
-            SetElementValue("VideoCodec", VideoCodec);
-            SetElementValue("AudioCodec", AudioCodec);
-            SetElementValue("AudioChannels", AudioChannels);
-            SetElementValue("ReleaseGroup", ReleaseGroup);
-        }
-
-        /// <returns>A string representation of all file properties.</returns>
-        public string ToAllPropertiesString()
-        {
-            return $"RelPath: {RelPath ?? "NULL"}\n" +
-                   $"Type: {Type ?? "NULL"}\n" +
-                   $"Title: {Title ?? "NULL"}\n" +
-                   $"ReleaseYear: {ReleaseYear ?? "NULL"}\n" +
-                   $"DatabaseLink: {DatabaseLink ?? "NULL"}\n" +
-                   $"Extension: {Extension ?? "NULL"}\n" +
-                   $"CustomFormats: {CustomFormat ?? "NULL"}\n" +
-                   $"QualityTitle: {QualityTitle ?? "NULL"}\n" +
-                   $"VideoDynamicRange: {VideoDynamicRange ?? "NULL"}\n" +
-                   $"VideoCodec: {VideoCodec ?? "NULL"}\n" +
-                   $"AudioCodec: {AudioCodec ?? "NULL"}\n" +
-                   $"AudioChannels: {AudioChannels ?? "NULL"}\n" +
-                   $"ReleaseGroup: {ReleaseGroup ?? "NULL"}";
-        }
-
-        /// <summary>
         /// Prints all properties of this file.
         /// </summary>
         public void PrintAllProperties()
         {
             Console.WriteLine(ToAllPropertiesString());
         }
+
+        /// <summary>
+        /// Initialise common and specific fields by parsing the media's folder name
+        /// </summary>
+        public abstract void InitialiseFieldsUsingMediaFolderName();
+
+        /// <summary>
+        /// Initialise common and specific fields by parsing the media's file name
+        /// </summary>
+        public abstract void InitialiseFieldsUsingMediaFileName();
+
+        /// <summary>
+        /// Add fields specific to the media type to the XML document
+        /// </summary>
+        public abstract void AddSpecificFieldsToXMLDoc();
+
+        /// <summary>
+        /// Initialise fields specific to the media type using data from the XML document
+        /// </summary>
+        public abstract void InitialiseSpecificFieldsUsingXML();
+
+        /// <summary>
+        /// Get fields specific to the media type as a string
+        /// </summary>
+        public abstract string GetSpecificPropString();
     }
 }
