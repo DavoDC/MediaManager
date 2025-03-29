@@ -1,20 +1,9 @@
 # Things to Do 
 
 
-## Refactor
-Refactor code into show types to make easier to extend
-DO THIS FIRST BEFORE ANYTHING, think about most
-
-
 ## Analyser
 Add analyser, do each field
 DO THIS NEXT TO GET LISTS OF VARIANTS
-
-
-## ToAllPropertiesString()
-Make function to be implemented for return specific properties
-Add to all properties string
-
 
 
 ## IMPROVING PARSING
