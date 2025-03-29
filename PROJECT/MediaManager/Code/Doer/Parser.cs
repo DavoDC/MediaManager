@@ -16,9 +16,14 @@ namespace MediaManager
         public List<MovieFile> MovieFiles { get; }
 
         /// <summary>
-        /// A list of episode file objects
+        /// A list of show file objects
         /// </summary>
-        public List<EpisodeFile> EpisodeFiles { get; }
+        public List<ShowFile> ShowFiles { get; }
+
+        /// <summary>
+        /// A list of anime file objects
+        /// </summary>
+        //public List<AnimeFile> AnimeFiles { get; }
 
         /// <summary>
         /// Construct a parser
@@ -31,8 +36,15 @@ namespace MediaManager
             // Initialise movie file list
             MovieFiles = ParseMediaTypeFiles<MovieFile>(Prog.MovieFolderName);
 
-            // Initialise episode file list
-            EpisodeFiles = ParseMediaTypeFiles<EpisodeFile>(Prog.ShowFolderName);
+            // Initialise show file list
+            ShowFiles = ParseMediaTypeFiles<ShowFile>(Prog.ShowFolderName);
+
+            // Initialise anime file list
+            //AnimeFiles = ParseMediaTypeFiles<AnimeFile>(Prog.AnimeFolderName);
+
+            // Print total number of files parsed
+            int totalFilesParsed = MovieFiles.Count + ShowFiles.Count; //+ AnimeFiles.Count;
+            PrintFilesParsed("Total", totalFilesParsed);
 
             // Finish
             FinishAndPrintTimeTaken();
@@ -41,7 +53,7 @@ namespace MediaManager
         /// <summary>
         /// Parses media files of a specified type from the given folder and adds them to the provided list.
         /// </summary>
-        /// <typeparam name="T">The type of media file to parse (e.g., MovieFile, EpisodeFile).</typeparam>
+        /// <typeparam name="T">The type of media file to parse (e.g., MovieFile).</typeparam>
         /// <param name="mirrorFolderPath">The root path of the mirrored media folder.</param>
         /// <param name="mediaFolderName">The name of the specific media subfolder to scan.</param>
         /// <param name="mediaFileList">The list to which parsed media files will be added.</param>
@@ -78,10 +90,20 @@ namespace MediaManager
             }
 
             // Log the number of files parsed
-            Console.WriteLine($" - {mediaFolderName.Replace("s", "")} files parsed: {mediaFileList.Count}");
+            PrintFilesParsed(mediaFolderName.Replace("s", ""), mediaFileList.Count);
 
             // Return media list generated
             return mediaFileList;
+        }
+
+        /// <summary>
+        /// Print a message regarding how many files were passed
+        /// </summary>
+        /// <param name="fileDesc">A descriptor for the files parsed.</param>
+        /// <param name="mediaFileCount">The number of files parsed.</param>
+        private void PrintFilesParsed(string fileDesc, int mediaFileCount)
+        {
+            Console.WriteLine($" - {fileDesc} files parsed: {mediaFileCount}");
         }
     }
 }

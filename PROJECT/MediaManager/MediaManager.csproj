@@ -64,9 +64,10 @@
   <ItemGroup>
     <Compile Include="Code\Doer\AgeChecker.cs" />
     <Compile Include="Code\Doer\Doer.cs" />
-    <Compile Include="Code\Media\AnimeFile.cs" />
+    <Compile Include="Code\Media\Episode\ShowFile.cs" />
+    <Compile Include="Code\Media\Episode\AnimeFile.cs" />
     <Compile Include="Code\Media\MovieFile.cs" />
-    <Compile Include="Code\Media\EpisodeFile.cs" />
+    <Compile Include="Code\Media\Episode\EpisodeFile.cs" />
     <Compile Include="Code\Doer\Reflector.cs" />
     <Compile Include="Code\Media\MediaFile.cs" />
     <Compile Include="Code\Doer\Parser.cs" />

@@ -6,7 +6,7 @@ namespace MediaManager.Code.Modules
     /// <summary>
     /// An episode file's metadata (e.g. an anime or show episode)
     /// </summary>
-    internal class EpisodeFile : MediaFile
+    internal abstract class EpisodeFile : MediaFile
     {
         /// <summary>
         /// This regex represents the naming format that Sonarr uses for series (anime/show) folders:
@@ -58,7 +58,7 @@ namespace MediaManager.Code.Modules
         /// <param name="mirrorFilePath"></param>
         public EpisodeFile(string mirrorFilePath) : base(mirrorFilePath)
         {
-            CheckType("Show");
+            CheckType(GetExpectedType());
         }
 
         /// <summary>
@@ -189,5 +189,10 @@ namespace MediaManager.Code.Modules
             episodeProps += $"EpisodeTitle: {EpisodeTitle ?? "NULL"}\n";
             return episodeProps;
         }
+
+        /// <summary>
+        /// Returns the expected media type as a string
+        /// </summary>
+        public abstract string GetExpectedType();
     }
 }
