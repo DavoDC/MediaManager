@@ -28,7 +28,11 @@ namespace MediaManager
 
         // The relative path to the mirror folder
         private static readonly string mirrorFolderPath = $"{MirrorRepoPath}\\{MirrorFolderName}";
-        public static string MirrorFolderPath { get => mirrorFolderPath; }
+        public static string RelMirrorFolderPath { get => mirrorFolderPath; }
+
+        // The absolute path to the mirror folder
+        // (e.g. "C:\Users\David\GitHubRepos\MediaMirror\MEDIA_MIRROR")
+        public static string AbsMirrorFolderPath { get; set; }
 
         // Main media folder
         private static readonly string mediaFolderPath = "E:\\Visual_Media";
@@ -46,8 +50,6 @@ namespace MediaManager
         private static readonly string showFolderName = "Shows";
         public static string ShowFolderName { get => showFolderName; }
 
-
-
         /// <summary>
         /// The program's entry point, automatically invoked when the application starts. 
         /// </summary>
@@ -62,8 +64,8 @@ namespace MediaManager
                 // Get the path of the executable
                 string progExecPath = AppDomain.CurrentDomain.BaseDirectory;
 
-                // Set mirror path relative to the executable
-                string mirrorPath = Path.GetFullPath(Path.Combine(progExecPath, MirrorFolderPath));
+                // Set the absolute mirror path relative to the executable
+                AbsMirrorFolderPath = Path.GetFullPath(Path.Combine(progExecPath, RelMirrorFolderPath));
 
                 // 1) Check the age of the mirror
                 AgeChecker ac = new AgeChecker();
@@ -73,17 +75,14 @@ namespace MediaManager
 
                 // 2) Create mirror of media folder
                 // Note: XML files created at this stage just contain paths to the actual file, not metadata info.
-                Reflector refl = new Reflector(mirrorPath, ac.recreateMirror);
+                Reflector refl = new Reflector(ac.recreateMirror);
 
                 // 3) Parse metadata into XML files and tag list
                 // Note: The file contents get overwritten with actual XML content in this stage.
-                Parser p = new Parser(mirrorPath);
+                Parser p = new Parser();
 
                 // 4) Analyse metadata and print statistics
-                //Analyser a = new Analyser(p.audioTags);
-
-                // 5) Do audio library organisational/metadata checks
-                //LibChecker lc = new LibChecker(p.audioTags);
+                //Analyser a = new Analyser(p.tags);
 
                 // Print total time
                 //TimeSpan totalTime = ac.ExecutionTime + refl.ExecutionTime + p.ExecutionTime;

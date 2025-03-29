@@ -32,19 +32,16 @@ namespace MediaManager
         private static readonly HashSet<string> mirrorExtensions = new HashSet<string>(mediaExtensions.Union(copyExtensions));
 
         //// VARIABLES
-        private string mirrorPath;
         private bool recreateMirror;
         private static readonly string mediaFolderPathInside = Prog.MediaFolderPath + "\\";
 
         /// <summary>
-        /// Construct an audio mirror
+        /// Construct a media mirror
         /// </summary>
-        /// <param name="mirrorPath">The audio mirror folder path</param>
         /// <param name="recreateMirror">Whether to recreate the mirror each time</param>
-        public Reflector(string mirrorPath, bool recreateMirror)
+        public Reflector(bool recreateMirror)
         {
             // Save parameters
-            this.mirrorPath = mirrorPath;
             this.recreateMirror = recreateMirror;
 
             // Notify
@@ -68,10 +65,10 @@ namespace MediaManager
         {
             // Note: This hardcoded path check is done to prevent folders from outside the repo from being deleted
             // If mirror path is outside of mirror repo
-            if (!mirrorPath.Contains("C:\\Users\\David\\GitHubRepos\\MediaMirror"))
+            if (!Prog.AbsMirrorFolderPath.Contains("C:\\Users\\David\\GitHubRepos\\MediaMirror"))
             {
                 // Throw exception and notify
-                string msg = $"\nMirror path was incorrect, outside the repo:\n{mirrorPath}\n";
+                string msg = $"\nMirror path was incorrect, outside the repo:\n{Prog.AbsMirrorFolderPath}\n";
                 throw new ArgumentException(msg);
             }
 
@@ -79,7 +76,7 @@ namespace MediaManager
             if (recreateMirror)
             {
                 // Remove the mirror path if it exists, to recreate it
-                string fixedMirrorPath = FixLongPath(mirrorPath, true);
+                string fixedMirrorPath = FixLongPath(Prog.AbsMirrorFolderPath, true);
                 if (Directory.Exists(fixedMirrorPath))
                 {
                     Directory.Delete(fixedMirrorPath, true);
@@ -94,7 +91,7 @@ namespace MediaManager
                 string relativePath = GetRelativePath(mediaFolderPathInside, directoryPath);
 
                 // Create folder at same location within mirror
-                string newDirectoryPath = Path.Combine(mirrorPath, relativePath);
+                string newDirectoryPath = Path.Combine(Prog.AbsMirrorFolderPath, relativePath);
                 Directory.CreateDirectory(newDirectoryPath);
             }
         }
@@ -176,7 +173,7 @@ namespace MediaManager
             }
 
             // Generate the full mirror path
-            string fullMirrorPath = Path.Combine(mirrorPath, relativePath);
+            string fullMirrorPath = Path.Combine(Prog.AbsMirrorFolderPath, relativePath);
 
             // If XML extension requested, change the path's extension
             if (useXmlExt)
@@ -220,7 +217,7 @@ namespace MediaManager
             List<string> unexpectedFiles = statisticsInfo.Item3;
 
             // Print mirror path
-            Console.WriteLine($" - Path: '{mirrorPath}'");
+            Console.WriteLine($" - Path: '{Prog.AbsMirrorFolderPath}'");
 
             // Print file count
             Console.WriteLine($" - Media file count: {mediaFileCount}");
