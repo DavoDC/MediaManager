@@ -10,7 +10,7 @@ namespace MediaManager
     /// </summary>
     internal class Parser : Doer
     {
-        // Properties
+        // List of movie files
         //public List<MediaTag> MediaTags { get; }
 
         /// <summary>
@@ -36,8 +36,8 @@ namespace MediaManager
                     // Apply long path fix 
                     string fixedMirrorFilePath = Reflector.FixLongPath(mirrorFilePath);
 
-                    // Convert to tag and add to list
-                    //MediaTags.Add(new MediaTag(fixedMirrorFilePath));
+                    // Parse XML file
+                    ParseXMLFile(fixedMirrorFilePath);
                 }
                 else if (!Reflector.CopyExtensions.Contains(mirrorFileExt))
                 {
@@ -49,6 +49,15 @@ namespace MediaManager
             // Print statistics
             //Console.WriteLine($" - Files parsed: {MediaTags.Count}");
             FinishAndPrintTimeTaken();
+        }
+        
+        /// <summary>
+        /// Parse an XML file's metadata and add the resulting object to a list
+        /// </summary>
+        /// <param name="mirrorFilePath">A fixed mirror file path</param>
+        public void ParseXMLFile(string mirrorFilePath)
+        {
+            //MediaTags.Add(new MediaTag(fixedMirrorFilePath));
         }
     }
 }

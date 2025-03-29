@@ -69,8 +69,6 @@
     <Compile Include="Code\Media\FileTypes\EpisodeFile.cs" />
     <Compile Include="Code\Doer\Reflector.cs" />
     <Compile Include="Code\Media\FileTypes\MediaFile.cs" />
-    <Compile Include="Code\Media\MediaTag.cs" />
-    <Compile Include="Code\Media\MediaXML.cs" />
     <Compile Include="Code\Doer\Parser.cs" />
     <Compile Include="Code\Prog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
