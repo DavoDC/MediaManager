@@ -46,7 +46,7 @@ namespace MediaManager.Code.Modules
                     SetElementValue("AudioChannels", tag.AudioChannels);
                     SetElementValue("ReleaseGroup", tag.ReleaseGroup);
 
-                    // Check if the media type is show or anime, and add those properties
+                    // If the media type is show or anime, add show/anime-specific properties
                     if (tag.Type == "Show" || tag.Type == "Anime")
                     {
                         SetElementValue("SeasonType", tag.SeasonType);
@@ -55,7 +55,7 @@ namespace MediaManager.Code.Modules
                         SetElementValue("EpisodeTitle", tag.EpisodeTitle);
                     }
 
-                    // Check if the media type is anime, and add anime-specific properties
+                    // If the media type is anime, add anime-specific properties
                     if (tag.Type == "Anime")
                     {
                         SetElementValue("AbsEpisodeNum", tag.AbsEpisodeNum);
@@ -63,7 +63,7 @@ namespace MediaManager.Code.Modules
                         SetElementValue("AudioLanguages", tag.AudioLanguages);
                     }
 
-                    // Check if the media type is movie, and add movie-specific properties
+                    // If the media type is movie, add movie-specific properties
                     if (tag.Type == "Movie")
                     {
                         SetElementValue("Edition", tag.Edition);
@@ -87,7 +87,7 @@ namespace MediaManager.Code.Modules
                     }
                     rootElement = xmlDoc.DocumentElement;
 
-                    // Read data from XML and set properties
+                    // Read data from XML and set common properties
                     Title = GetElementValue("Title");
                     Type = GetElementValue("Type");
                     ReleaseYear = GetElementValue("ReleaseYear");
@@ -101,7 +101,7 @@ namespace MediaManager.Code.Modules
                     AudioChannels = GetElementValue("AudioChannels");
                     ReleaseGroup = GetElementValue("ReleaseGroup");
 
-                    // Check if the media type is show or anime, and add those properties
+                    // If the media type is show or anime, retrieve show/anime-specific properties
                     if (Type.Equals("Show") || Type.Equals("Anime"))
                     {
                         SeasonType = GetElementValue("SeasonType");
@@ -110,7 +110,7 @@ namespace MediaManager.Code.Modules
                         EpisodeTitle = GetElementValue("EpisodeTitle");
                     }
 
-                    // Check if the media type is anime, and add anime-specific properties
+                    // If the media type is anime, retrieve anime-specific properties
                     if (Type.Equals("Anime"))
                     {
                         AbsEpisodeNum = GetElementValue("AbsEpisodeNum");
@@ -118,7 +118,7 @@ namespace MediaManager.Code.Modules
                         AudioLanguages = GetElementValue("AudioLanguages");
                     }
 
-                    // Check if the media type is movie, and add movie-specific properties
+                    // If the media type is movie, retrieve movie-specific properties
                     if (Type.Equals("Movie"))
                     {
                         Edition = GetElementValue("Edition");

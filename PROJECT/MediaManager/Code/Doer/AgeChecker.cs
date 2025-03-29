@@ -72,17 +72,16 @@ namespace MediaManager
             recreateMirror = mirrorAge > ageThreshold;
 
             // If mirror will be regenerated
-            string msgStart = " - Mirror ";
             if (recreateMirror)
             {
                 // Notify and update date in file
-                Console.WriteLine(msgStart + "is outdated, will regenerate!");
+                Console.WriteLine(" - Mirror is outdated, will regenerate!");
                 File.WriteAllText(lastRunInfoFilePath, GetStrFromDate(curDate));
             }
             else
             {
                 // Else if not, notify
-                Console.WriteLine(msgStart + "was created recently, no regeneration needed!");
+                Console.WriteLine(" - Mirror was created recently, no regeneration needed!");
             }
 
             // Finish and print time taken
