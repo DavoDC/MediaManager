@@ -20,7 +20,7 @@ namespace MediaManager.Code.Modules
         /// {Series TitleYear} - S{season:00}E{episode:00} - {Episode CleanTitle} [{Custom Formats }{Quality Title}]{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[MediaInfo VideoCodec]}{-Release Group}
         /// Example: "Gen V (2023) - S01E06 - Jumanji [AMZN WEBDL-720p][EAC3 5.1][h264]-NTb"
         /// </summary>
-        private static readonly Regex showEpRegex = new Regex(@"
+        protected static readonly Regex showEpRegex = new Regex(@"
                     ^(?<Title>.+?)\s*(?:\((?<ReleaseYear>\d{4})\))?\s*-\s*
                     S(?<SeasonNum>\d{2})E(?<EpisodeNum>\d{2})\s*-\s*
                     (?<EpisodeTitle>.+?)\s*

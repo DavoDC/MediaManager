@@ -53,5 +53,82 @@ namespace MediaManager.Code.Modules
         {
             return "Anime";
         }
+
+        /// <summary>
+        /// Set anime specific properties using filename
+        /// </summary>
+        public override void InitialiseMediaTypeSpecificFieldsUsingMediaFileName()
+        {
+            // Try applying anime regex to media's filename
+            Match animeMatch = animeEpRegex.Match(MediaFileName);
+            if (animeMatch.Success)
+            {
+                // Set anime specific properties
+                SetAnimeSpecificPropertiesFromFilename(animeMatch);
+
+                // Fix title previously set
+                // - The show regex used initially includes the absolute episode number in the title
+                // - The title from the anime regex will not include this extra info
+                EpisodeTitle = GetGroupValue(animeMatch, "EpisodeTitle");
+            }
+            else if (SeasonType.Equals("Special"))
+            {
+                // Else if anime parsing failed, and the file is a special,
+                // try parsing anime special using the show episode regex
+                Match animeSpecialMatch = showEpRegex.Match(MediaFileName);
+                if (animeSpecialMatch.Success)
+                {
+                    // Set anime specific properties
+                    SetAnimeSpecificPropertiesFromFilename(animeSpecialMatch);
+                }
+            }
+            else
+            {
+                Prog.PrintErrMsg($"Could not parse anime: {RelativeFilePath}");
+            }
+        }
+
+        /// <summary>
+        /// Set anime specific properties extracted from the anime file's filename
+        /// </summary>
+        /// <param name="match">The regex match object</param>
+        private void SetAnimeSpecificPropertiesFromFilename(Match match)
+        {
+            AbsEpisodeNum = GetGroupValue(match, "AbsoluteEpisode");
+            VideoBitDepth = GetGroupValue(match, "VideoBitDepth");
+            AudioLanguages = GetGroupValue(match, "AudioLanguages");
+        }
+
+        /// <summary>
+        /// Add fields specific to anime to the XML document
+        /// </summary>
+        public override void AddMediaTypeSpecificFieldsToXMLDoc()
+        {
+            SetElementValue("AbsEpisodeNum", AbsEpisodeNum);
+            SetElementValue("VideoBitDepth", VideoBitDepth);
+            SetElementValue("AudioLanguages", AudioLanguages);
+        }
+
+        /// <summary>
+        /// Initialise fields specific to anime using the XML document
+        /// </summary>
+        public override void InitialiseMediaTypeSpecificFieldsUsingXML()
+        {
+            AbsEpisodeNum = GetElementValue("AbsEpisodeNum");
+            VideoBitDepth = GetElementValue("VideoBitDepth");
+            AudioLanguages = GetElementValue("AudioLanguages");
+        }
+
+        /// <summary>
+        /// Get fields specific to anime as a string
+        /// </summary>
+        public override string GetMediaTypeSpecificPropString()
+        {
+            string animeProps = "";
+            animeProps += $"AbsEpisodeNum: {AbsEpisodeNum ?? "NULL"}\n";
+            animeProps += $"VideoBitDepth: {VideoBitDepth ?? "NULL"}\n";
+            animeProps += $"AudioLanguages: {AudioLanguages ?? "NULL"}\n";
+            return animeProps;
+        }
     }
 }
