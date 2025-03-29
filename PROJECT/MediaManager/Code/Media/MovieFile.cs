@@ -59,8 +59,15 @@ namespace MediaManager.Code.Modules
                 ProcessMovieFolderName();
                 ProcessMovieFileName();
 
-                // Overwrite mirror file contents with XML content
-                //MediaXML xmlFileOut = new MediaXML(mirrorFilePath, this);
+                // Add common properties to the XML object
+                SetCommonPropertiesInXML();
+
+                // Add movie-specific properties to the XML object
+                SetElementValue("Edition", Edition);
+                SetElementValue("ThreeDInfo", ThreeDInfo);
+
+                // Overwrite mirror file contents with XML content by saving the XML object
+                XMLDoc.Save(mirrorFilePath);
             }
             else
             {

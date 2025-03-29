@@ -58,6 +58,8 @@ namespace MediaManager
         public void ParseXMLFile(string mirrorFilePath)
         {
             //MediaTags.Add(new MediaTag(fixedMirrorFilePath));
+
+            //Console.WriteLine(mirrorFilePath);
         }
     }
 }

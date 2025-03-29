@@ -103,12 +103,14 @@ namespace MediaManager.Code.Modules
             string realFilePath = Reflector.FixLongPath(fileContents[0]);
             bool mirrorFilePathIsValid = File.Exists(realFilePath);
 
-            // If the mirror file contains a single, valid path
-            if (mirrorFileContainsOnePath && mirrorFilePathIsValid)
-            {
-                // Then the file needs to be converted to a valid XML file
-                ConvertToValidXML = true;
+            // the file needs to be converted to a valid XML file if the mirror file contains a single, valid path
+            ConvertToValidXML = mirrorFileContainsOnePath && mirrorFilePathIsValid;
 
+            // If the file needs to be converted to valid XML
+            if (ConvertToValidXML)
+            {
+                //// Initialise fields, and leave rest to child classes
+                
                 // Extract media extension from real file path
                 Extension = Path.GetExtension(realFilePath);
 
@@ -130,116 +132,62 @@ namespace MediaManager.Code.Modules
 
                 // Get media file name without extension
                 MediaFileName = Path.GetFileNameWithoutExtension(RelPath);
-
-
-                // Overwrite mirror file contents with XML content
-                //MediaXML xmlFileOut = new MediaXML(mirrorFilePath, this);
-                // SOME XML ACTIONS SHOULD BE HERE - common
-
-                // Set XML elements to metadata values for common properties
-                //SetElementValue("Type", tag.Type);
-                //SetElementValue("Title", tag.Title);
-                //SetElementValue("ReleaseYear", tag.ReleaseYear);
-                //SetElementValue("DatabaseLink", tag.DatabaseLink);
-                //SetElementValue("Extension", tag.Extension);
-                //SetElementValue("CustomFormats", tag.CustomFormats);
-                //SetElementValue("QualityTitle", tag.QualityTitle);
-                //SetElementValue("VideoDynamicRange", tag.VideoDynamicRange);
-                //SetElementValue("VideoCodec", tag.VideoCodec);
-                //SetElementValue("AudioCodec", tag.AudioCodec);
-                //SetElementValue("AudioChannels", tag.AudioChannels);
-                //SetElementValue("ReleaseGroup", tag.ReleaseGroup);
-
-                //                    // If the media type is show or anime, add show/anime-specific properties
-                //                    if (tag.Type == "Show" || tag.Type == "Anime")
-                //                    {
-                //                        SetElementValue("SeasonType", tag.SeasonType);
-                //                        SetElementValue("SeasonNum", tag.SeasonNum);
-                //                        SetElementValue("EpisodeNum", tag.EpisodeNum);
-                //                        SetElementValue("EpisodeTitle", tag.EpisodeTitle);
-                //                    }
-
-                //                    // If the media type is anime, add anime-specific properties
-                //                    if (tag.Type == "Anime")
-                //                    {
-                //                        SetElementValue("AbsEpisodeNum", tag.AbsEpisodeNum);
-                //                        SetElementValue("VideoBitDepth", tag.VideoBitDepth);
-                //                        SetElementValue("AudioLanguages", tag.AudioLanguages);
-                //                    }
-
-                //                    // If the media type is movie, add movie-specific properties
-                //                    if (tag.Type == "Movie")
-                //                    {
-                //                        SetElementValue("Edition", tag.Edition);
-                //                        SetElementValue("ThreeDInfo", tag.ThreeDInfo);
-                //                    }
-
-                //                    // Save file
-                //                    xmlDoc.Save(mirrorFilePath);
             }
             else
             {
-                // TODO In children
-                //                // Else if the mirror file is a valid XML file
-                //                // Read in XML data
-                //                MediaXML xmlFileIn = new MediaXML(mirrorFilePath);
-                //                // Set tag properties using XML file data
-                //                Title = xmlFileIn.GetElementValue("Title");
-                // SOME XML ACTIONS SHOULD BE HERE - common
-
-                //                    // If no tag, LOAD EXISTING XML FILE
-
-                //                    // Open the file using FileStream to avoid URI parsing issues for long paths
-                //                    using (FileStream fs = new FileStream(mirrorFilePath, FileMode.Open, FileAccess.Read))
-                //                    {
-                //                        using (XmlReader reader = XmlReader.Create(fs))
-                //                        {
-                //                            xmlDoc.Load(reader);
-                //                        }
-                //                    }
-                //                    rootElement = xmlDoc.DocumentElement;
-
-                //                    // Read data from XML and set common properties
-                //                    Title = GetElementValue("Title");
-                //                    Type = GetElementValue("Type");
-                //                    ReleaseYear = GetElementValue("ReleaseYear");
-                //                    DatabaseLink = GetElementValue("DatabaseLink");
-                //                    Extension = GetElementValue("Extension");
-                //                    CustomFormats = GetElementValue("CustomFormats");
-                //                    QualityTitle = GetElementValue("QualityTitle");
-                //                    VideoDynamicRange = GetElementValue("VideoDynamicRange");
-                //                    VideoCodec = GetElementValue("VideoCodec");
-                //                    AudioCodec = GetElementValue("AudioCodec");
-                //                    AudioChannels = GetElementValue("AudioChannels");
-                //                    ReleaseGroup = GetElementValue("ReleaseGroup");
-
-                //                    // If the media type is show or anime, retrieve show/anime-specific properties
-                //                    if (Type.Equals("Show") || Type.Equals("Anime"))
-                //                    {
-                //                        SeasonType = GetElementValue("SeasonType");
-                //                        SeasonNum = GetElementValue("SeasonNum");
-                //                        EpisodeNum = GetElementValue("EpisodeNum");
-                //                        EpisodeTitle = GetElementValue("EpisodeTitle");
-                //                    }
-
-                //                    // If the media type is anime, retrieve anime-specific properties
-                //                    if (Type.Equals("Anime"))
-                //                    {
-                //                        AbsEpisodeNum = GetElementValue("AbsEpisodeNum");
-                //                        VideoBitDepth = GetElementValue("VideoBitDepth");
-                //                        AudioLanguages = GetElementValue("AudioLanguages");
-                //                    }
-
-                //                    // If the media type is movie, retrieve movie-specific properties
-                //                    if (Type.Equals("Movie"))
-                //                    {
-                //                        Edition = GetElementValue("Edition");
-                //                        ThreeDInfo = GetElementValue("ThreeDInfo");
-                //                    }
-                //                }
+                //// TODO In children
+                ////                // Else if the mirror file is a valid XML file
+                ////                // Read in XML data
+                ////                MediaXML xmlFileIn = new MediaXML(mirrorFilePath);
+                ////                // Set tag properties using XML file data
+                ////                Title = xmlFileIn.GetElementValue("Title");
+                //// SOME XML ACTIONS SHOULD BE HERE - common
+                //    // If no tag, LOAD EXISTING XML FILE
+                //    // Open the file using FileStream to avoid URI parsing issues for long paths
+                //    using (FileStream fs = new FileStream(mirrorFilePath, FileMode.Open, FileAccess.Read))
+                //    {
+                //        using (XmlReader reader = XmlReader.Create(fs))
+                //        {
+                //            xmlDoc.Load(reader);
+                //        }
+                //    }
+                //    rootElement = xmlDoc.DocumentElement;
+                //    // Read data from XML and set common properties
+                //    Title = GetElementValue("Title");
+                //    Type = GetElementValue("Type");
+                //    ReleaseYear = GetElementValue("ReleaseYear");
+                //    DatabaseLink = GetElementValue("DatabaseLink");
+                //    Extension = GetElementValue("Extension");
+                //    CustomFormats = GetElementValue("CustomFormats");
+                //    QualityTitle = GetElementValue("QualityTitle");
+                //    VideoDynamicRange = GetElementValue("VideoDynamicRange");
+                //    VideoCodec = GetElementValue("VideoCodec");
+                //    AudioCodec = GetElementValue("AudioCodec");
+                //    AudioChannels = GetElementValue("AudioChannels");
+                //    ReleaseGroup = GetElementValue("ReleaseGroup")
+                //    // If the media type is show or anime, retrieve show/anime-specific properties
+                //    if (Type.Equals("Show") || Type.Equals("Anime"))
+                //    {
+                //        SeasonType = GetElementValue("SeasonType");
+                //        SeasonNum = GetElementValue("SeasonNum");
+                //        EpisodeNum = GetElementValue("EpisodeNum");
+                //        EpisodeTitle = GetElementValue("EpisodeTitle");
+                //    }
+                //    // If the media type is anime, retrieve anime-specific properties
+                //    if (Type.Equals("Anime"))
+                //    {
+                //        AbsEpisodeNum = GetElementValue("AbsEpisodeNum");
+                //        VideoBitDepth = GetElementValue("VideoBitDepth");
+                //        AudioLanguages = GetElementValue("AudioLanguages");
+                //    }
+                //    // If the media type is movie, retrieve movie-specific properties
+                //    if (Type.Equals("Movie"))
+                //    {
+                //        Edition = GetElementValue("Edition");
+                //        ThreeDInfo = GetElementValue("ThreeDInfo");
+                //    }
+                //}
             }
-
-
         }
 
         /// <summary>
@@ -282,7 +230,7 @@ namespace MediaManager.Code.Modules
         /// </summary>
         /// <param name="elementName">The name of the XML element.</param>
         /// <param name="elementValue">The value to set for the XML element.</param>
-        private void SetElementValue(string elementName, string elementValue)
+        public void SetElementValue(string elementName, string elementValue)
         {
             var existingElement = GetXmlElement(elementName);
 
@@ -319,6 +267,26 @@ namespace MediaManager.Code.Modules
         private XmlElement GetXmlElement(string elementName)
         {
             return XMLRootElement.SelectSingleNode(elementName) as XmlElement;
+        }
+
+        /// <summary>
+        /// Add the common properties to the XML object.
+        /// Called when converting a mirror file to valid XML.
+        /// </summary>
+        public void SetCommonPropertiesInXML()
+        {
+            SetElementValue("Type", Type);
+            SetElementValue("Title", Title);
+            SetElementValue("ReleaseYear", ReleaseYear);
+            SetElementValue("DatabaseLink", DatabaseLink);
+            SetElementValue("Extension", Extension);
+            SetElementValue("CustomFormat", CustomFormat);
+            SetElementValue("QualityTitle", QualityTitle);
+            SetElementValue("VideoDynamicRange", VideoDynamicRange);
+            SetElementValue("VideoCodec", VideoCodec);
+            SetElementValue("AudioCodec", AudioCodec);
+            SetElementValue("AudioChannels", AudioChannels);
+            SetElementValue("ReleaseGroup", ReleaseGroup);
         }
 
         /// <returns>A string representation of all file properties.</returns>
