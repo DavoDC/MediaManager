@@ -145,14 +145,24 @@ namespace MediaManager.Code.Modules
                 AudioChannels = GetGroupValue(showMatch, "AudioChannels");
                 ReleaseGroup = GetGroupValue(showMatch, "ReleaseGroup");
 
-                // Set show-specific properties
+                // Set episode-specific properties
                 EpisodeNum = GetGroupValue(showMatch, "EpisodeNum");
                 EpisodeTitle = GetGroupValue(showMatch, "EpisodeTitle");
+
+                // Set media-type-specific properties using filename
+                InitialiseMediaTypeSpecificFieldsUsingMediaFileName();
             }
             else
             {
                 Prog.PrintErrMsg($"Could not parse show: {RelativeFilePath}");
             }
+        }
+
+        /// <summary>
+        /// Set media-type-specific properties using filename
+        /// </summary>
+        public virtual void InitialiseMediaTypeSpecificFieldsUsingMediaFileName()
+        {
         }
 
         /// <summary>
@@ -164,6 +174,15 @@ namespace MediaManager.Code.Modules
             SetElementValue("SeasonNum", SeasonNum);
             SetElementValue("EpisodeNum", EpisodeNum);
             SetElementValue("EpisodeTitle", EpisodeTitle);
+
+            AddMediaTypeSpecificFieldsToXMLDoc();
+        }
+
+        /// <summary>
+        /// Add fields specific to an episodic media-type to the XML document
+        /// </summary>
+        public virtual void AddMediaTypeSpecificFieldsToXMLDoc()
+        {
         }
 
         /// <summary>
@@ -175,6 +194,15 @@ namespace MediaManager.Code.Modules
             SeasonNum = GetElementValue("SeasonNum");
             EpisodeNum = GetElementValue("EpisodeNum");
             EpisodeTitle = GetElementValue("EpisodeTitle");
+
+            InitialiseMediaTypeSpecificFieldsUsingXML();
+        }
+
+        /// <summary>
+        /// Initialise fields specific to an episodic media-type using the XML document
+        /// </summary>
+        public virtual void InitialiseMediaTypeSpecificFieldsUsingXML()
+        {
         }
 
         /// <summary>
@@ -187,7 +215,16 @@ namespace MediaManager.Code.Modules
             episodeProps += $"SeasonNum: {SeasonNum ?? "NULL"}\n";
             episodeProps += $"EpisodeNum: {EpisodeNum ?? "NULL"}\n";
             episodeProps += $"EpisodeTitle: {EpisodeTitle ?? "NULL"}\n";
+            episodeProps += GetMediaTypeSpecificPropString();
             return episodeProps;
+        }
+
+        /// <summary>
+        /// Get fields specific to an episodic media-type as a string
+        /// </summary>
+        public virtual string GetMediaTypeSpecificPropString()
+        {
+            return "";
         }
 
         /// <summary>
