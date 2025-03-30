@@ -9,7 +9,7 @@ namespace MediaManager
     /// <summary>
     /// Calculates, stores and displays frequency statistics for a specific property of items of type <typeparamref name="T"/>.
     /// </summary>
-    /// <typeparam name="T">The type of the items (e.g., MediaFile, Book, etc.).</typeparam>
+    /// <typeparam name="T">The type of the items (e.g., MediaFile, MovieFile, etc.).</typeparam>
     internal class StatList<T>
     {
         // Name of these statistics

@@ -16,7 +16,8 @@ namespace MediaManager
             // Notify
             Console.WriteLine("\nAnalysing metadata...");
 
-            // Calculate common stats
+            // Calculate and print common stats
+            Console.WriteLine("\n - Common statistics:");
             var extStats = CreateStatList("Extension", f => f.Extension);
             var yearStats = CreateStatList("ReleaseYear", f => f.ReleaseYear);
             var formatStats = CreateStatList("CustomFormat", f => f.CustomFormat);
@@ -26,21 +27,27 @@ namespace MediaManager
             var audioCodecStats = CreateStatList("AudioCodec", f => f.AudioCodec);
             var audioChannelStats = CreateStatList("AudioChannels", f => f.AudioChannels);
             var relGroupStats = CreateStatList("ReleaseGroup", f => f.ReleaseGroup);
-
-            // Print common stats
             extStats.Print(0);
-            yearStats.Print(0);
+            yearStats.Print(1.0);
             formatStats.Print(0);
             qualityStats.Print(0);
             videoRangeStats.Print(0);
             videoCodecStats.Print(0);
             audioCodecStats.Print(0);
             audioChannelStats.Print(0);
-            relGroupStats.Print(0);
+            relGroupStats.Print(0.25);
 
             // Calculate and print movie stats
+            Console.WriteLine("\n - Movie-specific statistics:");
             var editionStats = new StatList<MovieFile>("Edition", Parser.MovieFiles, f => f.Edition);
             editionStats.Print(0);
+
+            // Calculate and print anime stats
+            Console.WriteLine("\n - Anime-specific statistics:");
+            var vidBitStats = new StatList<AnimeFile>("VideoBitDepth", Parser.AnimeFiles, f => f.VideoBitDepth);
+            var audioLangStats = new StatList<AnimeFile>("AudioLanguages", Parser.AnimeFiles, f => f.AudioLanguages);
+            vidBitStats.Print(0);
+            audioLangStats.Print(0);
 
             // Finish and print time taken
             Console.WriteLine("");

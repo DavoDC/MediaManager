@@ -1,7 +1,11 @@
 # Things to Do 
 
-## More stats 
-Edition etc
+## Refactor: Improve Folder parsing - InitialiseFieldsUsingMediaFolderName()
+Code is almost the same for movies and episodes when parsing folder names
+Generalise it!! Use one regex for both, shift into MediaFile class
+
+## Refactor: Look for duplicate code 
+Init of common fields in movie and ep
 
 ## IMPROVING PARSING
 - You'll see incorrect stuff come up
@@ -33,16 +37,5 @@ HDR Undefined
 HLG
 PQ
 
-## Combine stats
-see playHD and PlayHD separate. possible to combine the count of those?
-Erai-raws and Erai-raw
-FIX BY RENAMING FILES INSTEAD!!!
-
-
-
-## Refactor: Improve Folder parsing - InitialiseFieldsUsingMediaFolderName()
-Code is almost the same for movies and episodes when parsing folder names
-Generalise it!! Use one regex for both, shift into MediaFile class
-
-## Refactor: Look for duplicate code 
-Init of common fields in movie and ep
+## Improve filenames
+Standardise release group names so stats get combined
