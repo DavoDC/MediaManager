@@ -27,8 +27,8 @@ namespace MediaManager
             var audioCodecStats = CreateStatList("AudioCodec", f => f.AudioCodec);
             var audioChannelStats = CreateStatList("AudioChannels", f => f.AudioChannels);
             var relGroupStats = CreateStatList("ReleaseGroup", f => f.ReleaseGroup);
-            extStats.Print(0);
-            yearStats.Print(1.0);
+            //extStats.Print(0);
+            //yearStats.Print(1.0);
             formatStats.Print(0);
             qualityStats.Print(0);
             videoRangeStats.Print(0);
@@ -40,7 +40,7 @@ namespace MediaManager
             // Calculate and print movie stats
             Console.WriteLine("\n - Movie-specific statistics:");
             var editionStats = new StatList<MovieFile>("Edition", Parser.MovieFiles, f => f.Edition);
-            editionStats.Print(0);
+            //editionStats.Print(0);
 
             // Calculate and print anime stats
             Console.WriteLine("\n - Anime-specific statistics:");

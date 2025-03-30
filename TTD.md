@@ -1,12 +1,5 @@
 # Things to Do 
 
-## Refactor: Improve Folder parsing - InitialiseFieldsUsingMediaFolderName()
-Code is almost the same for movies and episodes when parsing folder names
-Generalise it!! Use one regex for both, shift into MediaFile class
-
-## Refactor: Look for duplicate code 
-Init of common fields in movie and ep
-
 ## IMPROVING PARSING
 - You'll see incorrect stuff come up
     - e.g. EAC being assigned to quality title instead of audio codec 

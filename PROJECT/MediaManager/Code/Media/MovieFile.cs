@@ -21,8 +21,8 @@ namespace MediaManager.Code.Modules
                     (?:\[(?<VideoDynamicRange>HDR|SDR|Dolby Vision|HLG)\])?
                     (?:\[(?<ThreeD>3D)\])?
                     (?:\[(?<VideoBitDepth>\d+)bit\])?
-                    (?:\[(?<VideoCodec>x264|x265|AV1|VP9|h264|h265|ProRes)\])?
-                    (?:\[(?<AudioCodec>[^\]\s]+(?:\s+[^\]\s]+)*)\s+(?<AudioChannels>[\d.]+)\])?
+                    (?:\[(?<VideoCodec>x264|x265|h264|h265)\])?
+                    (?:\[(?<AudioCodec>EAC3 5\.1|[^\]\s]+(?:\s+[^\]\s]+)*)\s+(?<AudioChannels>[\d.]+)\])?
                     (?:\[(?<AudioLanguages>[^\]]+)\])?
                     (?:-(?<ReleaseGroup>[^\]]+))?$", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase);
 
