@@ -89,53 +89,26 @@ namespace MediaManager
             // For each file
             foreach (var file in mediaFilesIn)
             {
-                // Extract properties using the given function
-                string[] properties = ProcessProperty(func(file));
+                // Extract property using the given function
+                string property = func(file);
 
-                // For each sub-property
-                foreach (string subProperty in properties)
+                // If property is in dictionary
+                if (itemVariants.ContainsKey(property))
                 {
-                    // If in dictionary
-                    if (itemVariants.ContainsKey(subProperty))
-                    {
-                        // Increment value
-                        itemVariants[subProperty]++;
-                    }
-                    else
-                    {
-                        // Otherwise if not in dictionary, add it
-                        // NOTE: REQUIRED to prevent 'KeyNotFoundException' errors
-                        itemVariants[subProperty] = 1;
-                    }
+                    // Increment its value
+                    itemVariants[property]++;
+                }
+                else
+                {
+                    // Otherwise if not in dictionary, add it
+                    // NOTE: REQUIRED to prevent 'KeyNotFoundException' errors
+                    itemVariants[property] = 1;
                 }
             }
 
             // Sort the dictionary by count in descending order,
             // and return as an IOrderedEnumerable of KeyValuePairs
             return itemVariants.OrderByDescending(pair => pair.Value);
-        }
-
-        /// <summary>
-        /// Splits a string of possibly concatenated values into an array.
-        /// </summary>
-        /// <param name="full">The full string, possibly concatenated with separators.</param>
-        /// <returns>An array extracted from the input string.</returns>
-        public static string[] ProcessProperty(string full)
-        {
-            char[] separators = { ';', ',' };
-
-            // If doesn't contain any separators, return as is
-            if (!separators.Any(full.Contains))
-            {
-                return new[] { full };
-            }
-
-            // Split string using first separator found
-            char selectedSeparator = separators.First(s => full.Contains(s));
-            string[] artistArr = full.Split(selectedSeparator);
-
-            // Return array without whitespace in strings
-            return artistArr.Select(a => a.Trim()).ToArray();
         }
 
         /// <summary>

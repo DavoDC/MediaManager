@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace MediaManager
 {
@@ -13,17 +14,22 @@ namespace MediaManager
         /// <summary>
         /// A list of movie file objects
         /// </summary>
-        public List<MovieFile> MovieFiles { get; }
+        public static List<MovieFile> MovieFiles { get; set; }
 
         /// <summary>
         /// A list of show file objects
         /// </summary>
-        public List<ShowFile> ShowFiles { get; }
+        public static List<ShowFile> ShowFiles { get; set; }
 
         /// <summary>
         /// A list of anime file objects
         /// </summary>
-        public List<AnimeFile> AnimeFiles { get; }
+        public static List<AnimeFile> AnimeFiles { get; set; } 
+
+        /// <summary>
+        /// A list of all media file objects combined
+        /// </summary>
+        public static List<MediaFile> MediaFiles { get; set; }
 
         /// <summary>
         /// Construct a parser
@@ -42,9 +48,12 @@ namespace MediaManager
             // Initialise anime file list
             AnimeFiles = ParseMediaTypeFiles<AnimeFile>(Prog.AnimeFolderName);
 
+            // Initialise combined media file list
+            var combinedList = new List<IEnumerable<MediaFile>> { MovieFiles, ShowFiles, AnimeFiles};
+            MediaFiles = combinedList.SelectMany(list => list).ToList();
+
             // Print total number of files parsed
-            int totalFilesParsed = MovieFiles.Count + ShowFiles.Count + AnimeFiles.Count;
-            PrintFilesParsed("Total", totalFilesParsed);
+            PrintFilesParsed("Total", MediaFiles.Count);
 
             // Finish
             FinishAndPrintTimeTaken();
