@@ -67,8 +67,8 @@ namespace MediaManager
                 AbsMirrorFolderPath = Path.GetFullPath(Path.Combine(progExecPath, RelMirrorFolderPath));
 
                 // Toggle forcing mirror to be regenerated (e.g. during development)
-                bool forceMirrorRegen = false;
-                //bool forceMirrorRegen = true;
+                //bool forceMirrorRegen = false;
+                bool forceMirrorRegen = true;
 
                 // 1) Check the age of the mirror
                 AgeChecker ac = new AgeChecker(forceMirrorRegen);

@@ -27,15 +27,15 @@ namespace MediaManager
             StatList relGroupStats = new StatList("ReleaseGroup", Parser.MediaFiles, f => f.ReleaseGroup);
 
             // Print stats
-            extStats.Print();
-            yearStats.Print();
-            formatStats.Print();
-            qualityStats.Print();
-            videoRangeStats.Print();
-            videoCodecStats.Print();
-            audioCodecStats.Print();
-            audioChannelStats.Print();
-            relGroupStats.Print();
+            extStats.Print(0);
+            yearStats.Print(0);
+            formatStats.Print(0);
+            qualityStats.Print(0);
+            videoRangeStats.Print(0);
+            videoCodecStats.Print(0);
+            audioCodecStats.Print(0);
+            audioChannelStats.Print(0);
+            relGroupStats.Print(0);
 
             // Finish and print time taken
             Console.WriteLine("");
