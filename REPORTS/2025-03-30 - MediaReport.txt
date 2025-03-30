@@ -2,26 +2,26 @@
 ###### Media Manager ######
 
 Checking age of mirror...
- - DateTime.Now               2025-03-30 22:27:35
- - DateTime.MirrorCreation    2025-03-30 22:12:15
- - DateTime.MirrorAge         0d, 0h, 15m, 20s
- - Mirror was generated recently, no regeneration needed!
- - Time taken: 0.002 seconds
+ - DateTime.Now               2025-03-30 23:08:18
+ - DateTime.MirrorCreation    2025-03-30 23:07:56
+ - DateTime.MirrorAge         0d, 0h, 0m, 22s
+ - Mirror was generated recently, but 'force regeneration' is active! Will regenerate!
+ - Time taken: 0.003 seconds
 
 Creating mirror of 'E:\Visual_Media'...
  - Path: 'C:\Users\David\GitHubRepos\MediaMirror\MEDIA_MIRROR'
  - Media file count: 3925
  - Unexpected files found: 0
  - Media filenames sanitised: 39
- - Regenerated: False
- - Time taken: 0.279 seconds
+ - Regenerated: True
+ - Time taken: 1.824 seconds
 
 Parsing media metadata...
  - Movie files parsed: 246
  - Show files parsed: 1633
  - Anime files parsed: 2046
  - Total files parsed: 3925
- - Time taken: 0.931 seconds
+ - Time taken: 1.75 seconds
 
 Analysing metadata...
 
@@ -33,10 +33,9 @@ Analysing metadata...
 
 # AudioChannels Statistics
 #     %          AudioChannels                       Occurrences
-1     49.91%     2.0                                 1959
-2     49.81%     5.1                                 1955
-3     0.20%      Unknown                             8
-4     0.08%      7.1                                 3
+1     49.96%     5.1                                 1961
+2     49.94%     2.0                                 1960
+3     0.10%      7.1                                 4
 
 # VideoCodec Statistics
 #     %          VideoCodec                          Occurrences
@@ -66,14 +65,14 @@ Analysing metadata...
 # AudioCodec Statistics
 #     %          AudioCodec                          Occurrences
 1     34.68%     AAC                                 1361
-2     34.42%     EAC3                                1351
+2     34.50%     EAC3                                1354
 3     16.33%     AC3                                 641
-4     9.12%      EAC3 Atmos                          358
-5     2.90%      FLAC                                114
+4     9.15%      EAC3 Atmos                          359
+5     2.93%      FLAC                                115
 6     1.48%      Opus                                58
-7     0.66%      DTS                                 26
-8     0.20%      Unknown                             8
-9     0.18%      Vorbis                              7
+7     0.69%      DTS                                 27
+8     0.18%      Vorbis                              7
+9     0.05%      DTS-HD MA                           2
 10    0.03%      DTS-ES                              1
 
 # Edition Statistics (Movie-Specific)
@@ -119,13 +118,13 @@ Analysing metadata...
 
 # QualityTitle Statistics
 #     %          QualityTitle                        Occurrences
-1     38.73%     WEBDL-1080p                         1520
+1     38.78%     WEBDL-1080p                         1522
 2     8.23%      DSNP WEBDL-720p                     323
 3     6.62%      AMZN WEBDL-720p                     260
 4     6.09%      NF WEBDL-1080p                      239
 5     5.91%      Bluray-720p                         232
 6     4.94%      HMAX WEBDL-720p                     194
-7     4.56%      Bluray-1080p                        179
+7     4.64%      Bluray-1080p                        182
 8     3.97%      NF WEBDL-720p                       156
 9     3.24%      DVD                                 127
 10    2.73%      WEBDL-720p                          107
@@ -151,17 +150,12 @@ Analysing metadata...
 30    0.08%      AMZN Repack WEBRip-720p             3
 31    0.08%      HDTV-1080p                          3
 32    0.08%      v2 Bluray-1080p                     3
-33    0.05%      DTS-HD MA 5.1                       2
-34    0.03%      EAC3 7.1                            1
-35    0.03%      DTS 5.1                             1
-36    0.03%      EAC3 Atmos 5.1                      1
-37    0.03%      EAC3 5.1                            1
-38    0.03%      FLAC 5.1                            1
-39    0.03%      EAC3 2.0                            1
-40    0.03%      Uncensored WEBDL-1080p              1
-41    0.03%      Hybrid Bluray-1080p                 1
-42    0.03%      Repack Bluray-1080p                 1
-43    0.03%      Repack WEBDL-1080p                  1
+33    0.05%      WEBRip-1080p                        2
+34    0.03%      Remux-1080p                         1
+35    0.03%      Uncensored WEBDL-1080p              1
+36    0.03%      Hybrid Bluray-1080p                 1
+37    0.03%      Repack Bluray-1080p                 1
+38    0.03%      Repack WEBDL-1080p                  1
 
 # ReleaseGroup Statistics
 #     %          ReleaseGroup                        Occurrences
@@ -217,10 +211,8 @@ Analysing metadata...
 
  - Time taken: 0.019 seconds
 
-Total time taken: 1.231 seconds
-
 Finished!
 
 
-C:\Users\David\GitHubRepos\MediaManager\PROJECT\MediaManager\bin\Release\MediaManager.exe (process 5912) exited with code 0 (0x0).
+C:\Users\David\GitHubRepos\MediaManager\PROJECT\MediaManager\bin\Release\MediaManager.exe (process 18168) exited with code 0 (0x0).
 Press any key to close this window . . .
