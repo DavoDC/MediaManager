@@ -19,7 +19,7 @@ namespace MediaManager.Code.Modules
                     (?:\[(?<CustomFormat>(?!\w+-\d{3,4}p)[^\]]+)\])?
                     (?:\[(?<QualityTitle>(?!EAC3 5\.1)[^\]]+)\])?
                     (?:\[(?<ThreeD>3D)\])?
-                    (?:\[(?<VideoDynamicRange>HDR|SDR|Dolby Vision|HLG)\])?
+                    (?:\[(?<VideoDynamicRange>HDR|SDR|HLG)\])?
                     (?:\[(?<AudioCodec>EAC3|[^\]\s]+(?:\s+[^\]\s]+)*)\s+(?<AudioChannels>[\d.]+)\])?
                     (?:\[(?<VideoCodec>x264|x265|h264|h265|AVC)\])?
                     (?:\[(?<AudioLanguages>[^\]]+)\])?

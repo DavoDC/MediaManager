@@ -7,5 +7,3 @@ Find incorrect assignments
 
 # Improve parsing
 Fix issues found by checker by modifying regex/code
-
-Fix 8xUnknown audio codecs and channels

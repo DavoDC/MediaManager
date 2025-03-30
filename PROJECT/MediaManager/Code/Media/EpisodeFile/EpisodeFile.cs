@@ -18,9 +18,9 @@ namespace MediaManager.Code.Modules
                     S(?<SeasonNum>\d{2})E(?<EpisodeNum>\d{2})\s*-\s*
                     (?<EpisodeTitle>.+?)\s*
                     (?:\[(?<CustomFormat>[^]\[]*?)\s*(?<QualityTitle>[^]\[]*)\])?\s*
-                    (?:\[(?<VideoDynamicRange>HDR|SDR|Dolby Vision|HLG)\])?\s*
+                    (?:\[(?<VideoDynamicRange>HDR|SDR|HLG)\])?\s*
                     (?:\[(?<VideoBitDepth>\d+)bit\])?
-                    (?:\[(?<AudioCodec>EAC3 5\.1|[^\]\s]+(?:\s+[^\]\s]+)*)\s+(?<AudioChannels>[\d.]+)\])?
+                    (?:\[(?<AudioCodec>EAC3|[^\]\s]+(?:\s+[^\]\s]+)*)\s+(?<AudioChannels>[\d.]+)\])?
                     (?:\[(?<VideoCodec>x264|x265|h264|h265)\])?
                     (?:\[(?<AudioLanguages>[^\]]+)\])?
                     (?:-(?<ReleaseGroup>[^\]]+))?$", RegexOptions.IgnorePatternWhitespace);
