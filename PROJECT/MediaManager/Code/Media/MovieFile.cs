@@ -16,11 +16,11 @@ namespace MediaManager.Code.Modules
                     ^(?<Title>.+?)\s*\((?<ReleaseYear>\d{4})\)\s*
                     \{(?<DBID>tmdb-\d+)\}\s*
                     (?:\{edition-(?<Edition>[^}]+)\}\s*)?
-                    (?:\[(?<CustomFormat>(?!Bluray-\d{3}p|WEBRip-\d{3}p)[^\]]+)\])?
+                    (?:\[(?<CustomFormat>(?!Bluray-\d{3,4}p|WEBRip-\d{3,4}p)[^\]]+)\])?
                     (?:\[(?<QualityTitle>(?!EAC3 5\.1)[^\]]+)\])?
                     (?:\[(?<ThreeD>3D)\])?
                     (?:\[(?<VideoDynamicRange>HDR|SDR|Dolby Vision|HLG)\])?
-                    (?:\[(?<AudioCodec>EAC3 5\.1|[^\]\s]+(?:\s+[^\]\s]+)*)\s+(?<AudioChannels>[\d.]+)\])?
+                    (?:\[(?<AudioCodec>EAC3|[^\]\s]+(?:\s+[^\]\s]+)*)\s+(?<AudioChannels>[\d.]+)\])?
                     (?:\[(?<VideoCodec>x264|x265|h264|h265)\])?
                     (?:\[(?<AudioLanguages>[^\]]+)\])?
                     (?:-(?<ReleaseGroup>[^\]]+))?$", RegexOptions.IgnorePatternWhitespace);
