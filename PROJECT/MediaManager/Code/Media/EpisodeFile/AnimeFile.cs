@@ -66,10 +66,18 @@ namespace MediaManager.Code.Modules
                 // Set anime specific properties
                 SetAnimeSpecificPropertiesFromFilename(animeMatch);
 
+                //// Fix values previously set by the show regex
                 // Fix title previously set
                 // - The show regex used initially includes the absolute episode number in the title
                 // - The title from the anime regex will not include this extra info
                 EpisodeTitle = GetGroupValue(animeMatch, "EpisodeTitle");
+
+                // Fix quality title previously set
+                QualityTitle = GetGroupValue(animeMatch, "QualityTitle");
+
+                // Fix video codec previously set
+                // Animes are unique as they are the only type where Video Codec comes before Audio Codec
+                VideoCodec = GetGroupValue(animeMatch, "VideoCodec");
             }
             else if (SeasonType.Equals("Special"))
             {
