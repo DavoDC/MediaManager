@@ -17,7 +17,7 @@ namespace MediaManager.Code.Modules
                         S(?<SeasonNum>\d{2})E(?<EpisodeNum>\d{2})\s*-\s*
                         (?<AbsoluteEpisode>\d{3})\s*-\s*
                         (?<EpisodeTitle>.+?)\s*
-                        (?:\[(?<CustomFormats>[^]\[]*?)\s*(?<QualityTitle>[^]\[]*)\])?\s*
+                        (?:\[(?<CustomFormat>[^]\[]*?)\s*(?<QualityTitle>[^]\[]*)\])?\s*
                         (?:\[(?<VideoDynamicRange>HDR|SDR|Dolby Vision|HLG)\])?\s*
                         (?:\[(?<VideoBitDepth>\d+)bit\])?\s*
                         (?:\[(?<VideoCodec>x264|x265|AV1|VP9|h264|h265)\])?\s*

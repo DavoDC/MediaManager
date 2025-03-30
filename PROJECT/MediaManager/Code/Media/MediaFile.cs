@@ -137,7 +137,7 @@ namespace MediaManager.Code.Modules
             SetElementValue("ReleaseYear", ReleaseYear);
             SetElementValue("DatabaseLink", DatabaseLink);
             SetElementValue("Extension", Extension);
-            SetElementValue("CustomFormats", CustomFormat);
+            SetElementValue("CustomFormat", CustomFormat);
             SetElementValue("QualityTitle", QualityTitle);
             SetElementValue("VideoDynamicRange", VideoDynamicRange);
             SetElementValue("VideoCodec", VideoCodec);
@@ -174,7 +174,7 @@ namespace MediaManager.Code.Modules
             ReleaseYear = GetElementValue("ReleaseYear");
             DatabaseLink = GetElementValue("DatabaseLink");
             Extension = GetElementValue("Extension");
-            CustomFormat = GetElementValue("CustomFormats");
+            CustomFormat = GetElementValue("CustomFormat");
             QualityTitle = GetElementValue("QualityTitle");
             VideoDynamicRange = GetElementValue("VideoDynamicRange");
             VideoCodec = GetElementValue("VideoCodec");
@@ -225,7 +225,7 @@ namespace MediaManager.Code.Modules
             props += $"ReleaseYear: {ReleaseYear ?? "NULL"}\n";
             props += $"DatabaseLink: {DatabaseLink ?? "NULL"}\n";
             props += $"Extension: {Extension ?? "NULL"}\n";
-            props += $"CustomFormats: {CustomFormat ?? "NULL"}\n";
+            props += $"CustomFormat: {CustomFormat ?? "NULL"}\n";
             props += $"QualityTitle: {QualityTitle ?? "NULL"}\n";
             props += $"VideoDynamicRange: {VideoDynamicRange ?? "NULL"}\n";
             props += $"VideoCodec: {VideoCodec ?? "NULL"}\n";

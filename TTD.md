@@ -1,18 +1,5 @@
 # Things to Do 
 
-## XML INFO
-Add Filename to XML
-
-Fix - dont need plural in XML
-
-
-## Improve Folder parsing - InitialiseFieldsUsingMediaFolderName()
-Code is almost the same for movies and episodes when parsing folder names
-Generalise it!! Use one regex for both, shift into MediaFile class
-
-## Look for duplicate code 
-Init of common fields in movie and ep
-
 
 ## IMPROVING PARSING
 
@@ -48,3 +35,12 @@ PQ
 ## Combine stats
 see playHD and PlayHD separate. possible to combine the count of those?
 Erai-raws and Erai-raw
+
+
+
+## Refactor: Improve Folder parsing - InitialiseFieldsUsingMediaFolderName()
+Code is almost the same for movies and episodes when parsing folder names
+Generalise it!! Use one regex for both, shift into MediaFile class
+
+## Refactor: Look for duplicate code 
+Init of common fields in movie and ep
