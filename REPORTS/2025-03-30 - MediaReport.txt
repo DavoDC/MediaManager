@@ -2,11 +2,11 @@
 ###### Media Manager ######
 
 Checking age of mirror...
- - DateTime.Now               2025-03-30 12:03:37
- - DateTime.MirrorCreation    2025-03-30 11:57:03
- - DateTime.MirrorAge         0d, 0h, 6m, 34s
+ - DateTime.Now               2025-03-30 12:55:25
+ - DateTime.MirrorCreation    2025-03-30 12:54:46
+ - DateTime.MirrorAge         0d, 0h, 0m, 39s
  - Mirror was generated recently, but 'force regeneration' is active! Will regenerate!
- - Time taken: 0.004 seconds
+ - Time taken: 0.003 seconds
 
 Creating mirror of 'E:\Visual_Media'...
  - Path: 'C:\Users\David\GitHubRepos\MediaMirror\MEDIA_MIRROR'
@@ -14,14 +14,14 @@ Creating mirror of 'E:\Visual_Media'...
  - Unexpected files found: 0
  - Media filenames sanitised: 39
  - Regenerated: True
- - Time taken: 3.089 seconds
+ - Time taken: 1.847 seconds
 
 Parsing media metadata...
  - Movie files parsed: 244
  - Show files parsed: 1607
  - Anime files parsed: 2046
  - Total files parsed: 3897
- - Time taken: 1.963 seconds
+ - Time taken: 2.511 seconds
 
 Analysing metadata...
 
@@ -173,129 +173,140 @@ Analysing metadata...
 
 # ReleaseGroup Statistics
 #     %          ReleaseGroup                        Occurrences
-1     15.91%     Erai-raws                           620
+1     17.19%     Erai-raws                           670
 2     10.34%     NTb                                 403
-3     8.62%      SubsPlease                          336
-4     6.75%      HorribleRips                        263
-5     6.00%      FLUX                                234
-6     5.52%      PlayWEB                             215
+3     8.72%      playWEB                             340
+4     8.62%      SubsPlease                          336
+5     6.75%      HorribleRips                        263
+6     6.00%      FLUX                                234
 7     4.72%      HONE                                184
 8     3.57%      HorribleSubs                        139
-9     3.21%      playWEB                             125
+9     2.77%      playHD                              108
 10    2.49%      Kitsune                             97
-11    2.05%      playHD                              80
-12    1.72%      ViSUM                               67
-13    1.51%      ZR                                  59
-14    1.33%      Exiled-Destiny                      52
-15    1.28%      Erai-raw                            50
-16    1.26%      Cor-Laharl                          49
-17    1.21%      Arid                                47
-18    1.18%      ChucksMux                           46
-19    1.15%      Cinefeel                            45
-20    1.05%      PHOENiX                             41
-21    0.90%      NTG                                 35
-22    0.85%      TEPES                               33
-23    0.72%      PlayHD                              28
-24    0.67%      MZABI                               26
-25    0.67%      bog                                 26
-26    0.67%      Yurasyk                             26
-27    0.64%      BS                                  25
-28    0.64%      AC                                  25
-29    0.64%      ainex                               25
-30    0.62%      sam                                 24
-31    0.62%      DragsterPS                          24
-32    0.59%      AJP69                               23
-33    0.56%      ECI                                 22
-34    0.54%      LAZY                                21
-35    0.51%      iON                                 20
-36    0.44%      Coo7                                17
-37    0.41%      KOGi                                16
-38    0.41%      KiNGS                               16
-39    0.41%      WELP                                16
-40    0.38%      SbR                                 15
-41    0.38%      TOMMY                               15
-42    0.33%      iFT                                 13
-43    0.33%      T6D                                 13
-44    0.33%      NOSiViD                             13
-45    0.31%      LoTV                                12
-46    0.31%      MALD                                12
-47    0.31%      LostYears                           12
-48    0.28%      EbP                                 11
-49    0.28%      MTBB                                11
-50    0.28%      Commie                              11
-51    0.26%      NG                                  10
-52    0.26%      SLiGNOME                            10
-53    0.23%      KHN                                 9
-54    0.21%      QOQ                                 8
-55    0.21%      STRiFE                              8
-56    0.18%      DON                                 7
-57    0.18%      GOSSIP                              7
-58    0.18%      Mr.Lahey                            7
-59    0.13%      TayTO                               5
-60    0.10%      HiDt                                4
-61    0.10%      CtrlHD                              4
-62    0.08%      CMRG                                3
-63    0.08%      WMING                               3
-64    0.08%      VietHD                              3
-65    0.08%      HANDJOB                             3
-66    0.08%      LEGION                              3
-67    0.08%      CasStudio                           3
-68    0.08%      E.N.D                               3
-69    0.08%      LCE                                 3
-70    0.05%      ZoroSenpai                          2
-71    0.05%      c0kE                                2
-72    0.05%      D-Z0N3                              2
-73    0.05%      ZQ                                  2
-74    0.05%      PTer                                2
-75    0.05%      CRiSC                               2
-76    0.05%      Geek                                2
-77    0.05%      SA89                                2
-78    0.05%      LolHD                               2
-79    0.03%      APEX                                1
-80    0.03%      TDD                                 1
-81    0.03%      DopeHD                              1
-82    0.03%      luvBB                               1
-83    0.03%      HiP                                 1
-84    0.03%      KASHMiR                             1
-85    0.03%      XSHD                                1
-86    0.03%      KNiVES                              1
-87    0.03%      LouLaVie                            1
-88    0.03%      LoRD                                1
-89    0.03%      GUACAMOLE                           1
-90    0.03%      Dariush                             1
-91    0.03%      NOSCREENS                           1
-92    0.03%      FAPCAVE                             1
-93    0.03%      WATCHER                             1
-94    0.03%      Baws                                1
-95    0.03%      FoRM                                1
-96    0.03%      HiFi                                1
-97    0.03%      BMF                                 1
-98    0.03%      VETO                                1
-99    0.03%      DiMEPiECE                           1
-100   0.03%      ViGi                                1
-101   0.03%      AMIABLE                             1
-102   0.03%      EddieSmurfy                         1
-103   0.03%      ZOROSENPAI                          1
-104   0.03%      KamiKaze                            1
-105   0.03%      CONSORTiUM                          1
-106   0.03%      iDYLL                               1
-107   0.03%      NorTV                               1
-108   0.03%      DREAMCATCHER                        1
-109   0.03%      ESiR                                1
-110   0.03%      COO7                                1
-111   0.03%      UQW                                 1
-112   0.03%      VARYG                               1
-113   0.03%      NOIY                                1
-114   0.03%      SCY                                 1
-115   0.03%      WhyNot                              1
-116   0.03%      THORA                               1
+11    1.72%      ViSUM                               67
+12    1.51%      ZR                                  59
+13    1.33%      Exiled-Destiny                      52
+14    1.26%      Cor-Laharl                          49
+15    1.21%      Arid                                47
+16    1.18%      ChucksMux                           46
+17    1.15%      Cinefeel                            45
+18    1.05%      PHOENiX                             41
+19    0.90%      NTG                                 35
+20    0.85%      TEPES                               33
+21    0.67%      MZABI                               26
+22    0.67%      bog                                 26
+23    0.67%      Yurasyk                             26
+24    0.64%      BS                                  25
+25    0.64%      AC                                  25
+26    0.64%      ainex                               25
+27    0.62%      sam                                 24
+28    0.62%      DragsterPS                          24
+29    0.59%      AJP69                               23
+30    0.56%      ECI                                 22
+31    0.54%      LAZY                                21
+32    0.51%      iON                                 20
+33    0.46%      Coo7                                18
+34    0.41%      KOGi                                16
+35    0.41%      KiNGS                               16
+36    0.41%      WELP                                16
+37    0.38%      SbR                                 15
+38    0.38%      TOMMY                               15
+39    0.33%      iFT                                 13
+40    0.33%      T6D                                 13
+41    0.33%      NOSiViD                             13
+42    0.31%      LoTV                                12
+43    0.31%      MALD                                12
+44    0.31%      LostYears                           12
+45    0.28%      EbP                                 11
+46    0.28%      MTBB                                11
+47    0.28%      Commie                              11
+48    0.26%      NG                                  10
+49    0.26%      SLiGNOME                            10
+50    0.23%      KHN                                 9
+51    0.21%      QOQ                                 8
+52    0.21%      STRiFE                              8
+53    0.18%      DON                                 7
+54    0.18%      GOSSIP                              7
+55    0.18%      Mr.Lahey                            7
+56    0.13%      TayTO                               5
+57    0.10%      HiDt                                4
+58    0.10%      CtrlHD                              4
+59    0.08%      CMRG                                3
+60    0.08%      WMING                               3
+61    0.08%      ZoroSenpai                          3
+62    0.08%      VietHD                              3
+63    0.08%      HANDJOB                             3
+64    0.08%      LEGION                              3
+65    0.08%      CasStudio                           3
+66    0.08%      E.N.D                               3
+67    0.08%      LCE                                 3
+68    0.05%      c0kE                                2
+69    0.05%      D-Z0N3                              2
+70    0.05%      ZQ                                  2
+71    0.05%      PTer                                2
+72    0.05%      CRiSC                               2
+73    0.05%      Geek                                2
+74    0.05%      SA89                                2
+75    0.05%      LolHD                               2
+76    0.03%      APEX                                1
+77    0.03%      TDD                                 1
+78    0.03%      DopeHD                              1
+79    0.03%      luvBB                               1
+80    0.03%      HiP                                 1
+81    0.03%      KASHMiR                             1
+82    0.03%      XSHD                                1
+83    0.03%      KNiVES                              1
+84    0.03%      LouLaVie                            1
+85    0.03%      LoRD                                1
+86    0.03%      GUACAMOLE                           1
+87    0.03%      Dariush                             1
+88    0.03%      NOSCREENS                           1
+89    0.03%      FAPCAVE                             1
+90    0.03%      WATCHER                             1
+91    0.03%      Baws                                1
+92    0.03%      FoRM                                1
+93    0.03%      HiFi                                1
+94    0.03%      BMF                                 1
+95    0.03%      VETO                                1
+96    0.03%      DiMEPiECE                           1
+97    0.03%      ViGi                                1
+98    0.03%      AMIABLE                             1
+99    0.03%      EddieSmurfy                         1
+100   0.03%      KamiKaze                            1
+101   0.03%      CONSORTiUM                          1
+102   0.03%      iDYLL                               1
+103   0.03%      NorTV                               1
+104   0.03%      DREAMCATCHER                        1
+105   0.03%      ESiR                                1
+106   0.03%      UQW                                 1
+107   0.03%      VARYG                               1
+108   0.03%      NOIY                                1
+109   0.03%      SCY                                 1
+110   0.03%      WhyNot                              1
+111   0.03%      THORA                               1
 
- - Time taken: 0.013 seconds
+# Edition Statistics
+#     %          Edition                             Occurrences
+1     73.77%     Unknown                             180
+2     9.84%      Imax                                24
+3     6.15%      Extended Cut                        15
+4     3.69%      Remastered                          9
+5     1.64%      Remaster                            4
+6     1.23%      Director's Cut                      3
+7     0.82%      Unrated                             2
+8     0.82%      International Cut                   2
+9     0.41%      Ultimate Edition                    1
+10    0.41%      German Cut                          1
+11    0.41%      Collectors Edition                  1
+12    0.41%      Theatrical Cut                      1
+13    0.41%      Uncensored                          1
 
-Total time taken: 5.055 seconds
+ - Time taken: 0.024 seconds
+
+Total time taken: 4.361 seconds
 
 Finished!
 
 
-C:\Users\David\GitHubRepos\MediaManager\PROJECT\MediaManager\bin\Release\MediaManager.exe (process 23540) exited with code 0 (0x0).
+C:\Users\David\GitHubRepos\MediaManager\PROJECT\MediaManager\bin\Release\MediaManager.exe (process 9532) exited with code 0 (0x0).
 Press any key to close this window . . .

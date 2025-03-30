@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediaManager.Code.Modules;
+using System;
 
 namespace MediaManager
 {
@@ -16,15 +17,15 @@ namespace MediaManager
             Console.WriteLine("\nAnalysing metadata...");
 
             // Calculate common stats
-            StatList extStats = new StatList("Extension", Parser.MediaFiles, f => f.Extension);
-            StatList yearStats = new StatList("ReleaseYear", Parser.MediaFiles, f => f.ReleaseYear);
-            StatList formatStats = new StatList("CustomFormat", Parser.MediaFiles, f => f.CustomFormat);
-            StatList qualityStats = new StatList("QualityTitle", Parser.MediaFiles, f => f.QualityTitle);
-            StatList videoRangeStats = new StatList("VideoDynamicRange", Parser.MediaFiles, f => f.VideoDynamicRange);
-            StatList videoCodecStats = new StatList("VideoCodec", Parser.MediaFiles, f => f.VideoCodec);
-            StatList audioCodecStats = new StatList("AudioCodec", Parser.MediaFiles, f => f.AudioCodec);
-            StatList audioChannelStats = new StatList("AudioChannels", Parser.MediaFiles, f => f.AudioChannels);
-            StatList relGroupStats = new StatList("ReleaseGroup", Parser.MediaFiles, f => f.ReleaseGroup);
+            var extStats = CreateStatList("Extension", f => f.Extension);
+            var yearStats = CreateStatList("ReleaseYear", f => f.ReleaseYear);
+            var formatStats = CreateStatList("CustomFormat", f => f.CustomFormat);
+            var qualityStats = CreateStatList("QualityTitle", f => f.QualityTitle);
+            var videoRangeStats = CreateStatList("VideoDynamicRange", f => f.VideoDynamicRange);
+            var videoCodecStats = CreateStatList("VideoCodec", f => f.VideoCodec);
+            var audioCodecStats = CreateStatList("AudioCodec", f => f.AudioCodec);
+            var audioChannelStats = CreateStatList("AudioChannels", f => f.AudioChannels);
+            var relGroupStats = CreateStatList("ReleaseGroup", f => f.ReleaseGroup);
 
             // Print common stats
             extStats.Print(0);
@@ -38,12 +39,23 @@ namespace MediaManager
             relGroupStats.Print(0);
 
             // Calculate and print movie stats
-            // MAKE STATLIST HANDLE GENERIC TYPES
-            //StatList editionStats = new StatList("Edition", Parser.MovieFiles, );
+            var editionStats = new StatList<MovieFile>("Edition", Parser.MovieFiles, f => f.Edition);
+            editionStats.Print(0);
 
             // Finish and print time taken
             Console.WriteLine("");
             FinishAndPrintTimeTaken();
+        }
+
+        /// <summary>
+        /// Creates a <see cref="StatList{MediaFile}"/> instance for a given property of <see cref="MediaFile"/> objects.
+        /// </summary>
+        /// <param name="name">The name of the statistic (e.g., "Extension", "ReleaseYear").</param>
+        /// <param name="propertyExtractor">A function to extract the property from a <see cref="MediaFile"/> object.</param>
+        /// <returns>A <see cref="StatList{MediaFile}"/> containing the frequency distribution of the specified property.</returns>
+        private StatList<MediaFile> CreateStatList(string name, Func<MediaFile, string> propertyExtractor)
+        {
+            return new StatList<MediaFile>(name, Parser.MediaFiles, propertyExtractor);
         }
     }
 }

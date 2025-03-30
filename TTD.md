@@ -1,8 +1,9 @@
 # Things to Do 
 
+## More stats 
+Edition etc
 
 ## IMPROVING PARSING
-
 - You'll see incorrect stuff come up
     - e.g. EAC being assigned to quality title instead of audio codec 
     - Not picking video codec - white lotus, fawtly  , h264, h265
@@ -35,6 +36,7 @@ PQ
 ## Combine stats
 see playHD and PlayHD separate. possible to combine the count of those?
 Erai-raws and Erai-raw
+FIX BY RENAMING FILES INSTEAD!!!
 
 
 

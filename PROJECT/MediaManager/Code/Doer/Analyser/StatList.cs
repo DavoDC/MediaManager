@@ -7,9 +7,10 @@ using StringIntFreqDist = System.Linq.IOrderedEnumerable<System.Collections.Gene
 namespace MediaManager
 {
     /// <summary>
-    /// Calculates, stores and displays frequency statistics for a given media file property
+    /// Calculates, stores and displays frequency statistics for a specific property of items of type <typeparamref name="T"/>.
     /// </summary>
-    internal class StatList
+    /// <typeparam name="T">The type of the items (e.g., MediaFile, Book, etc.).</typeparam>
+    internal class StatList<T>
     {
         // Name of these statistics
         private string name;
@@ -30,7 +31,7 @@ namespace MediaManager
         /// <param name="name">The name of the statistics category</param>
         /// <param name="mediaFilesIn">The list of media files inputted</param>
         /// <param name="func">Function that returns the property</param>
-        public StatList(string name, List<MediaFile> mediaFilesIn, Func<MediaFile, string> func)
+        public StatList(string name, List<T> mediaFilesIn, Func<T, string> func)
         {
             // Save name
             this.name = name;
@@ -76,18 +77,18 @@ namespace MediaManager
         }
 
         /// <summary>
-        /// Generates a frequency distribution of sub-properties extracted from a list of media files.
+        /// Generates a frequency distribution of sub-properties extracted from a list of items.
         /// </summary>
-        /// <param name="mediaFilesIn">The list of media files inputted</param>
-        /// <param name="func">A function that extracts a property from a given media file.</param>
+        /// <param name="items">The list of items inputted.</param>
+        /// <param name="func">A function that extracts a property from a given item.</param>
         /// <returns>List of key-value pairs (property-frequency_count pairs), sorted in descending order by count.</returns>
-        public static StringIntFreqDist GetSortedFreqDist(List<MediaFile> mediaFilesIn, Func<MediaFile, string> func)
+        public static StringIntFreqDist GetSortedFreqDist(List<T> items, Func<T, string> func)
         {
             // A dictionary that maps each unique item to how many there are
             var itemVariants = new Dictionary<string, int>();
 
             // For each file
-            foreach (var file in mediaFilesIn)
+            foreach (var file in items)
             {
                 // Extract property using the given function
                 string property = func(file);
@@ -131,9 +132,9 @@ namespace MediaManager
         /// <summary>
         /// Get statistics on how many files are in each time/decade period
         /// </summary>
-        /// <param name="yearStats">The normal year statistics</param>
-        /// <returns></returns>
-        public static StringIntFreqDist GetDecadeFreqDist(StatList yearStats)
+        /// <param name="yearStats">The normal year statistics.</param>
+        /// <returns>A frequency distribution of decade periods.</returns>
+        public static StringIntFreqDist GetDecadeFreqDist(StatList<T> yearStats)
         {
             // Extract year frequency distribution
             var yearFreqDist = yearStats.SortedFreqDist;
