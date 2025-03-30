@@ -86,15 +86,15 @@ namespace MediaManager
                 Analyser a = new Analyser();
 
                 // TEST
-                //Console.WriteLine("");
-                //foreach (MediaFile curFile in Parser.MediaFiles)
-                //{
-                //    if (curFile.AudioCodec.Equals("Unknown"))
-                //    {
-                //        curFile.PrintAllProperties();
-                //        Console.WriteLine("");
-                //    }
-                //}
+                Console.WriteLine("");
+                foreach (MediaFile curFile in Parser.MediaFiles)
+                {
+                    if (curFile.AudioCodec.Equals("Unknown"))
+                    {
+                        curFile.PrintAllProperties();
+                        Console.WriteLine("");
+                    }
+                }
 
                 // Print total time
                 //TimeSpan totalTime = ac.ExecutionTime + refl.ExecutionTime + p.ExecutionTime + a.ExecutionTime;
