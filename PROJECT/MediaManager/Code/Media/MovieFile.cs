@@ -16,15 +16,16 @@ namespace MediaManager.Code.Modules
                     ^(?<Title>.+?)\s*\((?<ReleaseYear>\d{4})\)\s*
                     \{(?<DBID>tmdb-\d+)\}\s*
                     (?:\{edition-(?<Edition>[^}]+)\}\s*)?
-                    (?:\[(?<CustomFormat>[^\]]+)\])?
-                    (?:\[(?<QualityTitle>[^\]]+)\])?
+                    (?:\[(?<VideoCodec>x264|x265|h264|h265)\])?
+                    (?:\[(?<CustomFormat>(?!Bluray-\d{3}p|WEBRip-\d{3}p)[^\]]+)\])?
+                    (?:\[(?<QualityTitle>(?!EAC3 5\.1)[^\]]+)\])?
                     (?:\[(?<VideoDynamicRange>HDR|SDR|Dolby Vision|HLG)\])?
                     (?:\[(?<ThreeD>3D)\])?
                     (?:\[(?<VideoBitDepth>\d+)bit\])?
-                    (?:\[(?<VideoCodec>x264|x265|h264|h265)\])?
                     (?:\[(?<AudioCodec>EAC3 5\.1|[^\]\s]+(?:\s+[^\]\s]+)*)\s+(?<AudioChannels>[\d.]+)\])?
+                    (?:\[(?<VideoCodec>x264|x265|h264|h265)\])?
                     (?:\[(?<AudioLanguages>[^\]]+)\])?
-                    (?:-(?<ReleaseGroup>[^\]]+))?$", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase);
+                    (?:-(?<ReleaseGroup>[^\]]+))?$", RegexOptions.IgnorePatternWhitespace);
 
         /// <summary>
         /// The movie's edition/cut information (e.g. Directors Cut)
