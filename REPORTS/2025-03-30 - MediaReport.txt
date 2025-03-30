@@ -2,26 +2,26 @@
 ###### Media Manager ######
 
 Checking age of mirror...
- - DateTime.Now               2025-03-30 11:25:09
- - DateTime.MirrorCreation    2025-03-30 10:38:18
- - DateTime.MirrorAge         0d, 0h, 46m, 51s
- - Mirror was generated recently, no regeneration needed!
- - Time taken: 0.002 seconds
+ - DateTime.Now               2025-03-30 12:03:37
+ - DateTime.MirrorCreation    2025-03-30 11:57:03
+ - DateTime.MirrorAge         0d, 0h, 6m, 34s
+ - Mirror was generated recently, but 'force regeneration' is active! Will regenerate!
+ - Time taken: 0.004 seconds
 
 Creating mirror of 'E:\Visual_Media'...
  - Path: 'C:\Users\David\GitHubRepos\MediaMirror\MEDIA_MIRROR'
  - Media file count: 3897
  - Unexpected files found: 0
  - Media filenames sanitised: 39
- - Regenerated: False
- - Time taken: 0.273 seconds
+ - Regenerated: True
+ - Time taken: 3.089 seconds
 
 Parsing media metadata...
  - Movie files parsed: 244
  - Show files parsed: 1607
  - Anime files parsed: 2046
  - Total files parsed: 3897
- - Time taken: 0.896 seconds
+ - Time taken: 1.963 seconds
 
 Analysing metadata...
 
@@ -57,6 +57,23 @@ Analysing metadata...
 24    0.72%      1998                                28
 25    0.49%      2025                                19
 26    0.31%      1975                                12
+27    0.23%      2003                                9
+28    0.13%      2001                                5
+29    0.05%      1985                                2
+30    0.05%      1989                                2
+31    0.05%      1984                                2
+32    0.05%      1991                                2
+33    0.05%      1994                                2
+34    0.05%      2000                                2
+35    0.05%      1999                                2
+36    0.03%      1990                                1
+37    0.03%      1987                                1
+38    0.03%      1981                                1
+39    0.03%      1983                                1
+40    0.03%      1977                                1
+41    0.03%      1980                                1
+42    0.03%      1982                                1
+43    0.03%      1986                                1
 
 # CustomFormat Statistics
 #     %          CustomFormat                        Occurrences
@@ -66,10 +83,21 @@ Analysing metadata...
 4     0.33%      Repack                              13
 5     0.33%      Hybrid                              13
 6     0.28%      WEBRip-720p                         11
+7     0.23%      4K Remaster                         9
+8     0.10%      AMZN                                4
+9     0.10%      Bluray-1080p                        4
+10    0.08%      DSNP IMAX Enhanced Repack           3
+11    0.08%      NF                                  3
+12    0.05%      WEBDL-1080p                         2
+13    0.03%      Hybrid Repack                       1
+14    0.03%      WEBRip-1080p                        1
+15    0.03%      AMZN Repack                         1
+16    0.03%      MA                                  1
+17    0.03%      DSNP                                1
 
 # QualityTitle Statistics
 #     %          QualityTitle                        Occurrences
-1     36.44%     WEBDL-1080p                         1420
+1     38.77%     WEBDL-1080p                         1511
 2     8.57%      EAC3 Atmos 5.1                      334
 3     6.13%      NF WEBDL-1080p                      239
 4     5.65%      AMZN WEBDL-720p                     220
@@ -77,23 +105,40 @@ Analysing metadata...
 6     4.44%      Bluray-1080p                        173
 7     3.57%      DSNP WEBDL-720p                     139
 8     3.26%      DVD                                 127
-9     3.08%      h264                                120
-10    2.57%      WEBDL-720p                          100
+9     2.57%      WEBDL-720p                          100
+10    2.39%      v2 WEBDL-1080p                      93
 11    2.28%      NF WEBDL-720p                       89
-12    2.28%      v2 WEBDL-1080p                      89
-13    2.03%      AC3 5.1                             79
+12    2.03%      AC3 5.1                             79
+13    2.03%      DSNP WEBDL-1080p                    79
 14    1.95%      AMZN WEBRip-720p                    76
 15    1.90%      EAC3 5.1                            74
 16    1.82%      Bluray-720p                         71
 17    1.62%      NF WEBRip-720p                      63
 18    1.51%      HMAX WEBDL-1080p                    59
-19    1.39%      DSNP WEBDL-1080p                    54
-20    1.08%      AMZN WEBDL-1080p                    42
-21    0.67%      Bluray-480p                         26
-22    0.62%      MULTi WEBDL-1080p                   24
-23    0.51%      v3 WEBDL-1080p                      20
-24    0.41%      DTS 5.1                             16
-25    0.31%      AMZN WEBDL-480p                     12
+19    1.08%      AMZN WEBDL-1080p                    42
+20    0.67%      Bluray-480p                         26
+21    0.62%      MULTi WEBDL-1080p                   24
+22    0.51%      v3 WEBDL-1080p                      20
+23    0.41%      DTS 5.1                             16
+24    0.31%      AMZN WEBDL-480p                     12
+25    0.21%      AMZN Repack WEBDL-720p              8
+26    0.08%      EAC3 7.1                            3
+27    0.08%      Repack WEBDL-720p                   3
+28    0.08%      NF Repack WEBRip-720p               3
+29    0.08%      AMZN Repack WEBRip-720p             3
+30    0.08%      HDTV-1080p                          3
+31    0.08%      v2 Bluray-1080p                     3
+32    0.03%      AC3 2.0                             1
+33    0.03%      WEBRip-720p                         1
+34    0.03%      DTS-HD MA 5.1                       1
+35    0.03%      FLAC 5.1                            1
+36    0.03%      EAC3 2.0                            1
+37    0.03%      DTS 2.0                             1
+38    0.03%      DSNP WEBRip-720p                    1
+39    0.03%      Uncensored WEBDL-1080p              1
+40    0.03%      Hybrid Bluray-1080p                 1
+41    0.03%      Repack Bluray-1080p                 1
+42    0.03%      Repack WEBDL-1080p                  1
 
 # VideoDynamicRange Statistics
 #     %          VideoDynamicRange                   Occurrences
@@ -102,8 +147,9 @@ Analysing metadata...
 # VideoCodec Statistics
 #     %          VideoCodec                          Occurrences
 1     52.60%     x264                                2050
-2     44.11%     Unknown                             1719
-3     3.28%      x265                                128
+2     34.51%     Unknown                             1345
+3     9.60%      h264                                374
+4     3.28%      x265                                128
 
 # AudioCodec Statistics
 #     %          AudioCodec                          Occurrences
@@ -114,12 +160,16 @@ Analysing metadata...
 5     2.93%      FLAC                                114
 6     1.49%      Opus                                58
 7     0.59%      EAC3 Atmos                          23
+8     0.18%      Vorbis                              7
+9     0.13%      DTS                                 5
+10    0.03%      DTS-ES                              1
 
 # AudioChannels Statistics
 #     %          AudioChannels                       Occurrences
 1     50.01%     2.0                                 1949
 2     36.85%     5.1                                 1436
 3     13.11%     Unknown                             511
+4     0.03%      7.1                                 1
 
 # ReleaseGroup Statistics
 #     %          ReleaseGroup                        Occurrences
@@ -175,13 +225,77 @@ Analysing metadata...
 50    0.28%      Commie                              11
 51    0.26%      NG                                  10
 52    0.26%      SLiGNOME                            10
+53    0.23%      KHN                                 9
+54    0.21%      QOQ                                 8
+55    0.21%      STRiFE                              8
+56    0.18%      DON                                 7
+57    0.18%      GOSSIP                              7
+58    0.18%      Mr.Lahey                            7
+59    0.13%      TayTO                               5
+60    0.10%      HiDt                                4
+61    0.10%      CtrlHD                              4
+62    0.08%      CMRG                                3
+63    0.08%      WMING                               3
+64    0.08%      VietHD                              3
+65    0.08%      HANDJOB                             3
+66    0.08%      LEGION                              3
+67    0.08%      CasStudio                           3
+68    0.08%      E.N.D                               3
+69    0.08%      LCE                                 3
+70    0.05%      ZoroSenpai                          2
+71    0.05%      c0kE                                2
+72    0.05%      D-Z0N3                              2
+73    0.05%      ZQ                                  2
+74    0.05%      PTer                                2
+75    0.05%      CRiSC                               2
+76    0.05%      Geek                                2
+77    0.05%      SA89                                2
+78    0.05%      LolHD                               2
+79    0.03%      APEX                                1
+80    0.03%      TDD                                 1
+81    0.03%      DopeHD                              1
+82    0.03%      luvBB                               1
+83    0.03%      HiP                                 1
+84    0.03%      KASHMiR                             1
+85    0.03%      XSHD                                1
+86    0.03%      KNiVES                              1
+87    0.03%      LouLaVie                            1
+88    0.03%      LoRD                                1
+89    0.03%      GUACAMOLE                           1
+90    0.03%      Dariush                             1
+91    0.03%      NOSCREENS                           1
+92    0.03%      FAPCAVE                             1
+93    0.03%      WATCHER                             1
+94    0.03%      Baws                                1
+95    0.03%      FoRM                                1
+96    0.03%      HiFi                                1
+97    0.03%      BMF                                 1
+98    0.03%      VETO                                1
+99    0.03%      DiMEPiECE                           1
+100   0.03%      ViGi                                1
+101   0.03%      AMIABLE                             1
+102   0.03%      EddieSmurfy                         1
+103   0.03%      ZOROSENPAI                          1
+104   0.03%      KamiKaze                            1
+105   0.03%      CONSORTiUM                          1
+106   0.03%      iDYLL                               1
+107   0.03%      NorTV                               1
+108   0.03%      DREAMCATCHER                        1
+109   0.03%      ESiR                                1
+110   0.03%      COO7                                1
+111   0.03%      UQW                                 1
+112   0.03%      VARYG                               1
+113   0.03%      NOIY                                1
+114   0.03%      SCY                                 1
+115   0.03%      WhyNot                              1
+116   0.03%      THORA                               1
 
- - Time taken: 0.012 seconds
+ - Time taken: 0.013 seconds
 
-Total time taken: 1.171 seconds
+Total time taken: 5.055 seconds
 
 Finished!
 
 
-C:\Users\David\GitHubRepos\MediaManager\PROJECT\MediaManager\bin\Release\MediaManager.exe (process 18264) exited with code 0 (0x0).
+C:\Users\David\GitHubRepos\MediaManager\PROJECT\MediaManager\bin\Release\MediaManager.exe (process 23540) exited with code 0 (0x0).
 Press any key to close this window . . .
