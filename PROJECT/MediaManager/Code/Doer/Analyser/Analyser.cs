@@ -15,7 +15,7 @@ namespace MediaManager
             // Notify
             Console.WriteLine("\nAnalysing metadata...");
 
-            // Calculate stats
+            // Calculate common stats
             StatList extStats = new StatList("Extension", Parser.MediaFiles, f => f.Extension);
             StatList yearStats = new StatList("ReleaseYear", Parser.MediaFiles, f => f.ReleaseYear);
             StatList formatStats = new StatList("CustomFormat", Parser.MediaFiles, f => f.CustomFormat);
@@ -26,7 +26,7 @@ namespace MediaManager
             StatList audioChannelStats = new StatList("AudioChannels", Parser.MediaFiles, f => f.AudioChannels);
             StatList relGroupStats = new StatList("ReleaseGroup", Parser.MediaFiles, f => f.ReleaseGroup);
 
-            // Print stats
+            // Print common stats
             extStats.Print(0);
             yearStats.Print(0);
             formatStats.Print(0);
@@ -36,6 +36,10 @@ namespace MediaManager
             audioCodecStats.Print(0);
             audioChannelStats.Print(0);
             relGroupStats.Print(0);
+
+            // Calculate and print movie stats
+            // MAKE STATLIST HANDLE GENERIC TYPES
+            //StatList editionStats = new StatList("Edition", Parser.MovieFiles, );
 
             // Finish and print time taken
             Console.WriteLine("");
