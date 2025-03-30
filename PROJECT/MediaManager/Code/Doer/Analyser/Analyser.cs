@@ -25,6 +25,10 @@ namespace MediaManager
             var videoCodecStats = CreateStatList("VideoCodec", f => f.VideoCodec);
             videoCodecStats.Print(0);
 
+            var decadeFreqDist = StatList<MediaFile>.GetDecadeFreqDist(CreateStatList("ReleaseYear", f => f.ReleaseYear));
+            var decadeStats = new StatList<MediaFile>("Decade", decadeFreqDist);
+            decadeStats.Print(0);
+
             var audioLangStats = new StatList<AnimeFile>("AudioLanguages", Parser.AnimeFiles, f => f.AudioLanguages);
             audioLangStats.Print(0, "(Anime-Specific)");
 

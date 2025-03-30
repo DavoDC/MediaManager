@@ -2,34 +2,95 @@
 ###### Media Manager ######
 
 Checking age of mirror...
- - DateTime.Now               2025-03-30 20:30:55
- - DateTime.MirrorCreation    2025-03-30 20:27:38
- - DateTime.MirrorAge         0d, 0h, 3m, 17s
- - Mirror was generated recently, but 'force regeneration' is active! Will regenerate!
- - Time taken: 0.003 seconds
+ - DateTime.Now               2025-03-30 22:27:35
+ - DateTime.MirrorCreation    2025-03-30 22:12:15
+ - DateTime.MirrorAge         0d, 0h, 15m, 20s
+ - Mirror was generated recently, no regeneration needed!
+ - Time taken: 0.002 seconds
 
 Creating mirror of 'E:\Visual_Media'...
  - Path: 'C:\Users\David\GitHubRepos\MediaMirror\MEDIA_MIRROR'
  - Media file count: 3925
  - Unexpected files found: 0
  - Media filenames sanitised: 39
- - Regenerated: True
- - Time taken: 1.971 seconds
+ - Regenerated: False
+ - Time taken: 0.279 seconds
 
 Parsing media metadata...
  - Movie files parsed: 246
  - Show files parsed: 1633
  - Anime files parsed: 2046
  - Total files parsed: 3925
- - Time taken: 1.805 seconds
+ - Time taken: 0.931 seconds
 
 Analysing metadata...
 
- - Common statistics:
+# VideoBitDepth Statistics (Anime-Specific)
+#     %          VideoBitDepth                       Occurrences
+1     90.18%     8                                   1845
+2     9.58%      10                                  196
+3     0.24%      Unknown                             5
 
-# Extension Statistics
-#     %          Extension                           Occurrences
-1     100.00%    .mkv                                3925
+# AudioChannels Statistics
+#     %          AudioChannels                       Occurrences
+1     49.91%     2.0                                 1959
+2     49.81%     5.1                                 1955
+3     0.20%      Unknown                             8
+4     0.08%      7.1                                 3
+
+# VideoCodec Statistics
+#     %          VideoCodec                          Occurrences
+1     71.29%     x264                                2798
+2     25.43%     h264                                998
+3     3.26%      x265                                128
+4     0.03%      Unknown                             1
+
+# Decade Statistics
+#     %          Decade                              Occurrences
+1     59.95%     2010s                               2353
+2     20.23%     2020s                               794
+3     17.53%     2000s                               688
+4     1.66%      1990s                               65
+5     0.33%      1970s                               13
+6     0.31%      1980s                               12
+
+# AudioLanguages Statistics (Anime-Specific)
+#     %          AudioLanguages                      Occurrences
+1     56.45%     JA                                  1155
+2     16.67%     Unknown                             341
+3     12.66%     EN+JA                               259
+4     12.46%     JA+EN                               255
+5     1.17%      EN+ES+FR+DE+IT+PT+PL+TR+JA          24
+6     0.59%      JA+EN+KO                            12
+
+# AudioCodec Statistics
+#     %          AudioCodec                          Occurrences
+1     34.68%     AAC                                 1361
+2     34.42%     EAC3                                1351
+3     16.33%     AC3                                 641
+4     9.12%      EAC3 Atmos                          358
+5     2.90%      FLAC                                114
+6     1.48%      Opus                                58
+7     0.66%      DTS                                 26
+8     0.20%      Unknown                             8
+9     0.18%      Vorbis                              7
+10    0.03%      DTS-ES                              1
+
+# Edition Statistics (Movie-Specific)
+#     %          Edition                             Occurrences
+1     73.58%     Unknown                             181
+2     8.13%      Imax Enhanced                       20
+3     6.10%      Extended Cut                        15
+4     5.28%      Remastered                          13
+5     2.03%      Imax                                5
+6     1.22%      Director's Cut                      3
+7     0.81%      Unrated                             2
+8     0.81%      International Cut                   2
+9     0.41%      Ultimate Edition                    1
+10    0.41%      German Cut                          1
+11    0.41%      Collectors Edition                  1
+12    0.41%      Theatrical Cut                      1
+13    0.41%      Uncensored                          1
 
 # ReleaseYear Statistics
 #     %          ReleaseYear                         Occurrences
@@ -55,25 +116,6 @@ Analysing metadata...
 20    1.53%      2005                                60
 21    1.45%      2004                                57
 22    1.04%      2010                                41
-
-# CustomFormat Statistics
-#     %          CustomFormat                        Occurrences
-1     98.11%     Unknown                             3851
-2     0.43%      DSNP IMAX Enhanced                  17
-3     0.33%      Repack                              13
-4     0.33%      Hybrid                              13
-5     0.23%      4K Remaster                         9
-6     0.10%      AMZN                                4
-7     0.08%      DSNP IMAX Enhanced Repack           3
-8     0.08%      Bluray-1080p                        3
-9     0.08%      NF                                  3
-10    0.05%      WEBRip-1080p                        2
-11    0.05%      WEBDL-1080p                         2
-12    0.03%      Hybrid Repack                       1
-13    0.03%      Remux-1080p                         1
-14    0.03%      AMZN Repack                         1
-15    0.03%      MA                                  1
-16    0.03%      DSNP                                1
 
 # QualityTitle Statistics
 #     %          QualityTitle                        Occurrences
@@ -120,37 +162,6 @@ Analysing metadata...
 41    0.03%      Hybrid Bluray-1080p                 1
 42    0.03%      Repack Bluray-1080p                 1
 43    0.03%      Repack WEBDL-1080p                  1
-
-# VideoDynamicRange Statistics
-#     %          VideoDynamicRange                   Occurrences
-1     100.00%    Unknown                             3925
-
-# AudioCodec Statistics
-#     %          AudioCodec                          Occurrences
-1     34.68%     AAC                                 1361
-2     34.42%     EAC3                                1351
-3     16.33%     AC3                                 641
-4     9.12%      EAC3 Atmos                          358
-5     2.90%      FLAC                                114
-6     1.48%      Opus                                58
-7     0.66%      DTS                                 26
-8     0.20%      Unknown                             8
-9     0.18%      Vorbis                              7
-10    0.03%      DTS-ES                              1
-
-# AudioChannels Statistics
-#     %          AudioChannels                       Occurrences
-1     49.91%     2.0                                 1959
-2     49.81%     5.1                                 1955
-3     0.20%      Unknown                             8
-4     0.08%      7.1                                 3
-
-# VideoCodec Statistics
-#     %          VideoCodec                          Occurrences
-1     71.29%     x264                                2798
-2     25.43%     h264                                998
-3     3.26%      x265                                128
-4     0.03%      Unknown                             1
 
 # ReleaseGroup Statistics
 #     %          ReleaseGroup                        Occurrences
@@ -204,47 +215,12 @@ Analysing metadata...
 48    0.25%      NG                                  10
 49    0.25%      SLiGNOME                            10
 
- - Movie-specific statistics:
+ - Time taken: 0.019 seconds
 
-# Edition Statistics
-#     %          Edition                             Occurrences
-1     73.58%     Unknown                             181
-2     8.13%      Imax Enhanced                       20
-3     6.10%      Extended Cut                        15
-4     5.28%      Remastered                          13
-5     2.03%      Imax                                5
-6     1.22%      Director's Cut                      3
-7     0.81%      Unrated                             2
-8     0.81%      International Cut                   2
-9     0.41%      Ultimate Edition                    1
-10    0.41%      German Cut                          1
-11    0.41%      Collectors Edition                  1
-12    0.41%      Theatrical Cut                      1
-13    0.41%      Uncensored                          1
-
- - Anime-specific statistics:
-
-# VideoBitDepth Statistics
-#     %          VideoBitDepth                       Occurrences
-1     90.18%     8                                   1845
-2     9.58%      10                                  196
-3     0.24%      Unknown                             5
-
-# AudioLanguages Statistics
-#     %          AudioLanguages                      Occurrences
-1     56.45%     JA                                  1155
-2     16.67%     Unknown                             341
-3     12.66%     EN+JA                               259
-4     12.46%     JA+EN                               255
-5     1.17%      EN+ES+FR+DE+IT+PT+PL+TR+JA          24
-6     0.59%      JA+EN+KO                            12
-
- - Time taken: 0.015 seconds
-
-Total time taken: 3.793 seconds
+Total time taken: 1.231 seconds
 
 Finished!
 
 
-C:\Users\David\GitHubRepos\MediaManager\PROJECT\MediaManager\bin\Release\MediaManager.exe (process 15024) exited with code 0 (0x0).
+C:\Users\David\GitHubRepos\MediaManager\PROJECT\MediaManager\bin\Release\MediaManager.exe (process 5912) exited with code 0 (0x0).
 Press any key to close this window . . .
