@@ -9,13 +9,6 @@ namespace MediaManager.Code.Modules
     internal abstract class EpisodeFile : MediaFile
     {
         /// <summary>
-        /// This regex represents the naming format that Sonarr uses for series (anime/show) folders:
-        /// {Series TitleYear} {tvdb-{TvdbId}}
-        /// Example: "Clarkson's Farm (2021) {tvdb-378165}"
-        /// </summary>
-        private static readonly Regex showFolderRegex = new Regex(@"^(?<Title>.*?)\s\((?<Year>\d{4})\)\s\{(?<TVDBID>tvdb-\d+)\}$");
-
-        /// <summary>
         /// This regex represents the naming format that Sonarr uses for TV show episode filenames:
         /// {Series TitleYear} - S{season:00}E{episode:00} - {Episode CleanTitle} [{Custom Formats }{Quality Title}]{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[MediaInfo VideoCodec]}{-Release Group}
         /// Example: "Gen V (2023) - S01E06 - Jumanji [AMZN WEBDL-720p][EAC3 5.1][h264]-NTb"
@@ -61,43 +54,23 @@ namespace MediaManager.Code.Modules
             CheckType(GetExpectedType());
         }
 
+        /// <returns>The database used for shows</returns>
+        public override string GetExpectedDatabaseIDType()
+        {
+            return "tvdb";
+        }
+
+        /// <returns>A link to a show in the show database, given its ID</returns>
+        public override string GetDatabaseLink(string id)
+        {
+            return $"https://www.thetvdb.com/dereferrer/series/{id}";
+        }
+
         /// <summary>
         /// Initialise fields using the episode's folder name
         /// </summary>
         public override void InitialiseFieldsUsingMediaFolderName()
         {
-            // Try to apply show folder regex to media folder name (e.g. "Clarkson's Farm (2021) {tvdb-378165}")
-            Match mediaFolderMatch = showFolderRegex.Match(MediaFolderName);
-
-            // If regex matched media folder name
-            if (mediaFolderMatch.Success)
-            {
-                // Extract each part
-                Title = mediaFolderMatch.Groups["Title"].Value;
-                ReleaseYear = mediaFolderMatch.Groups["Year"].Value;
-
-                // Handle database ID (TVDB)
-                string[] databaseIDParts = mediaFolderMatch.Groups["TVDBID"].Value.Split('-');
-                string databaseIDType = databaseIDParts[0];
-                string databaseIDValue = databaseIDParts[1];
-                if (databaseIDType.Equals("tvdb"))
-                {
-                    DatabaseLink = $"https://www.thetvdb.com/dereferrer/series/{databaseIDValue}";
-                }
-                else if (databaseIDType.Equals("tmdb"))
-                {
-                    DatabaseLink = $"https://www.themoviedb.org/movie/{databaseIDValue}";
-                }
-                else
-                {
-                    Prog.PrintErrMsg($"Unknown database ID type encountered: {databaseIDType}");
-                }
-            }
-            else
-            {
-                Prog.PrintErrMsg($"Could not parse media folder: {MediaFolderName}");
-            }
-
             // Get folder path
             string folderPath = Path.GetDirectoryName(RelativeFilePath);
 

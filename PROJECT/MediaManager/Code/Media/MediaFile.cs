@@ -12,6 +12,15 @@ namespace MediaManager.Code.Modules
     internal abstract class MediaFile
     {
         /// <summary>
+        /// This regex represents the naming format that the "arr" programs use for media folders.
+        /// - Sonarr names anime/show folders like so: {Series TitleYear} {tvdb-{TvdbId}}
+        ///     - Example: "Clarkson's Farm (2021) {tvdb-378165}"
+        /// - Radarr names movie folders like so: {Movie CleanTitle} ({Release Year}) {tmdb-{TmdbId}}
+        ///     - Example: "Shrek the Third (2007) {tmdb-810}"
+        /// </summary>
+        private static readonly Regex folderRegex = new Regex(@"^(?<Title>.*?)\s\((?<Year>\d{4})\)\s\{(?<ID>(?:tvdb|tmdb)-\d+)\}$");
+
+        /// <summary>
         /// Properties initialised in base class
         /// </summary>
 
@@ -212,6 +221,39 @@ namespace MediaManager.Code.Modules
 
             // Get media file name without extension
             MediaFileName = Path.GetFileNameWithoutExtension(RelativeFilePath);
+
+            // Try to apply media folder regex to media folder name (e.g. "8 Mile (2002) {tmdb-65}")
+            Match mediaFolderMatch = folderRegex.Match(MediaFolderName);
+
+            // If regex matched media folder name
+            if (mediaFolderMatch.Success)
+            {
+                // Extract title and release year
+                Title = mediaFolderMatch.Groups["Title"].Value;
+                ReleaseYear = mediaFolderMatch.Groups["Year"].Value;
+
+                // Break down database ID parts
+                string[] databaseIDParts = mediaFolderMatch.Groups["ID"].Value.Split('-'); // e.g. split "tmdb-65"
+                string databaseIDType = databaseIDParts[0]; // e.g. tmdb
+                string databaseIDValue = databaseIDParts[1]; // e.g. 65
+
+                // If database ID type matches expected type
+                if (databaseIDType.Equals(GetExpectedDatabaseIDType()))
+                {
+                    // Save database link
+                    DatabaseLink = GetDatabaseLink(databaseIDValue);
+                }
+                else
+                {
+                    // Else if unexpected database ID type found, print error
+                    Prog.PrintErrMsg($"Unknown database ID type encountered: {databaseIDType}");
+                }
+            }
+            else
+            {
+                // Else if the regex did not match the format of the media's folder name
+                Prog.PrintErrMsg($"Could not parse media folder: {MediaFolderName}");
+            }
         }
 
         /// <returns>A string representation of all file properties.</returns>
@@ -365,12 +407,27 @@ namespace MediaManager.Code.Modules
         }
 
         /// <summary>
-        /// Initialise common and specific fields by parsing the media's folder name
+        /// Get the expected database ID type for this media type (e.g. 'tmdb', 'tvdb' etc.)
         /// </summary>
-        public abstract void InitialiseFieldsUsingMediaFolderName();
+        public abstract string GetExpectedDatabaseIDType();
 
         /// <summary>
-        /// Initialise common and specific fields by parsing the media's file name
+        /// Generate a database link
+        /// </summary>
+        /// <param name="id">The media's ID in a certain media database</param>
+        /// <returns>A string containing a link to the media's page in a media database</returns>
+        public abstract string GetDatabaseLink(string id);
+
+        /// <summary>
+        /// Initialise fields by parsing the media's folder name
+        /// </summary>
+        public virtual void InitialiseFieldsUsingMediaFolderName()
+        {
+            // To be overridden by derived classes if needed
+        }
+
+        /// <summary>
+        /// Initialise fields by parsing the media's file name
         /// </summary>
         public abstract void InitialiseFieldsUsingMediaFileName();
 

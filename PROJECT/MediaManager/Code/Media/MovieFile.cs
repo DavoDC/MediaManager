@@ -8,13 +8,6 @@ namespace MediaManager.Code.Modules
     internal class MovieFile : MediaFile
     {
         /// <summary>
-        /// This regex represents the naming format that Radarr uses for movie folders:
-        /// {Movie CleanTitle} ({Release Year}) {tmdb-{TmdbId}}
-        /// Example: "Shrek the Third (2007) {tmdb-810}"
-        /// </summary>
-        private static readonly Regex movieFolderRegex = new Regex(@"^(?<Title>.*?)\s\((?<Year>\d{4})\)\s\{(?<TMDBID>tmdb-\d+)\}$");
-
-        /// <summary>
         /// This regex represents the naming format that Radarr uses for movies:
         /// {Movie CleanTitle} {(Release Year)} {tmdb-{TmdbId}} {edition-{Edition Tags}} {[Custom Formats]}{[Quality Title]}{[MediaInfo 3D]}{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[Mediainfo VideoCodec]}{-Release Group}
         /// Example: "Doctor Strange in the Multiverse of Madness (2022) {tmdb-453395} {edition-Imax} [DSNP IMAX Enhanced][WEBDL-720p][EAC3 Atmos 5.1][h264]-playWEB"
@@ -52,39 +45,16 @@ namespace MediaManager.Code.Modules
             CheckType("Movie");
         }
 
-        /// <summary>
-        /// Initialise fields by parsing the movie's folder name
-        /// </summary>
-        public override void InitialiseFieldsUsingMediaFolderName()
+        /// <returns>The database used for movies</returns>
+        public override string GetExpectedDatabaseIDType()
         {
-            // Try to apply movie folder regex to media folder name (e.g. "8 Mile (2002) {tmdb-65}")
-            Match mediaFolderMatch = movieFolderRegex.Match(MediaFolderName);
+            return "tmdb";
+        }
 
-            // If regex matched media folder name
-            if (mediaFolderMatch.Success)
-            {
-                // Extract each part
-                Title = mediaFolderMatch.Groups["Title"].Value;
-                ReleaseYear = mediaFolderMatch.Groups["Year"].Value;
-
-                // Handle database ID (TMDB)
-                string[] databaseIDParts = mediaFolderMatch.Groups["TMDBID"].Value.Split('-');
-                string databaseIDType = databaseIDParts[0];
-                string databaseIDValue = databaseIDParts[1];
-                if (databaseIDType.Equals("tmdb"))
-                {
-                    DatabaseLink = $"https://www.themoviedb.org/movie/{databaseIDValue}";
-                }
-                else
-                {
-                    Prog.PrintErrMsg($"Unknown database ID type encountered: {databaseIDType}");
-                }
-            }
-            else
-            {
-                // Else if the regex did not match the format of the media's folder name
-                Prog.PrintErrMsg($"Could not parse media folder: {MediaFolderName}");
-            }
+        /// <returns>A link to a movie in the movie database, given its ID</returns>
+        public override string GetDatabaseLink(string id)
+        {
+            return $"https://www.themoviedb.org/movie/{id}";
         }
 
         /// <summary>
