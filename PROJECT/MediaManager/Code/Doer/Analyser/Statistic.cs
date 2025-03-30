@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AudioManager.Code.Modules
+namespace MediaManager
 {
     /// <summary>
     /// Represents an instance of statistical information

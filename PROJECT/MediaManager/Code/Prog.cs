@@ -78,12 +78,12 @@ namespace MediaManager
                 // Note: XML files created at this stage just contain paths to the actual file, not metadata info.
                 Reflector refl = new Reflector();
 
-                // 3) Parse metadata into XML files and tag list
+                // 3) Parse metadata into XML files and media file objects
                 // Note: The file contents get overwritten with actual XML content in this stage.
                 Parser p = new Parser();
 
                 // 4) Analyse metadata and print statistics
-                //Analyser a = new Analyser();
+                Analyser a = new Analyser();
 
                 // Print total time
                 TimeSpan totalTime = ac.ExecutionTime + refl.ExecutionTime;

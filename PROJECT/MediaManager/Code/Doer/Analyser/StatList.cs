@@ -1,12 +1,13 @@
-﻿using System;
+﻿using MediaManager.Code.Modules;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using StringIntFreqDist = System.Linq.IOrderedEnumerable<System.Collections.Generic.KeyValuePair<string, int>>;
 
-namespace AudioManager.Code.Modules
+namespace MediaManager
 {
     /// <summary>
-    /// Calculates, stores and displays frequency statistics for a given track property
+    /// Calculates, stores and displays frequency statistics for a given media file property
     /// </summary>
     internal class StatList
     {
@@ -24,18 +25,18 @@ namespace AudioManager.Code.Modules
         private List<Statistic> statList;
 
         /// <summary>
-        /// Create a StatList object from audio tags and a property extractor
+        /// Create a StatList object from media files and a property extractor
         /// </summary>
         /// <param name="name">The name of the statistics category</param>
-        /// <param name="audioTagsIn">The list of audio tags inputted</param>
+        /// <param name="mediaFilesIn">The list of media files inputted</param>
         /// <param name="func">Function that returns the property</param>
-        public StatList(string name, List<TrackTag> audioTagsIn, Func<TrackTag, string> func)
+        public StatList(string name, List<MediaFile> mediaFilesIn, Func<MediaFile, string> func)
         {
             // Save name
             this.name = name;
 
             // Calculate sorted frequency distribution
-            sortedFreqDist = GetSortedFreqDist(audioTagsIn, func);
+            sortedFreqDist = GetSortedFreqDist(mediaFilesIn, func);
 
             // Initialise underlying statistics list
             InitStatList();
@@ -75,21 +76,21 @@ namespace AudioManager.Code.Modules
         }
 
         /// <summary>
-        /// Generates a frequency distribution of sub-properties extracted from a list of audio tags.
+        /// Generates a frequency distribution of sub-properties extracted from a list of media files.
         /// </summary>
-        /// <param name="audioTagsIn">The list of audio tags inputted</param>
-        /// <param name="func">A function that extracts a property from a given audio tag.</param>
+        /// <param name="mediaFilesIn">The list of media files inputted</param>
+        /// <param name="func">A function that extracts a property from a given media file.</param>
         /// <returns>List of key-value pairs (property-frequency_count pairs), sorted in descending order by count.</returns>
-        public static StringIntFreqDist GetSortedFreqDist(List<TrackTag> audioTagsIn, Func<TrackTag, string> func)
+        public static StringIntFreqDist GetSortedFreqDist(List<MediaFile> mediaFilesIn, Func<MediaFile, string> func)
         {
             // A dictionary that maps each unique item to how many there are
             var itemVariants = new Dictionary<string, int>();
 
-            // For each tag
-            foreach (var tag in audioTagsIn)
+            // For each file
+            foreach (var file in mediaFilesIn)
             {
                 // Extract properties using the given function
-                string[] properties = ProcessProperty(func(tag));
+                string[] properties = ProcessProperty(func(file));
 
                 // For each sub-property
                 foreach (string subProperty in properties)
@@ -155,7 +156,7 @@ namespace AudioManager.Code.Modules
         }
 
         /// <summary>
-        /// Get statistics on how many tracks are in each time/decade period
+        /// Get statistics on how many files are in each time/decade period
         /// </summary>
         /// <param name="yearStats">The normal year statistics</param>
         /// <returns></returns>
@@ -176,7 +177,7 @@ namespace AudioManager.Code.Modules
         /// <summary>
         /// Calculates the starting year of the decade for a given year.
         /// </summary>
-        /// <param name="year">The year as a string, or "Missing" if the track didn't have it.</param>
+        /// <param name="year">The year as a string, or "Missing" if the file didn't have it.</param>
         /// <returns>The starting year of the decade as a string with an 's' (e.g., "1990s" for 1995).</returns>
         private static string GetDecade(string year)
         {
