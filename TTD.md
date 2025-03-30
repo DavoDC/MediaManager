@@ -20,3 +20,6 @@ Guaranteed match!
 ## Improve Folder parsing - InitialiseFieldsUsingMediaFolderName()
 Code is almost the same for movies and episodes when parsing folder names
 Generalise it!! Use one regex for both, shift into MediaFile class
+
+## Look for duplicate code 
+Init of common fields in movie and ep

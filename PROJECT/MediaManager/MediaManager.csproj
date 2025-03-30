@@ -63,6 +63,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Code\Doer\AgeChecker.cs" />
+    <Compile Include="Code\Doer\Analyser\Analyser.cs" />
+    <Compile Include="Code\Doer\Analyser\Statistic.cs" />
+    <Compile Include="Code\Doer\Analyser\StatList.cs" />
     <Compile Include="Code\Doer\Doer.cs" />
     <Compile Include="Code\Media\EpisodeFile\ShowFile.cs" />
     <Compile Include="Code\Media\EpisodeFile\AnimeFile.cs" />
