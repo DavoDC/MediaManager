@@ -85,9 +85,20 @@ namespace MediaManager
                 // 4) Analyse metadata and print statistics
                 Analyser a = new Analyser();
 
+                // TEST
+                //Console.WriteLine("");
+                //foreach (AnimeFile curFile in Parser.AnimeFiles)
+                //{
+                //    if (curFile.AudioLanguages.Equals("Unknown"))
+                //    {
+                //        curFile.PrintAllProperties();
+                //        Console.WriteLine("");
+                //    }
+                //}
+
                 // Print total time
-                //TimeSpan totalTime = ac.ExecutionTime + refl.ExecutionTime + p.ExecutionTime + a.ExecutionTime;
-                //Console.WriteLine("\nTotal time taken: " + Doer.ConvertTimeSpanToString(totalTime));
+                TimeSpan totalTime = ac.ExecutionTime + refl.ExecutionTime + p.ExecutionTime + a.ExecutionTime;
+                Console.WriteLine("\nTotal time taken: " + Doer.ConvertTimeSpanToString(totalTime));
 
                 // Finish message
                 Console.WriteLine("\nFinished!\n");
