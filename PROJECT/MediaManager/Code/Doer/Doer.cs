@@ -37,7 +37,7 @@ namespace MediaManager
         {
             executionTime = DateTime.Now - startTime;
         }
-        
+
         /// <summary>
         /// Finishes execution and prints the time taken.
         /// </summary>

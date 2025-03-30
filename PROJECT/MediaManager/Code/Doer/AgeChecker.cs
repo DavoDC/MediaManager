@@ -24,7 +24,7 @@ namespace MediaManager
         /// </summary>
         /// <param name="forceMirrorRegen">Whether the mirror should be regenerated regardless of age</param>
         /// <exception cref="FileLoadException">If parsing date in last run file fails</exception>
-        public AgeChecker(bool forceMirrorRegen) 
+        public AgeChecker(bool forceMirrorRegen)
         {
             // Notify
             Console.WriteLine($"\nChecking age of mirror...");
@@ -93,7 +93,7 @@ namespace MediaManager
             }
 
             // If regeneration will occur, update last run info
-            if(RegenMirror)
+            if (RegenMirror)
             {
                 File.WriteAllText(lastRunInfoFilePath, GetStrFromDate(curDate));
             }

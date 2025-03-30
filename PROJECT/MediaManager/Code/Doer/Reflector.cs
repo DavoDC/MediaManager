@@ -111,7 +111,7 @@ namespace MediaManager
                 string relPathExt = Path.GetExtension(relativePath);
 
                 // If this is a file we want to mirror
-                if(mirrorExtensions.Contains(relPathExt))
+                if (mirrorExtensions.Contains(relPathExt))
                 {
                     // Check if its a media file 
                     bool isMediaFile = mediaExtensions.Contains(relPathExt);

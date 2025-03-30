@@ -14,7 +14,7 @@ namespace MediaManager.Code.Modules
         /// <summary>
         /// Properties initialised in base class
         /// </summary>
-        
+
         // The path to the mirror file of the media file 
         public string MirrorFilePath { get; set; }
 

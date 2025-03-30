@@ -24,7 +24,7 @@ namespace MediaManager
         /// <summary>
         /// A list of anime file objects
         /// </summary>
-        public static List<AnimeFile> AnimeFiles { get; set; } 
+        public static List<AnimeFile> AnimeFiles { get; set; }
 
         /// <summary>
         /// A list of all media file objects combined
@@ -49,7 +49,7 @@ namespace MediaManager
             AnimeFiles = ParseMediaTypeFiles<AnimeFile>(Prog.AnimeFolderName);
 
             // Initialise combined media file list
-            var combinedList = new List<IEnumerable<MediaFile>> { MovieFiles, ShowFiles, AnimeFiles};
+            var combinedList = new List<IEnumerable<MediaFile>> { MovieFiles, ShowFiles, AnimeFiles };
             MediaFiles = combinedList.SelectMany(list => list).ToList();
 
             // Print total number of files parsed

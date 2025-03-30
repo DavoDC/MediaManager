@@ -22,7 +22,7 @@ namespace MediaManager
         /// <param name="property">The property's value</param>
         /// <param name="count">The property's frequency count</param>
         /// <param name="totalItems">The total amount of this property (i.e. sum of occurrences)</param>
-        public Statistic(string property, int count, int totalItems) 
+        public Statistic(string property, int count, int totalItems)
         {
             this.property = property;
             this.count = count;
@@ -53,7 +53,7 @@ namespace MediaManager
         /// <param name="c3"></param>
         public static void PrintColumns(string c1, string c2, string c3, string c4)
         {
-            Console.WriteLine($"{c1,-5} {c2,-10} {c3, -35} {c4}");
+            Console.WriteLine($"{c1,-5} {c2,-10} {c3,-35} {c4}");
         }
     }
 }
