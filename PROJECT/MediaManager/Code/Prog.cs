@@ -82,10 +82,10 @@ namespace MediaManager
                 Parser p = new Parser();
 
                 // 4) Analyse metadata and print statistics
-                //Analyser a = new Analyser();
+                Analyser a = new Analyser();
 
                 // Print total time
-                TimeSpan totalTime = ac.ExecutionTime + refl.ExecutionTime + p.ExecutionTime; // + a.ExecutionTime;
+                TimeSpan totalTime = ac.ExecutionTime + refl.ExecutionTime + p.ExecutionTime + a.ExecutionTime;
                 Console.WriteLine("\nTotal time taken: " + Doer.ConvertTimeSpanToString(totalTime));
 
                 // Finish message
