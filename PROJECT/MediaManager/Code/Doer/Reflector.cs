@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace MediaManager
@@ -32,18 +31,13 @@ namespace MediaManager
         private static readonly HashSet<string> mirrorExtensions = new HashSet<string>(mediaExtensions.Union(copyExtensions));
 
         //// VARIABLES
-        private bool recreateMirror;
         private static readonly string mediaFolderPathInside = Prog.MediaFolderPath + "\\";
 
         /// <summary>
         /// Construct a media mirror
         /// </summary>
-        /// <param name="recreateMirror">Whether to recreate the mirror each time</param>
-        public Reflector(bool recreateMirror)
+        public Reflector()
         {
-            // Save parameters
-            this.recreateMirror = recreateMirror;
-
             // Notify
             Console.WriteLine($"\nCreating mirror of '{Prog.MediaFolderPath}'...");
 
@@ -72,10 +66,10 @@ namespace MediaManager
                 throw new ArgumentException(msg);
             }
 
-            // If recreation wanted
-            if (recreateMirror)
+            // If mirror regeneration  wanted
+            if (AgeChecker.RegenMirror)
             {
-                // Remove the mirror path if it exists, to recreate it
+                // Remove the mirror path if it exists, so it gets fully regenerated
                 string fixedMirrorPath = FixLongPath(Prog.AbsMirrorFolderPath, true);
                 if (Directory.Exists(fixedMirrorPath))
                 {
@@ -244,8 +238,8 @@ namespace MediaManager
             // Print sanitisation count
             Console.WriteLine($" - Media filenames sanitised: {sanitisedFileNames}");
 
-            // Print recreation setting
-            Console.WriteLine($" - Recreated: {recreateMirror}");
+            // Print regen setting
+            Console.WriteLine($" - Regenerated: {AgeChecker.RegenMirror}");
 
             // Print time taken
             FinishAndPrintTimeTaken();

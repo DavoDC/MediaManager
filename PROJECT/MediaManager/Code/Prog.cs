@@ -67,15 +67,16 @@ namespace MediaManager
                 // Set the absolute mirror path relative to the executable
                 AbsMirrorFolderPath = Path.GetFullPath(Path.Combine(progExecPath, RelMirrorFolderPath));
 
-                // 1) Check the age of the mirror
-                AgeChecker ac = new AgeChecker();
+                // Toggle forcing mirror to be regenerated (e.g. during development)
+                bool forceMirrorRegen = false;
+                //bool forceMirrorRegen = true;
 
-                // Force recreating mirror (e.g. during development)
-                ac.recreateMirror = true;
+                // 1) Check the age of the mirror
+                AgeChecker ac = new AgeChecker(forceMirrorRegen);
 
                 // 2) Create mirror of media folder
                 // Note: XML files created at this stage just contain paths to the actual file, not metadata info.
-                Reflector refl = new Reflector(ac.recreateMirror);
+                Reflector refl = new Reflector();
 
                 // 3) Parse metadata into XML files and tag list
                 // Note: The file contents get overwritten with actual XML content in this stage.
@@ -85,8 +86,8 @@ namespace MediaManager
                 //Analyser a = new Analyser();
 
                 // Print total time
-                TimeSpan totalTime = ac.ExecutionTime + refl.ExecutionTime + p.ExecutionTime;
-                //totalTime += a.ExecutionTime + lc.ExecutionTime;
+                TimeSpan totalTime = ac.ExecutionTime + refl.ExecutionTime;
+                totalTime += p.ExecutionTime; // + a.ExecutionTime;
                 Console.WriteLine("\nTotal time taken: " + Doer.ConvertTimeSpanToString(totalTime));
 
                 // Finish message
