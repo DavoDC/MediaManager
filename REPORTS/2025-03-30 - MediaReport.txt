@@ -1,0 +1,187 @@
+
+###### Media Manager ######
+
+Checking age of mirror...
+ - DateTime.Now               2025-03-30 11:25:09
+ - DateTime.MirrorCreation    2025-03-30 10:38:18
+ - DateTime.MirrorAge         0d, 0h, 46m, 51s
+ - Mirror was generated recently, no regeneration needed!
+ - Time taken: 0.002 seconds
+
+Creating mirror of 'E:\Visual_Media'...
+ - Path: 'C:\Users\David\GitHubRepos\MediaMirror\MEDIA_MIRROR'
+ - Media file count: 3897
+ - Unexpected files found: 0
+ - Media filenames sanitised: 39
+ - Regenerated: False
+ - Time taken: 0.273 seconds
+
+Parsing media metadata...
+ - Movie files parsed: 244
+ - Show files parsed: 1607
+ - Anime files parsed: 2046
+ - Total files parsed: 3897
+ - Time taken: 0.896 seconds
+
+Analysing metadata...
+
+# Extension Statistics
+#     %          Extension                           Occurrences
+1     100.00%    .mkv                                3897
+
+# ReleaseYear Statistics
+#     %          ReleaseYear                         Occurrences
+1     10.32%     2014                                402
+2     9.73%      2013                                379
+3     8.01%      2015                                312
+4     7.44%      2011                                290
+5     7.44%      2019                                290
+6     6.34%      2016                                247
+7     5.98%      2008                                233
+8     5.47%      2020                                213
+9     4.44%      2018                                173
+10    4.21%      2021                                164
+11    4.03%      2022                                157
+12    3.52%      2017                                137
+13    2.90%      2024                                113
+14    2.54%      2023                                99
+15    2.13%      2009                                83
+16    2.10%      2012                                82
+17    2.08%      2002                                81
+18    2.08%      2006                                81
+19    2.00%      2007                                78
+20    1.54%      2005                                60
+21    1.46%      2004                                57
+22    1.05%      2010                                41
+23    0.77%      1995                                30
+24    0.72%      1998                                28
+25    0.49%      2025                                19
+26    0.31%      1975                                12
+
+# CustomFormat Statistics
+#     %          CustomFormat                        Occurrences
+1     93.74%     Unknown                             3653
+2     4.13%      Bluray-720p                         161
+3     0.41%      DSNP IMAX Enhanced                  16
+4     0.33%      Repack                              13
+5     0.33%      Hybrid                              13
+6     0.28%      WEBRip-720p                         11
+
+# QualityTitle Statistics
+#     %          QualityTitle                        Occurrences
+1     36.44%     WEBDL-1080p                         1420
+2     8.57%      EAC3 Atmos 5.1                      334
+3     6.13%      NF WEBDL-1080p                      239
+4     5.65%      AMZN WEBDL-720p                     220
+5     4.98%      HMAX WEBDL-720p                     194
+6     4.44%      Bluray-1080p                        173
+7     3.57%      DSNP WEBDL-720p                     139
+8     3.26%      DVD                                 127
+9     3.08%      h264                                120
+10    2.57%      WEBDL-720p                          100
+11    2.28%      NF WEBDL-720p                       89
+12    2.28%      v2 WEBDL-1080p                      89
+13    2.03%      AC3 5.1                             79
+14    1.95%      AMZN WEBRip-720p                    76
+15    1.90%      EAC3 5.1                            74
+16    1.82%      Bluray-720p                         71
+17    1.62%      NF WEBRip-720p                      63
+18    1.51%      HMAX WEBDL-1080p                    59
+19    1.39%      DSNP WEBDL-1080p                    54
+20    1.08%      AMZN WEBDL-1080p                    42
+21    0.67%      Bluray-480p                         26
+22    0.62%      MULTi WEBDL-1080p                   24
+23    0.51%      v3 WEBDL-1080p                      20
+24    0.41%      DTS 5.1                             16
+25    0.31%      AMZN WEBDL-480p                     12
+
+# VideoDynamicRange Statistics
+#     %          VideoDynamicRange                   Occurrences
+1     100.00%    Unknown                             3897
+
+# VideoCodec Statistics
+#     %          VideoCodec                          Occurrences
+1     52.60%     x264                                2050
+2     44.11%     Unknown                             1719
+3     3.28%      x265                                128
+
+# VideoCodec Statistics
+#     %          VideoCodec                          Occurrences
+1     34.92%     AAC                                 1361
+2     32.23%     EAC3                                1256
+3     14.40%     AC3                                 561
+4     13.11%     Unknown                             511
+5     2.93%      FLAC                                114
+6     1.49%      Opus                                58
+7     0.59%      EAC3 Atmos                          23
+
+# AudioChannels Statistics
+#     %          AudioChannels                       Occurrences
+1     50.01%     2.0                                 1949
+2     36.85%     5.1                                 1436
+3     13.11%     Unknown                             511
+
+# ReleaseGroup Statistics
+#     %          ReleaseGroup                        Occurrences
+1     15.91%     Erai-raws                           620
+2     10.34%     NTb                                 403
+3     8.62%      SubsPlease                          336
+4     6.75%      HorribleRips                        263
+5     6.00%      FLUX                                234
+6     5.52%      PlayWEB                             215
+7     4.72%      HONE                                184
+8     3.57%      HorribleSubs                        139
+9     3.21%      playWEB                             125
+10    2.49%      Kitsune                             97
+11    2.05%      playHD                              80
+12    1.72%      ViSUM                               67
+13    1.51%      ZR                                  59
+14    1.33%      Exiled-Destiny                      52
+15    1.28%      Erai-raw                            50
+16    1.26%      Cor-Laharl                          49
+17    1.21%      Arid                                47
+18    1.18%      ChucksMux                           46
+19    1.15%      Cinefeel                            45
+20    1.05%      PHOENiX                             41
+21    0.90%      NTG                                 35
+22    0.85%      TEPES                               33
+23    0.72%      PlayHD                              28
+24    0.67%      MZABI                               26
+25    0.67%      bog                                 26
+26    0.67%      Yurasyk                             26
+27    0.64%      BS                                  25
+28    0.64%      AC                                  25
+29    0.64%      ainex                               25
+30    0.62%      sam                                 24
+31    0.62%      DragsterPS                          24
+32    0.59%      AJP69                               23
+33    0.56%      ECI                                 22
+34    0.54%      LAZY                                21
+35    0.51%      iON                                 20
+36    0.44%      Coo7                                17
+37    0.41%      KOGi                                16
+38    0.41%      KiNGS                               16
+39    0.41%      WELP                                16
+40    0.38%      SbR                                 15
+41    0.38%      TOMMY                               15
+42    0.33%      iFT                                 13
+43    0.33%      T6D                                 13
+44    0.33%      NOSiViD                             13
+45    0.31%      LoTV                                12
+46    0.31%      MALD                                12
+47    0.31%      LostYears                           12
+48    0.28%      EbP                                 11
+49    0.28%      MTBB                                11
+50    0.28%      Commie                              11
+51    0.26%      NG                                  10
+52    0.26%      SLiGNOME                            10
+
+ - Time taken: 0.012 seconds
+
+Total time taken: 1.171 seconds
+
+Finished!
+
+
+C:\Users\David\GitHubRepos\MediaManager\PROJECT\MediaManager\bin\Release\MediaManager.exe (process 18264) exited with code 0 (0x0).
+Press any key to close this window . . .
