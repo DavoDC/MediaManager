@@ -59,6 +59,16 @@ namespace MediaManager
             //var videoRangeStats = CreateStatList("VideoDynamicRange", f => f.VideoDynamicRange);
             //videoRangeStats.Print(0);
 
+            // TEST
+            //foreach (MediaFile curFile in Parser.MediaFiles)
+            //{
+            //    if(curFile.AudioCodec.Equals("Unknown"))
+            //    {
+            //        curFile.PrintAllProperties();
+            //        Console.WriteLine("");
+            //    }
+            //}
+
             // Finish and print time taken
             Console.WriteLine("");
             FinishAndPrintTimeTaken();

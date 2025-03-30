@@ -18,9 +18,8 @@ namespace MediaManager.Code.Modules
                     (?:\{edition-(?<Edition>[^}]+)\}\s*)?
                     (?:\[(?<CustomFormat>(?!Bluray-\d{3}p|WEBRip-\d{3}p)[^\]]+)\])?
                     (?:\[(?<QualityTitle>(?!EAC3 5\.1)[^\]]+)\])?
-                    (?:\[(?<VideoDynamicRange>HDR|SDR|Dolby Vision|HLG)\])?
                     (?:\[(?<ThreeD>3D)\])?
-                    (?:\[(?<VideoBitDepth>\d+)bit\])?
+                    (?:\[(?<VideoDynamicRange>HDR|SDR|Dolby Vision|HLG)\])?
                     (?:\[(?<AudioCodec>EAC3 5\.1|[^\]\s]+(?:\s+[^\]\s]+)*)\s+(?<AudioChannels>[\d.]+)\])?
                     (?:\[(?<VideoCodec>x264|x265|h264|h265)\])?
                     (?:\[(?<AudioLanguages>[^\]]+)\])?
