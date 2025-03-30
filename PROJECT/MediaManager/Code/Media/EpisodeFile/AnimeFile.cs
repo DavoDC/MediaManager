@@ -78,6 +78,10 @@ namespace MediaManager.Code.Modules
                 // Fix video codec previously set
                 // Animes are unique as they are the only type where Video Codec comes before Audio Codec
                 VideoCodec = GetGroupValue(animeMatch, "VideoCodec");
+
+                // Fix audio codec and channels previously set
+                AudioCodec = GetGroupValue(animeMatch, "AudioCodec");
+                AudioChannels = GetGroupValue(animeMatch, "AudioChannels");
             }
             else if (SeasonType.Equals("Special"))
             {
