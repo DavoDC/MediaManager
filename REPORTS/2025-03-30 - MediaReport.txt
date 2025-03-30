@@ -105,8 +105,8 @@ Analysing metadata...
 2     44.11%     Unknown                             1719
 3     3.28%      x265                                128
 
-# VideoCodec Statistics
-#     %          VideoCodec                          Occurrences
+# AudioCodec Statistics
+#     %          AudioCodec                          Occurrences
 1     34.92%     AAC                                 1361
 2     32.23%     EAC3                                1256
 3     14.40%     AC3                                 561

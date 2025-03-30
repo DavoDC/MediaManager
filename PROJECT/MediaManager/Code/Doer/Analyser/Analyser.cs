@@ -22,7 +22,7 @@ namespace MediaManager
             StatList qualityStats = new StatList("QualityTitle", Parser.MediaFiles, f => f.QualityTitle);
             StatList videoRangeStats = new StatList("VideoDynamicRange", Parser.MediaFiles, f => f.VideoDynamicRange);
             StatList videoCodecStats = new StatList("VideoCodec", Parser.MediaFiles, f => f.VideoCodec);
-            StatList audioCodecStats = new StatList("VideoCodec", Parser.MediaFiles, f => f.AudioCodec);
+            StatList audioCodecStats = new StatList("AudioCodec", Parser.MediaFiles, f => f.AudioCodec);
             StatList audioChannelStats = new StatList("AudioChannels", Parser.MediaFiles, f => f.AudioChannels);
             StatList relGroupStats = new StatList("ReleaseGroup", Parser.MediaFiles, f => f.ReleaseGroup);
 
