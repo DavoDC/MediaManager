@@ -23,18 +23,18 @@ namespace MediaManager
             var formatStats = CreateStatList("CustomFormat", f => f.CustomFormat);
             var qualityStats = CreateStatList("QualityTitle", f => f.QualityTitle);
             var videoRangeStats = CreateStatList("VideoDynamicRange", f => f.VideoDynamicRange);
-            var videoCodecStats = CreateStatList("VideoCodec", f => f.VideoCodec);
             var audioCodecStats = CreateStatList("AudioCodec", f => f.AudioCodec);
             var audioChannelStats = CreateStatList("AudioChannels", f => f.AudioChannels);
+            var videoCodecStats = CreateStatList("VideoCodec", f => f.VideoCodec);
             var relGroupStats = CreateStatList("ReleaseGroup", f => f.ReleaseGroup);
             extStats.Print(0);
             yearStats.Print(1.0);
             formatStats.Print(0);
             qualityStats.Print(0);
             videoRangeStats.Print(0);
-            videoCodecStats.Print(0);
             audioCodecStats.Print(0);
             audioChannelStats.Print(0);
+            videoCodecStats.Print(0);
             relGroupStats.Print(0.25);
 
             // Calculate and print movie stats

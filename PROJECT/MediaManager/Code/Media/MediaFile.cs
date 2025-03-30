@@ -83,14 +83,14 @@ namespace MediaManager.Code.Modules
         // The video dynamic range
         public string VideoDynamicRange { get; set; }
 
-        // The video codec
-        public string VideoCodec { get; set; }
-
         // The audio codec
         public string AudioCodec { get; set; }
 
         // The audio channels
         public string AudioChannels { get; set; }
+
+        // The video codec
+        public string VideoCodec { get; set; }
 
         // The release group
         public string ReleaseGroup { get; set; }
@@ -149,9 +149,9 @@ namespace MediaManager.Code.Modules
             SetElementValue("CustomFormat", CustomFormat);
             SetElementValue("QualityTitle", QualityTitle);
             SetElementValue("VideoDynamicRange", VideoDynamicRange);
-            SetElementValue("VideoCodec", VideoCodec);
             SetElementValue("AudioCodec", AudioCodec);
             SetElementValue("AudioChannels", AudioChannels);
+            SetElementValue("VideoCodec", VideoCodec);
             SetElementValue("ReleaseGroup", ReleaseGroup);
 
             // Add specific fields to the XML object
@@ -186,9 +186,9 @@ namespace MediaManager.Code.Modules
             CustomFormat = GetElementValue("CustomFormat");
             QualityTitle = GetElementValue("QualityTitle");
             VideoDynamicRange = GetElementValue("VideoDynamicRange");
-            VideoCodec = GetElementValue("VideoCodec");
             AudioCodec = GetElementValue("AudioCodec");
             AudioChannels = GetElementValue("AudioChannels");
+            VideoCodec = GetElementValue("VideoCodec");
             ReleaseGroup = GetElementValue("ReleaseGroup");
 
             // Initialise specific fields using XML data
@@ -270,9 +270,9 @@ namespace MediaManager.Code.Modules
             props += $"CustomFormat: {CustomFormat ?? "NULL"}\n";
             props += $"QualityTitle: {QualityTitle ?? "NULL"}\n";
             props += $"VideoDynamicRange: {VideoDynamicRange ?? "NULL"}\n";
-            props += $"VideoCodec: {VideoCodec ?? "NULL"}\n";
             props += $"AudioCodec: {AudioCodec ?? "NULL"}\n";
             props += $"AudioChannels: {AudioChannels ?? "NULL"}\n";
+            props += $"VideoCodec: {VideoCodec ?? "NULL"}\n";
             props += $"ReleaseGroup: {ReleaseGroup ?? "NULL"}\n";
 
             // Add specific properties to string

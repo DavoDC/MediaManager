@@ -16,7 +16,6 @@ namespace MediaManager.Code.Modules
                     ^(?<Title>.+?)\s*\((?<ReleaseYear>\d{4})\)\s*
                     \{(?<DBID>tmdb-\d+)\}\s*
                     (?:\{edition-(?<Edition>[^}]+)\}\s*)?
-                    (?:\[(?<VideoCodec>x264|x265|h264|h265)\])?
                     (?:\[(?<CustomFormat>(?!Bluray-\d{3}p|WEBRip-\d{3}p)[^\]]+)\])?
                     (?:\[(?<QualityTitle>(?!EAC3 5\.1)[^\]]+)\])?
                     (?:\[(?<VideoDynamicRange>HDR|SDR|Dolby Vision|HLG)\])?
@@ -77,9 +76,9 @@ namespace MediaManager.Code.Modules
                 CustomFormat = GetGroupValue(movieMatch, "CustomFormat");
                 QualityTitle = GetGroupValue(movieMatch, "QualityTitle");
                 VideoDynamicRange = GetGroupValue(movieMatch, "VideoDynamicRange");
-                VideoCodec = GetGroupValue(movieMatch, "VideoCodec");
                 AudioCodec = GetGroupValue(movieMatch, "AudioCodec");
                 AudioChannels = GetGroupValue(movieMatch, "AudioChannels");
+                VideoCodec = GetGroupValue(movieMatch, "VideoCodec");
                 ReleaseGroup = GetGroupValue(movieMatch, "ReleaseGroup");
 
                 // Set movie-specific properties

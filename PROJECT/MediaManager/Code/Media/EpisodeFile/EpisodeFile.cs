@@ -113,9 +113,9 @@ namespace MediaManager.Code.Modules
                 CustomFormat = GetGroupValue(showMatch, "CustomFormat");
                 QualityTitle = GetGroupValue(showMatch, "QualityTitle");
                 VideoDynamicRange = GetGroupValue(showMatch, "VideoDynamicRange");
-                VideoCodec = GetGroupValue(showMatch, "VideoCodec");
                 AudioCodec = GetGroupValue(showMatch, "AudioCodec");
                 AudioChannels = GetGroupValue(showMatch, "AudioChannels");
+                VideoCodec = GetGroupValue(showMatch, "VideoCodec");
                 ReleaseGroup = GetGroupValue(showMatch, "ReleaseGroup");
 
                 // Set episode-specific properties
