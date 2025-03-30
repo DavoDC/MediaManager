@@ -2,9 +2,9 @@
 ###### Media Manager ######
 
 Checking age of mirror...
- - DateTime.Now               2025-03-30 23:08:18
- - DateTime.MirrorCreation    2025-03-30 23:07:56
- - DateTime.MirrorAge         0d, 0h, 0m, 22s
+ - DateTime.Now               2025-03-30 23:15:28
+ - DateTime.MirrorCreation    2025-03-30 23:08:18
+ - DateTime.MirrorAge         0d, 0h, 7m, 10s
  - Mirror was generated recently, but 'force regeneration' is active! Will regenerate!
  - Time taken: 0.003 seconds
 
@@ -14,14 +14,14 @@ Creating mirror of 'E:\Visual_Media'...
  - Unexpected files found: 0
  - Media filenames sanitised: 39
  - Regenerated: True
- - Time taken: 1.824 seconds
+ - Time taken: 2.027 seconds
 
 Parsing media metadata...
  - Movie files parsed: 246
  - Show files parsed: 1633
  - Anime files parsed: 2046
  - Total files parsed: 3925
- - Time taken: 1.75 seconds
+ - Time taken: 1.743 seconds
 
 Analysing metadata...
 
@@ -42,7 +42,7 @@ Analysing metadata...
 1     71.29%     x264                                2798
 2     25.43%     h264                                998
 3     3.26%      x265                                128
-4     0.03%      Unknown                             1
+4     0.03%      AVC                                 1
 
 # Decade Statistics
 #     %          Decade                              Occurrences
@@ -209,10 +209,10 @@ Analysing metadata...
 48    0.25%      NG                                  10
 49    0.25%      SLiGNOME                            10
 
- - Time taken: 0.019 seconds
+ - Time taken: 0.018 seconds
 
 Finished!
 
 
-C:\Users\David\GitHubRepos\MediaManager\PROJECT\MediaManager\bin\Release\MediaManager.exe (process 18168) exited with code 0 (0x0).
+C:\Users\David\GitHubRepos\MediaManager\PROJECT\MediaManager\bin\Release\MediaManager.exe (process 29052) exited with code 0 (0x0).
 Press any key to close this window . . .
