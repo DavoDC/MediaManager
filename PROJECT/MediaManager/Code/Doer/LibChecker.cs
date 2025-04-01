@@ -1,5 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using MediaManager.Code.Modules;
+using System;
 
 namespace MediaManager
 {
@@ -13,16 +13,31 @@ namespace MediaManager
         /// </summary>
         public LibChecker()
         {
-            // TODO
-            //Console.WriteLine("");
-            //foreach (AnimeFile curFile in Parser.AnimeFiles)
-            //{
-            //    if (curFile.AudioLanguages.Equals("Unknown"))
-            //    {
-            //        curFile.PrintAllProperties();
-            //        Console.WriteLine("");
-            //    }
-            //}
+            // Notify
+            Console.WriteLine($"\nChecking mirror...");
+
+            // Check anime bit depth
+            Console.WriteLine("");
+            foreach (AnimeFile curFile in Parser.AnimeFiles)
+            {
+                if (curFile.VideoBitDepth.Equals("Unknown"))
+                {
+                    Console.WriteLine(" - Found anime file with unknown vid bit depth: " + curFile.ToString());
+                }
+            }
+
+            // Check anime audio languages
+            Console.WriteLine("");
+            foreach (AnimeFile curFile in Parser.AnimeFiles)
+            {
+                if (curFile.AudioLanguages.Equals("Unknown"))
+                {
+                    Console.WriteLine(" - Found anime file with unknown audio lang: " + curFile.ToString());
+                }
+            }
+
+            // Finish and print time taken
+            FinishAndPrintTimeTaken();
         }
     }
 }
