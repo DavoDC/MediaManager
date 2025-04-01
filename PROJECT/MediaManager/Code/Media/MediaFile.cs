@@ -21,6 +21,11 @@ namespace MediaManager.Code.Modules
         private static readonly Regex folderRegex = new Regex(@"^(?<Title>.*?)\s\((?<Year>\d{4})\)\s\{(?<ID>(?:tvdb|tmdb)-\d+)\}$");
 
         /// <summary>
+        /// This regex represents how concise quality titles are named (e.g. WEBRip-720p, Bluray-1080p etc.)
+        /// </summary>
+        private static readonly Regex conciseQualityTitleRegex = new Regex(@"\w+-\d{3,4}p", RegexOptions.Compiled);
+
+        /// <summary>
         /// Properties initialised in base class
         /// </summary>
 
@@ -351,6 +356,35 @@ namespace MediaManager.Code.Modules
             XMLRootElement.AppendChild(newElement);
         }
 
+        /// <summary>
+        /// Get a concise version of this file's quality title that doesn't include extra info.
+        /// e.g. Exclude streaming service name, repack info etc.
+        /// </summary>
+        /// <returns>The simplified quality title</returns>
+        public string GetConciseQualityTitle()
+        {
+            // Handle special DVD case
+            if(QualityTitle.Equals("DVD"))
+            {
+                return QualityTitle;
+            }
+
+            // Try to apply concise quality title regex to full quality title
+            Match conciseQualityTitleMatch = conciseQualityTitleRegex.Match(QualityTitle);
+
+            // If regex matched part of quality title
+            if (conciseQualityTitleMatch.Success)
+            {
+                // Return part that was found
+                return conciseQualityTitleMatch.Value;
+            }
+            else
+            {
+                // Else if couldn't find match, print error and return full title
+                Prog.PrintErrMsg($"Failed to parse Quality Title: {QualityTitle}");
+                return QualityTitle;
+            }
+        }
         /// <summary>
         /// Check media type (from path) against what is expected, and notify if not.
         /// </summary>

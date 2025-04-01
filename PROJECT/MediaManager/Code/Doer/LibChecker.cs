@@ -17,10 +17,10 @@ namespace MediaManager
             Console.WriteLine($"\nChecking mirror...");
 
             // Check anime bit depth
-            CheckPropertyForUnknowns(Parser.AnimeFiles, f => f.VideoBitDepth, "bit depth");
+            //CheckPropertyForUnknowns(Parser.AnimeFiles, f => f.VideoBitDepth, "bit depth");
 
             // Check anime audio languages
-            CheckPropertyForUnknowns(Parser.AnimeFiles, f => f.AudioLanguages, "audio language");
+            //CheckPropertyForUnknowns(Parser.AnimeFiles, f => f.AudioLanguages, "audio language");
 
             // Finish and print time taken
             FinishAndPrintTimeTaken();

@@ -115,7 +115,7 @@ namespace MediaManager
         /// Print out this statistics list
         /// </summary>
         /// <param name="cutoff">Percentage cutoff for statistics</param>
-        public void Print(double cutoff = 0.25, string comment = "")
+        public void Print(double cutoff = 0, string comment = "")
         {
             // Print heading and columns
             Console.WriteLine($"\n# {name} Statistics {comment}");

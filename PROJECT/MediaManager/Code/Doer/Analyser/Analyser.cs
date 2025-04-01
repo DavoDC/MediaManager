@@ -20,20 +20,20 @@ namespace MediaManager
             vidBitStats.Print(0, "(Anime-Specific)");
 
             var audioChannelStats = CreateStatList("AudioChannels", f => f.AudioChannels);
-            audioChannelStats.Print(0);
+            audioChannelStats.Print();
 
             var videoCodecStats = CreateStatList("VideoCodec", f => f.VideoCodec);
-            videoCodecStats.Print(0);
+            videoCodecStats.Print();
 
             var decadeFreqDist = StatList<MediaFile>.GetDecadeFreqDist(CreateStatList("ReleaseYear", f => f.ReleaseYear));
             var decadeStats = new StatList<MediaFile>("Decade", decadeFreqDist);
-            decadeStats.Print(0);
+            decadeStats.Print();
 
             var audioLangStats = new StatList<AnimeFile>("AudioLanguages", Parser.AnimeFiles, f => f.AudioLanguages);
             audioLangStats.Print(0, "(Anime-Specific)");
 
             var audioCodecStats = CreateStatList("AudioCodec", f => f.AudioCodec);
-            audioCodecStats.Print(0);
+            audioCodecStats.Print();
 
             var editionStats = new StatList<MovieFile>("Edition", Parser.MovieFiles, f => f.Edition);
             editionStats.Print(0, "(Movie-Specific)");
@@ -41,11 +41,15 @@ namespace MediaManager
             var yearStats = CreateStatList("ReleaseYear", f => f.ReleaseYear);
             yearStats.Print(1.0);
 
-            var qualityStats = CreateStatList("QualityTitle", f => f.QualityTitle);
-            qualityStats.Print(0);
+            var conciseQualityStats = CreateStatList("ConciseQualityTitle", f => f.GetConciseQualityTitle());
+            conciseQualityStats.Print();
 
             var relGroupStats = CreateStatList("ReleaseGroup", f => f.ReleaseGroup);
             relGroupStats.Print(0.25);
+
+            // DISABLED BECAUSE contains extra un-needed info
+            //var qualityStats = CreateStatList("QualityTitle", f => f.QualityTitle);
+            //qualityStats.Print();
 
             // DISABLED BECAUSE 98% unknown
             //var formatStats = CreateStatList("CustomFormat", f => f.CustomFormat);
