@@ -54,6 +54,12 @@ namespace MediaManager.Code.Modules
             CheckType(GetExpectedType());
         }
 
+        /// <returns>A concise string representing this episode file</returns>
+        public override string ToString()
+        {
+            return $"{base.ToString()}: S{SeasonNum}E{EpisodeNum}, {EpisodeTitle}";
+        }
+
         /// <returns>The database used for shows</returns>
         public override string GetExpectedDatabaseIDType()
         {

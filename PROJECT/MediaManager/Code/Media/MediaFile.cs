@@ -406,6 +406,12 @@ namespace MediaManager.Code.Modules
             Console.WriteLine(ToAllPropertiesString());
         }
 
+        /// <returns>A concise string representing this media file</returns>
+        public override string ToString()
+        {
+            return $"{Title} ({ReleaseYear})";
+        }
+
         /// <summary>
         /// Get the expected database ID type for this media type (e.g. 'tmdb', 'tvdb' etc.)
         /// </summary>
