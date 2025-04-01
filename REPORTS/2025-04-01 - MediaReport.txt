@@ -1,0 +1,196 @@
+
+###### Media Manager ######
+
+Checking age of mirror...
+ - DateTime.Now               2025-04-01 14:00:52
+ - DateTime.MirrorCreation    2025-04-01 13:56:45
+ - DateTime.MirrorAge         0d, 0h, 4m, 7s
+ - Mirror was generated recently, but 'force regeneration' is active! Will regenerate!
+ - Time taken: 0.003 seconds
+
+Creating mirror of 'E:\Visual_Media'...
+ - Path: 'C:\Users\David\GitHubRepos\MediaMirror\MEDIA_MIRROR'
+ - Media file count: 3927
+ - Unexpected files found: 0
+ - Media filenames sanitised: 39
+ - Regenerated: True
+ - Time taken: 1.876 seconds
+
+Parsing media metadata...
+ - Movie files parsed: 246
+ - Show files parsed: 1635
+ - Anime files parsed: 2046
+ - Total files parsed: 3927
+ - Time taken: 1.94 seconds
+
+Analysing metadata...
+
+# VideoBitDepth Statistics (Anime-Specific)
+#     %          VideoBitDepth                       Occurrences
+1     90.18%     8                                   1845
+2     9.58%      10                                  196
+3     0.24%      Unknown                             5
+
+# AudioChannels Statistics
+#     %          AudioChannels                       Occurrences
+1     49.99%     5.1                                 1963
+2     49.91%     2.0                                 1960
+3     0.10%      7.1                                 4
+
+# VideoCodec Statistics
+#     %          VideoCodec                          Occurrences
+1     71.25%     x264                                2798
+2     25.46%     h264                                1000
+3     3.26%      x265                                128
+4     0.03%      AVC                                 1
+
+# Decade Statistics
+#     %          Decade                              Occurrences
+1     59.94%     2010s                               2354
+2     20.24%     2020s                               795
+3     17.52%     2000s                               688
+4     1.66%      1990s                               65
+5     0.33%      1970s                               13
+6     0.31%      1980s                               12
+
+# AudioLanguages Statistics (Anime-Specific)
+#     %          AudioLanguages                      Occurrences
+1     56.45%     JA                                  1155
+2     16.67%     Unknown                             341
+3     12.66%     EN+JA                               259
+4     12.46%     JA+EN                               255
+5     1.17%      EN+ES+FR+DE+IT+PT+PL+TR+JA          24
+6     0.59%      JA+EN+KO                            12
+
+# AudioCodec Statistics
+#     %          AudioCodec                          Occurrences
+1     34.66%     AAC                                 1361
+2     34.48%     EAC3                                1354
+3     16.32%     AC3                                 641
+4     9.19%      EAC3 Atmos                          361
+5     2.93%      FLAC                                115
+6     1.48%      Opus                                58
+7     0.69%      DTS                                 27
+8     0.18%      Vorbis                              7
+9     0.05%      DTS-HD MA                           2
+10    0.03%      DTS-ES                              1
+
+# Edition Statistics (Movie-Specific)
+#     %          Edition                             Occurrences
+1     73.58%     Unknown                             181
+2     8.13%      Imax Enhanced                       20
+3     6.10%      Extended Cut                        15
+4     5.28%      Remastered                          13
+5     2.03%      Imax                                5
+6     1.22%      Director's Cut                      3
+7     0.81%      Unrated                             2
+8     0.81%      International Cut                   2
+9     0.41%      Ultimate Edition                    1
+10    0.41%      German Cut                          1
+11    0.41%      Collectors Edition                  1
+12    0.41%      Theatrical Cut                      1
+13    0.41%      Uncensored                          1
+
+# ReleaseYear Statistics
+#     %          ReleaseYear                         Occurrences
+1     10.24%     2014                                402
+2     9.65%      2013                                379
+3     7.94%      2015                                312
+4     7.41%      2019                                291
+5     7.38%      2011                                290
+6     6.29%      2016                                247
+7     5.93%      2008                                233
+8     5.88%      2020                                231
+9     4.41%      2018                                173
+10    4.23%      2021                                166
+11    4.20%      2022                                165
+12    3.49%      2017                                137
+13    2.93%      2024                                115
+14    2.52%      2023                                99
+15    2.09%      2012                                82
+16    2.09%      2009                                82
+17    2.06%      2002                                81
+18    2.06%      2006                                81
+19    1.99%      2007                                78
+20    1.53%      2005                                60
+21    1.45%      2004                                57
+22    1.04%      2010                                41
+
+# ConciseQualityTitle Statistics
+#     %          ConciseQualityTitle                 Occurrences
+1     53.30%     WEBDL-1080p                         2093
+2     27.58%     WEBDL-720p                          1083
+3     5.91%      Bluray-720p                         232
+4     4.76%      Bluray-1080p                        187
+5     4.10%      WEBRip-720p                         161
+6     3.23%      DVD                                 127
+7     0.66%      Bluray-480p                         26
+8     0.31%      WEBDL-480p                          12
+9     0.08%      HDTV-1080p                          3
+10    0.05%      WEBRip-1080p                        2
+11    0.03%      Remux-1080p                         1
+
+# ReleaseGroup Statistics
+#     %          ReleaseGroup                        Occurrences
+1     17.06%     Erai-raws                           670
+2     10.42%     NTb                                 409
+3     8.66%      playWEB                             340
+4     8.56%      SubsPlease                          336
+5     6.70%      HorribleRips                        263
+6     6.16%      FLUX                                242
+7     4.69%      HONE                                184
+8     3.54%      HorribleSubs                        139
+9     2.75%      playHD                              108
+10    2.47%      Kitsune                             97
+11    1.71%      ViSUM                               67
+12    1.50%      ZR                                  59
+13    1.32%      Exiled-Destiny                      52
+14    1.25%      Cor-Laharl                          49
+15    1.20%      Arid                                47
+16    1.17%      ChucksMux                           46
+17    1.15%      Cinefeel                            45
+18    1.04%      PHOENiX                             41
+19    0.89%      NTG                                 35
+20    0.84%      TEPES                               33
+21    0.69%      MZABI                               27
+22    0.66%      bog                                 26
+23    0.66%      Yurasyk                             26
+24    0.64%      BS                                  25
+25    0.64%      AC                                  25
+26    0.64%      ainex                               25
+27    0.61%      sam                                 24
+28    0.61%      DragsterPS                          24
+29    0.59%      AJP69                               23
+30    0.56%      ECI                                 22
+31    0.53%      LAZY                                21
+32    0.51%      iON                                 20
+33    0.46%      Coo7                                18
+34    0.41%      KOGi                                16
+35    0.41%      KiNGS                               16
+36    0.41%      WELP                                16
+37    0.38%      SbR                                 15
+38    0.38%      TOMMY                               15
+39    0.33%      iFT                                 13
+40    0.33%      T6D                                 13
+41    0.33%      NOSiViD                             13
+42    0.31%      LoTV                                12
+43    0.31%      MALD                                12
+44    0.31%      LostYears                           12
+45    0.28%      EbP                                 11
+46    0.28%      MTBB                                11
+47    0.28%      Commie                              11
+48    0.25%      NG                                  10
+49    0.25%      SLiGNOME                            10
+
+ - Time taken: 0.025 seconds
+
+Checking mirror...
+ - Time taken: 0 seconds
+
+Total time taken: 3.844 seconds
+
+Finished!
+
+
+C:\Users\David\GitHubRepos\MediaManager\PROJECT\MediaManager\bin\Release\MediaManager.exe (process 16528) exited with code 0 (0x0).
+Press any key to close this window . . .
