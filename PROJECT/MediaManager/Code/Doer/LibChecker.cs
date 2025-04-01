@@ -1,5 +1,5 @@
-﻿using MediaManager.Code.Modules;
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MediaManager
 {
@@ -17,27 +17,32 @@ namespace MediaManager
             Console.WriteLine($"\nChecking mirror...");
 
             // Check anime bit depth
-            Console.WriteLine("");
-            foreach (AnimeFile curFile in Parser.AnimeFiles)
-            {
-                if (curFile.VideoBitDepth.Equals("Unknown"))
-                {
-                    Console.WriteLine(" - Found anime file with unknown vid bit depth: " + curFile.ToString());
-                }
-            }
+            CheckPropertyForUnknowns(Parser.AnimeFiles, f => f.VideoBitDepth, "bit depth");
 
             // Check anime audio languages
-            Console.WriteLine("");
-            foreach (AnimeFile curFile in Parser.AnimeFiles)
-            {
-                if (curFile.AudioLanguages.Equals("Unknown"))
-                {
-                    Console.WriteLine(" - Found anime file with unknown audio lang: " + curFile.ToString());
-                }
-            }
+            CheckPropertyForUnknowns(Parser.AnimeFiles, f => f.AudioLanguages, "audio language");
 
             // Finish and print time taken
             FinishAndPrintTimeTaken();
+        }
+
+        /// <summary>
+        /// Finds items where the specified property has the value "Unknown" (case-insensitive).
+        /// </summary>
+        /// <typeparam name="T">The type of items in the collection.</typeparam>
+        /// <param name="items">The collection to check.</param>
+        /// <param name="propertySelector">Function to extract the property value.</param>
+        /// <param name="propertyName">The name of the property.</param>
+        public static void CheckPropertyForUnknowns<T>(IEnumerable<T> items, Func<T, string> propertySelector,
+            string propertyName)
+        {
+            foreach (var item in items)
+            {
+                if (propertySelector(item).Equals("Unknown", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine($" - '{item}' has an unknown {propertyName}!");
+                }
+            }
         }
     }
 }
