@@ -12,7 +12,9 @@ namespace MediaManager
     /// </summary>
     internal class Reflector : Doer
     {
-        //// CONSTANTS
+        /// <summary>
+        /// CONSTANTS
+        /// </summary>
 
         // Invalid file name characters
         private static readonly char[] invalidChars = Path.GetInvalidFileNameChars();
@@ -27,11 +29,31 @@ namespace MediaManager
         private static readonly HashSet<string> copyExtensions = new HashSet<string> { ".ass", ".srt" };
         public static HashSet<string> CopyExtensions { get => copyExtensions; }
 
-        // Extensions of files we want in the mirror
+        // Currently all the files we want to copy as-is are subtitle extensions!
+        public static HashSet<string> SubtitleExtensions { get => copyExtensions; }
+
+        // Extensions of files we want in the mirror = media + copy extensions
         private static readonly HashSet<string> mirrorExtensions = new HashSet<string>(mediaExtensions.Union(copyExtensions));
 
-        //// VARIABLES
+        /// <summary>
+        /// VARIABLES
+        /// </summary>
+        
+        // The folder path to just inside the media folder
         private static readonly string mediaFolderPathInside = Prog.MediaFolderPath + "\\";
+
+        // The number of media files in the mirror
+        private int mediaFileCount;
+
+        // The number of subtitle files in the mirror
+        private int subtitleFileCount;
+
+        // The number of filenames sanitised while making the mirror
+        private int sanitisationCount;
+
+        // A list of unexpected files found while making the mirror
+        List<string> unexpectedFiles = new List<string>();
+
 
         /// <summary>
         /// Construct a media mirror
@@ -45,10 +67,10 @@ namespace MediaManager
             CreateFolders();
 
             // Populate with files
-            var statisticsInfo = CreateFiles();
+            CreateFiles();
 
             // Print statistics
-            PrintStats(statisticsInfo);
+            PrintStats();
         }
 
 
@@ -94,14 +116,8 @@ namespace MediaManager
         /// <summary>
         /// Populate folder structure with mirrored files
         /// </summary>
-        /// <returns>Statistics tuple</returns>
-        private Tuple<int, int, List<string>> CreateFiles()
+        private void CreateFiles()
         {
-            // Holders
-            int mediaFileCount = 0;
-            int sanitisationCount = 0;
-            List<string> unexpectedFiles = new List<string>();
-
             // For every actual file
             string[] realFiles = Directory.GetFiles(mediaFolderPathInside, "*", SearchOption.AllDirectories);
             foreach (string realFilePath in realFiles)
@@ -127,6 +143,12 @@ namespace MediaManager
                     {
                         mediaFileCount++;
                     }
+
+                    // Increment subtitle file count
+                    if (SubtitleExtensions.Contains(relPathExt))
+                    {
+                        subtitleFileCount++;
+                    }
                 }
                 else if (!expectedExtensions.Contains(relPathExt))
                 {
@@ -135,9 +157,6 @@ namespace MediaManager
                     unexpectedFiles.Add(relativePath);
                 }
             }
-
-            // Return holders
-            return Tuple.Create(mediaFileCount, sanitisationCount, unexpectedFiles);
         }
 
 
@@ -202,19 +221,16 @@ namespace MediaManager
         /// <summary>
         /// Print info about completed mirroring process 
         /// </summary>
-        /// <param name="statisticsInfo"></param>
-        private void PrintStats(Tuple<int, int, List<string>> statisticsInfo)
+        private void PrintStats()
         {
-            // Extract info items
-            int mediaFileCount = statisticsInfo.Item1;
-            int sanitisedFileNames = statisticsInfo.Item2;
-            List<string> unexpectedFiles = statisticsInfo.Item3;
-
             // Print mirror path
             Console.WriteLine($" - Path: '{Prog.AbsMirrorFolderPath}'");
 
-            // Print file count
+            // Print media file count
             Console.WriteLine($" - Media file count: {mediaFileCount}");
+
+            // Print subtitle file count
+            Console.WriteLine($" - Subitle file count: {subtitleFileCount}");
 
             // Print non-media file info
             Console.WriteLine($" - Unexpected files found: {unexpectedFiles.Count}");
@@ -236,7 +252,7 @@ namespace MediaManager
             }
 
             // Print sanitisation count
-            Console.WriteLine($" - Media filenames sanitised: {sanitisedFileNames}");
+            Console.WriteLine($" - Media filenames sanitised: {sanitisationCount}");
 
             // Print regen setting
             Console.WriteLine($" - Regenerated: {AgeChecker.RegenMirror}");
