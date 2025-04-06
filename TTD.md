@@ -10,20 +10,23 @@ make XML storage order match appearance in filename
 
 
 ### LibChecker
-1
+
+1 - def
+Unknown check all fields. Disable some
+
+2 - def
 Rebuild original filename from
 Fields and
-
 Confirm matches actual file name
+Add functions to class hierarchy to build up further e.g. GetOrigNameFromFields()
+next = base + x 
 
-2
+3 (MAYBE)
 Also
 Convert uniques in report to lists
 Confirm that if Filename has , right field has
 
-3
 
-Unknown check all fields. Disabled some
 
 
 ### Show links 

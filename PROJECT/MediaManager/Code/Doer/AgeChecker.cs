@@ -4,7 +4,7 @@ using System.IO;
 namespace MediaManager
 {
     /// <summary>
-    /// Checks whether the mirror was generated too long ago.
+    /// Checks how long ago the mirror was generated.
     /// </summary>
     internal class AgeChecker : Doer
     {
