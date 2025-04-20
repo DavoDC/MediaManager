@@ -8,6 +8,9 @@ Expand printing to print everything, then fix
 make XML storage order match appearance in filename
 
 
+## Reflector
+make subitle count a list and add printing out code
+
 
 ### LibChecker
 
