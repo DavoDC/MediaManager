@@ -381,7 +381,9 @@ namespace MediaManager.Code.Modules
             else
             {
                 // Else if couldn't find match, print error and return full title
-                Prog.PrintErrMsg($"Failed to parse Quality Title: {QualityTitle}");
+                string errMsg = $"Failed to parse Quality Title: {QualityTitle}";
+                errMsg += $"\nMedia file info: \n{ToAllPropertiesString()}";
+                Prog.PrintErrMsg(errMsg);
                 return QualityTitle;
             }
         }

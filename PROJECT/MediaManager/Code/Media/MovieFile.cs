@@ -16,7 +16,7 @@ namespace MediaManager.Code.Modules
                     ^(?<Title>.+?)\s*\((?<ReleaseYear>\d{4})\)\s*
                     \{(?<DBID>tmdb-\d+)\}\s*
                     (?:\{edition-(?<Edition>[^}]+)\}\s*)?
-                    (?:\[(?<CustomFormat>(?!\w+-\d{3,4}p)[^\]]+)\])?
+                    (?:\[(?<CustomFormat>(?!DVD\b)(?!\w+-\d{3,4}p)[^\]]+)\])?
                     (?:\[(?<QualityTitle>(?!EAC3 5\.1)[^\]]+)\])?
                     (?:\[(?<ThreeD>3D)\])?
                     (?:\[(?<VideoDynamicRange>HDR|SDR|HLG)\])?
