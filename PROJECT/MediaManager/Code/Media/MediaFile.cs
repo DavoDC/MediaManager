@@ -324,11 +324,15 @@ namespace MediaManager.Code.Modules
             // Check whether mirror file contains one line
             bool mirrorFileContainsOneLine = mirrorFileContents.Length == 1;
 
-            // Extract real file path from mirror file contents
-            RealFilePath = Reflector.FixLongPath(mirrorFileContents[0]);
+            // Extract real file paths from mirror file contents
+            string rawRealFilePath = mirrorFileContents[0];
+            RealFilePath = Reflector.FixLongPath(rawRealFilePath);
 
-            // Check if the real path extracted is valid
-            bool mirrorFilePathIsValid = File.Exists(RealFilePath);
+            // Check if the real paths extracted are valid
+            bool rawMirrorFilePathIsValid = File.Exists(rawRealFilePath);
+            bool fixedMirrorFilePathIsValid = File.Exists(RealFilePath);
+            bool mirrorFilePathIsValid = rawMirrorFilePathIsValid || fixedMirrorFilePathIsValid;
+            // Note: Both versions need to be checked as one sometimes fails
 
             // If the mirror file contains a single, valid path, then it needs to be converted to a valid XML file
             return mirrorFileContainsOneLine && mirrorFilePathIsValid;

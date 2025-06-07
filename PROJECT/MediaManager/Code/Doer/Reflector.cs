@@ -132,8 +132,11 @@ namespace MediaManager
                     // Check if its a media file 
                     bool isMediaFile = mediaExtensions.Contains(relPathExt);
 
+                    // Fix long real file paths
+                    string fixedRealFilePath = FixLongPath(realFilePath);
+
                     // Create a mirror file for it
-                    if (CreateMirrorFile(realFilePath, relativePath, isMediaFile))
+                    if (CreateMirrorFile(fixedRealFilePath, relativePath, isMediaFile))
                     {
                         sanitisationCount++;
                     }
@@ -230,7 +233,7 @@ namespace MediaManager
             Console.WriteLine($" - Media file count: {mediaFileCount}");
 
             // Print subtitle file count
-            Console.WriteLine($" - Subitle file count: {subtitleFileCount}");
+            Console.WriteLine($" - Subtitle file count: {subtitleFileCount}");
 
             // Print non-media file info
             Console.WriteLine($" - Unexpected files found: {unexpectedFiles.Count}");

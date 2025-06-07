@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace MediaManager
 {
@@ -85,11 +86,21 @@ namespace MediaManager
                 string mirrorFileExt = Path.GetExtension(mirrorFilePath);
                 if (mirrorFileExt.Equals(".xml"))
                 {
-                    // Create a media object instance dynamically using reflection
-                    T mediaFile = (T)Activator.CreateInstance(typeof(T), mirrorFilePath);
+                    try
+                    {
+                        // Create a media object instance dynamically using reflection
+                        T mediaFile = (T)Activator.CreateInstance(typeof(T), mirrorFilePath);
 
-                    // Add to list
-                    mediaFileList.Add(mediaFile);
+                        // Add to list
+                        mediaFileList.Add(mediaFile);
+                    }
+                    catch (TargetInvocationException ex)
+                    {
+                        // If constructor failed, print more info
+                        Console.WriteLine("\nConstructor threw an exception: " + ex.InnerException?.Message);
+                        Console.WriteLine("Stack trace: " + ex.InnerException?.StackTrace);
+                        throw;
+                    }
                 }
                 else if (!Reflector.CopyExtensions.Contains(mirrorFileExt))
                 {
