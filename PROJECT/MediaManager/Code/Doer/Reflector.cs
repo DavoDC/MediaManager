@@ -45,14 +45,17 @@ namespace MediaManager
         // The number of media files in the mirror
         private int mediaFileCount;
 
-        // The number of subtitle files in the mirror
-        private int subtitleFileCount;
+        // A list of subtitle files (relative file paths) in the mirror
+        private List<string> subtitleFiles = new List<string>();
 
         // The number of filenames sanitised while making the mirror
         private int sanitisationCount;
 
         // A list of unexpected files found while making the mirror
-        List<string> unexpectedFiles = new List<string>();
+        private List<string> unexpectedFiles = new List<string>();
+
+        // The longest path encountered while making the mirror
+        private string longestPath = "";
 
 
         /// <summary>
@@ -147,10 +150,10 @@ namespace MediaManager
                         mediaFileCount++;
                     }
 
-                    // Increment subtitle file count
+                    // Update subtitle file list
                     if (SubtitleExtensions.Contains(relPathExt))
                     {
-                        subtitleFileCount++;
+                        subtitleFiles.Add(relativePath);
                     }
                 }
                 else if (!expectedExtensions.Contains(relPathExt))
@@ -158,6 +161,12 @@ namespace MediaManager
                     // Else if the file was not a file we want to mirror, and it wasn't expected,
                     // add its relative path to unexpected list
                     unexpectedFiles.Add(relativePath);
+                }
+
+                // Update longest path encountered
+                if(longestPath.Length < realFilePath.Length)
+                {
+                    longestPath = realFilePath;
                 }
             }
         }
@@ -229,36 +238,37 @@ namespace MediaManager
             // Print mirror path
             Console.WriteLine($" - Path: '{Prog.AbsMirrorFolderPath}'");
 
+            // Print regen setting
+            Console.WriteLine($" - Regenerated: {AgeChecker.RegenMirror}");
+
             // Print media file count
             Console.WriteLine($" - Media file count: {mediaFileCount}");
 
             // Print subtitle file count
-            Console.WriteLine($" - Subtitle file count: {subtitleFileCount}");
+            Console.WriteLine($" - Subtitle file count: {subtitleFiles.Count}");
+            //PrintRelPaths(subtitleFiles);
 
             // Print non-media file info
             Console.WriteLine($" - Unexpected files found: {unexpectedFiles.Count}");
             if (unexpectedFiles.Count != 0)
             {
-                // Get of unique extensions
+                // Get unique extensions and print out
                 HashSet<string> uniqueExtensions = unexpectedFiles
                     .Select(file => Path.GetExtension(file).ToLower()) // Extract and normalize extensions
                     .Where(ext => !string.IsNullOrEmpty(ext)) // Exclude empty extensions
                     .ToHashSet();
-                Console.WriteLine($"  - Extensions: {string.Join(",", uniqueExtensions)}");
+                Console.WriteLine($"  - Extension(s): {string.Join(",", uniqueExtensions)}");
 
-                // Print paths
-                Console.WriteLine($"  - Paths: ");
-                foreach (string unexpectedFilePath in unexpectedFiles)
-                {
-                    Console.WriteLine($"   - {unexpectedFilePath}");
-                }
+                // Print out unexpected file paths
+                PrintRelPaths(unexpectedFiles);
             }
 
             // Print sanitisation count
             Console.WriteLine($" - Media filenames sanitised: {sanitisationCount}");
 
-            // Print regen setting
-            Console.WriteLine($" - Regenerated: {AgeChecker.RegenMirror}");
+            // Print longest path length
+            Console.WriteLine($" - Longest path length: {longestPath.Length} characters");
+            //Console.WriteLine($"  - Longest path: {longestPath}");
 
             // Print time taken
             FinishAndPrintTimeTaken();
@@ -334,6 +344,19 @@ namespace MediaManager
 
             // Convert relative URI to a string and unescape special characters
             return Uri.UnescapeDataString(relativeUri.ToString());
+        }
+
+        /// <summary>
+        /// Print out a list of relative file paths
+        /// </summary>
+        /// <param name="relFilePathList">The list of relative file paths</param>
+        public static void PrintRelPaths(List<string> relFilePathList)
+        {
+            Console.WriteLine($"  - Path(s): ");
+            foreach (string curRelFilePath in relFilePathList)
+            {
+                Console.WriteLine($"   - {curRelFilePath}");
+            }
         }
     }
 }

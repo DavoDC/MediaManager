@@ -1,15 +1,17 @@
 # Things to Do 
 
-### TODO 
-Fix initialisation - some are null when loading XML
-Expand printing to print everything, then fix
-
 ### Extra
 make XML storage order match appearance in filename
 
+### TODO
+Fix initialisation - some are null when loading XML
+Expand printing to print everything, then fix
 
-## Reflector
-make subitle count a list and add printing out code
+
+## ReleaseGroup Statistics
+Split release group stats by movies+shows + anime
+
+Number of shows/animes
 
 
 ### LibChecker
@@ -28,7 +30,6 @@ next = base + x
 Also
 Convert uniques in report to lists
 Confirm that if Filename has , right field has
-
 
 
 
