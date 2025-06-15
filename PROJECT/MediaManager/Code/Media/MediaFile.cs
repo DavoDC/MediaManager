@@ -145,7 +145,7 @@ namespace MediaManager.Code.Modules
             InitialiseFieldsUsingMediaFileName();
 
             // Add common fields to the XML object
-            SetElementValue("Filename", MediaFileName);
+            SetElementValue("Filename", MediaFileName + Extension);
             SetElementValue("Type", Type);
             SetElementValue("Title", Title);
             SetElementValue("ReleaseYear", ReleaseYear);

@@ -1,8 +1,5 @@
 # Things to Do 
 
-### XML Files
-Add extension to first element with filename
-
 ### TODO
 Fix initialisation - some are null when loading XML
 Expand printing to print everything, then fix
