@@ -150,17 +150,19 @@ namespace MediaManager.Code.Modules
             SetElementValue("Title", Title);
             SetElementValue("ReleaseYear", ReleaseYear);
             SetElementValue("DatabaseLink", DatabaseLink);
-            SetElementValue("Extension", Extension);
             SetElementValue("CustomFormat", CustomFormat);
             SetElementValue("QualityTitle", QualityTitle);
             SetElementValue("VideoDynamicRange", VideoDynamicRange);
             SetElementValue("AudioCodec", AudioCodec);
             SetElementValue("AudioChannels", AudioChannels);
             SetElementValue("VideoCodec", VideoCodec);
-            SetElementValue("ReleaseGroup", ReleaseGroup);
-
+            
             // Add specific fields to the XML object
             AddSpecificFieldsToXMLDoc();
+
+            // Add release group and  extension last
+            SetElementValue("ReleaseGroup", ReleaseGroup);
+            SetElementValue("Extension", Extension);
 
             // Save the XML object, overwriting the mirror file contents with valid XML content
             XMLDoc.Save(MirrorFilePath);
@@ -271,17 +273,19 @@ namespace MediaManager.Code.Modules
             props += $"Title: {Title ?? "NULL"}\n";
             props += $"ReleaseYear: {ReleaseYear ?? "NULL"}\n";
             props += $"DatabaseLink: {DatabaseLink ?? "NULL"}\n";
-            props += $"Extension: {Extension ?? "NULL"}\n";
             props += $"CustomFormat: {CustomFormat ?? "NULL"}\n";
             props += $"QualityTitle: {QualityTitle ?? "NULL"}\n";
             props += $"VideoDynamicRange: {VideoDynamicRange ?? "NULL"}\n";
             props += $"AudioCodec: {AudioCodec ?? "NULL"}\n";
             props += $"AudioChannels: {AudioChannels ?? "NULL"}\n";
             props += $"VideoCodec: {VideoCodec ?? "NULL"}\n";
-            props += $"ReleaseGroup: {ReleaseGroup ?? "NULL"}\n";
 
             // Add specific properties to string
             props += GetSpecificPropString();
+
+            // Add release group and extension last
+            props += $"ReleaseGroup: {ReleaseGroup ?? "NULL"}\n";
+            props += $"Extension: {Extension ?? "NULL"}\n";
 
             // Return all properties as a string 
             return props;
