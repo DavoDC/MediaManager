@@ -21,7 +21,7 @@ namespace MediaManager.Code.Modules
                     (?:\[(?<VideoDynamicRange>HDR|SDR|HLG)\])?\s*
                     (?:\[(?<VideoBitDepth>\d+)bit\])?
                     (?:\[(?<AudioCodec>EAC3|[^\]\s]+(?:\s+[^\]\s]+)*)\s+(?<AudioChannels>[\d.]+)\])?
-                    (?:\[(?<VideoCodec>x264|x265|h264|h265)\])?
+                    (?:\[(?<VideoCodec>x264|x265|h264|h265|MPEG2)\])?
                     (?:\[(?<AudioLanguages>[^\]]+)\])?
                     (?:-(?<ReleaseGroup>[^\]]+))?$", RegexOptions.IgnorePatternWhitespace);
 
