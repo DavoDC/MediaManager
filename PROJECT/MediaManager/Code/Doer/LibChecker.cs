@@ -1,7 +1,6 @@
 ﻿using MediaManager.Code.Modules;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace MediaManager
 {
@@ -89,7 +88,12 @@ namespace MediaManager
                     bool isEmpty = propValue.Length == 0;
                     if (isUnknown || isEmpty)
                     {
-                        //Console.WriteLine($"  - '{item}' has an unknown {propertyName}!");
+                        // Print out certain instances to investigate further
+                        if (propertyName.Equals("audio language"))
+                        {
+                            //Console.WriteLine($"  - '{item}' has an unknown {propertyName}!");
+                        }
+
                         totalHits++;
                     }
                 }
@@ -107,10 +111,24 @@ namespace MediaManager
             // Notify
             Console.WriteLine($"  - {totalHits} items had an unknown {propertyName}!");
 
-            // Special case
+            // Special cases
             if(propertyName.Equals("release group"))
             {
-                Console.WriteLine($"   - The 55 Boondocks episodes without a release group are expected here.");
+                Console.WriteLine($"   - The 55 Boondocks episodes without a release group are expected here");
+            }
+
+            if (propertyName.Equals("absolute episode number") || propertyName.Equals("video bit depth"))
+            {
+                Console.WriteLine($"   - 5 instances expected (Endymion+4 MHA)");
+            }
+
+            if (propertyName.Equals("audio language"))
+            {
+                Console.WriteLine($"   - 341 instances expected");
+                // More info: This is due to the files not having the language encoded in the metadata.
+                // Sonarr reads this info from the file and applies to the filenames.
+                // Even if you manually add the languages, Sonarr will remove it on next rename, as it cannot detect it.
+                // It cannot detect it even if you select the language within Sonarr.
             }
         }
     }

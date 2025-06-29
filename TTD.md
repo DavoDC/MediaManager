@@ -1,16 +1,11 @@
 # Things to Do 
 
-### FIX FIELDS
-Fix initialisation - some are null when loading XML
-Do unknown checks for all fields to find these
-
-
 ## ReleaseGroup Statistics
 Split release group stats by movies+shows + anime
 Number of shows/animes
 
 
-### LibChecker
+### LibChecker Further
 (A) One way
 Rebuild original filename from
 Fields and
