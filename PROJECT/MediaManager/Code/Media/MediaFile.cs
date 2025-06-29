@@ -35,9 +35,6 @@ namespace MediaManager.Code.Modules
         // The media file's relative path within the library folder
         public string RelativeFilePath { get; set; }
 
-        // The path to the real media file
-        public string RealFilePath { get; set; }
-
         /// <summary>
         /// Whether the file needs to be converted to valid XML.
         /// If true, then the file only contains a single, valid real file path.
@@ -326,18 +323,20 @@ namespace MediaManager.Code.Modules
 
             // Extract real file paths from mirror file contents
             string rawRealFilePath = mirrorFileContents[0];
-            RealFilePath = Reflector.FixLongPath(rawRealFilePath);
-
-            // Initialise Extension field, which requires the RealFilePath to be set, hence why it is done here.
-            // - The RealFilePath is only valid when the file is not a valid XML file, and thats when the Extension gets set here.
-            // - When the file is valid XML, this will be set to a null or empty value, but assigned to with the correct value from the XML later on.
-            Extension = Path.GetExtension(Reflector.SanitiseFilename(RealFilePath));
+            string fixedRealFilePath = Reflector.FixLongPath(rawRealFilePath);
 
             // Check if the real paths extracted are valid
             bool rawMirrorFilePathIsValid = File.Exists(rawRealFilePath);
-            bool fixedMirrorFilePathIsValid = File.Exists(RealFilePath);
+            bool fixedMirrorFilePathIsValid = File.Exists(fixedRealFilePath);
             bool mirrorFilePathIsValid = rawMirrorFilePathIsValid || fixedMirrorFilePathIsValid;
             // Note: Both versions need to be checked as one sometimes fails
+
+            // If the mirror file path is valid
+            if (mirrorFilePathIsValid)
+            {
+                // Extract extension from it
+                Extension = Path.GetExtension(Reflector.SanitiseFilename(fixedRealFilePath));
+            }
 
             // If the mirror file contains a single, valid path, then it needs to be converted to a valid XML file
             return mirrorFileContainsOneLine && mirrorFilePathIsValid;
