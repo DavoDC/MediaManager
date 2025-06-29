@@ -27,8 +27,3 @@ next = base + x
 Also
 Convert uniques in report to lists
 Confirm that if Filename has , right field has
-
-
-
-### Show links 
-https://www.thetvdb.com/?tab=series&id=248035

@@ -67,6 +67,8 @@ namespace MediaManager.Code.Modules
         }
 
         /// <returns>A link to a show in the show database, given its ID</returns>
+        /// Example: https://www.thetvdb.com/dereferrer/series/248035
+        /// Alternate: https://www.thetvdb.com/?tab=series&id=248035
         public override string GetDatabaseLink(string id)
         {
             return $"https://www.thetvdb.com/dereferrer/series/{id}";
