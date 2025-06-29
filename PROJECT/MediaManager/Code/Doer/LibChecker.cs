@@ -1,6 +1,7 @@
 ﻿using MediaManager.Code.Modules;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MediaManager
 {
@@ -35,28 +36,31 @@ namespace MediaManager
             // Check common (MediaFile) string-type properties
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.AudioChannels, "audio channel");
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.AudioCodec, "audio codec");
-            //CheckPropertyForUnknowns(Parser.MediaFiles, f => f.CustomFormat, "custom format"); // 98% unknown
+            //CheckPropertyForUnknowns(Parser.MediaFiles, f => f.CustomFormat, "custom format"); // Disabled
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.DatabaseLink, "database link");
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.Extension, "extension");
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.MediaFileName, "media file name");
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.MediaFolderName, "media folder name");
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.MirrorFilePath, "mirror folder path");
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.QualityTitle, "quality title");
-            CheckPropertyForUnknowns(Parser.MediaFiles, f => f.RealFilePath, "real file path");
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.RelativeFilePath, "relative file path");
-            //CheckPropertyForUnknowns(Parser.MediaFiles, f => f.ReleaseGroup, "release group"); // Boondocks doesn't have, need to set as exception?
+            CheckPropertyForUnknowns(Parser.MediaFiles, f => f.ReleaseGroup, "release group");
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.ReleaseYear, "release year");
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.Title, "title");
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.Type, "type");
-            //CheckPropertyForUnknowns(Parser.MediaFiles, f => f.VideoCodec, "video codec"); // Genuine issues
-            //CheckPropertyForUnknowns(Parser.MediaFiles, f => f.VideoDynamicRange, "video dynamic range"); 100% unknown
+            CheckPropertyForUnknowns(Parser.MediaFiles, f => f.VideoCodec, "video codec");
+            //CheckPropertyForUnknowns(Parser.MediaFiles, f => f.VideoDynamicRange, "video dynamic range"); // Disabled
 
             // Check episode-specific string-type properties
-            // Use Parser.EpisodeFiles!!!
-            // TODO
+            CheckPropertyForUnknowns(Parser.EpisodeFiles, f => f.SeasonType, "season type");
+            CheckPropertyForUnknowns(Parser.EpisodeFiles, f => f.SeasonNum, "season number");
+            CheckPropertyForUnknowns(Parser.EpisodeFiles, f => f.EpisodeNum, "episode number");
+            CheckPropertyForUnknowns(Parser.EpisodeFiles, f => f.EpisodeTitle, "episode title");
 
             // Check anime-specific string-type properties
-            // TODO
+            CheckPropertyForUnknowns(Parser.AnimeFiles, f => f.AbsEpisodeNum, "absolute episode number");
+            CheckPropertyForUnknowns(Parser.AnimeFiles, f => f.VideoBitDepth, "video bit depth");
+            CheckPropertyForUnknowns(Parser.AnimeFiles, f => f.AudioLanguages, "audio language");
         }
 
         /// <summary>
@@ -69,6 +73,10 @@ namespace MediaManager
         public static void CheckPropertyForUnknowns<T>(IEnumerable<T> items, Func<T, string> propertySelector,
             string propertyName)
         {
+            // Issues found
+            int totalHits = 0;
+
+            // For every item in list provided
             foreach (var item in items)
             {
                 try
@@ -77,22 +85,32 @@ namespace MediaManager
                     string propValue = propertySelector(item);
 
                     // Check property value
-                    if (propValue.Equals("Unknown", StringComparison.OrdinalIgnoreCase))
+                    bool isUnknown = propValue.Equals("Unknown", StringComparison.OrdinalIgnoreCase);
+                    bool isEmpty = propValue.Length == 0;
+                    if (isUnknown || isEmpty)
                     {
-                        Console.WriteLine($"  - '{item}' has an unknown {propertyName}!");
+                        //Console.WriteLine($"  - '{item}' has an unknown {propertyName}!");
+                        totalHits++;
                     }
                 }
                 catch (Exception ex)
                 {
-                    MediaFile curItem = item as MediaFile;
-
+                    MediaFile curMediaFile = item as MediaFile;
                     string errMsg = $"Failed to extract property!";
                     errMsg += $"\n\nException message: \n{ex.Message}";
-                    errMsg += $"\n\nMedia file info: \n{curItem.ToAllPropertiesString()}";
+                    errMsg += $"\n\nMedia file info: \n{curMediaFile.ToAllPropertiesString()}";
                     Prog.PrintErrMsg(errMsg);
-
-                    System.Environment.Exit(1);
+                    throw;
                 }
+            }
+
+            // Notify
+            Console.WriteLine($"  - {totalHits} items had an unknown {propertyName}!");
+
+            // Special case
+            if(propertyName.Equals("release group"))
+            {
+                Console.WriteLine($"   - The 55 Boondocks episodes without a release group are expected here.");
             }
         }
     }
