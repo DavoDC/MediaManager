@@ -16,6 +16,9 @@ namespace MediaManager
         /// CONSTANTS
         /// </summary>
 
+        // Paths equal to or longer than this are considered "long paths"
+        private static readonly int LongPathThreshold = 250;
+
         // Invalid file name characters
         private static readonly char[] invalidChars = Path.GetInvalidFileNameChars();
 
@@ -38,7 +41,7 @@ namespace MediaManager
         /// <summary>
         /// VARIABLES
         /// </summary>
-        
+
         // The folder path to just inside the media folder
         private static readonly string mediaFolderPathInside = Prog.MediaFolderPath + "\\";
 
@@ -56,6 +59,9 @@ namespace MediaManager
 
         // The longest path encountered while making the mirror
         private string longestPath = "";
+
+        // The number of "long" paths found while making the mirror
+        private int numberOfLongPaths = 0;
 
 
         /// <summary>
@@ -163,10 +169,19 @@ namespace MediaManager
                     unexpectedFiles.Add(relativePath);
                 }
 
+                // Get the current file's path length
+                int curPathLength = realFilePath.Length;
+
                 // Update longest path encountered
-                if(longestPath.Length < realFilePath.Length)
+                if (longestPath.Length < curPathLength)
                 {
                     longestPath = realFilePath;
+                }
+
+                // Update number of long paths encountered
+                if (LongPathThreshold < curPathLength)
+                {
+                    numberOfLongPaths++;
                 }
             }
         }
@@ -266,8 +281,11 @@ namespace MediaManager
             // Print sanitisation count
             Console.WriteLine($" - Media filenames sanitised: {sanitisationCount}");
 
+            // Print number of long paths encountered
+            Console.WriteLine($" - Long paths encountered: {numberOfLongPaths} paths exceeded {LongPathThreshold} chars");
+
             // Print longest path length
-            Console.WriteLine($" - Longest path length: {longestPath.Length} characters");
+            Console.WriteLine($" - Longest path length: {longestPath.Length} chars");
             //Console.WriteLine($"  - Longest path: {longestPath}");
 
             // Print time taken
@@ -303,6 +321,7 @@ namespace MediaManager
 
         /// <summary>
         /// Fix long paths which cause I/O exceptions
+        /// See https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file#maximum-path-length-limitation
         /// </summary>
         /// <param name="longPath">A 'raw' long path</param>
         /// <param name="force">Force fixing the path regardless of length</param>
@@ -310,7 +329,7 @@ namespace MediaManager
         public static string FixLongPath(string longPath, bool force = false)
         {
             // If path length is close to the Windows 260 character limit
-            if (longPath.Length > 240 || force)
+            if (longPath.Length > LongPathThreshold || force)
             {
                 // Add the UNC prefix to tell Windows to bypass the limit
                 longPath = @"\\?\" + longPath;
