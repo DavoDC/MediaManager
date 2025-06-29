@@ -109,7 +109,7 @@ namespace MediaManager
         /// </summary>
         public static void PrintErrMsg(string errorMsg)
         {
-            Console.WriteLine($"ERROR: {errorMsg}");
+            Console.WriteLine($"\nERROR: {errorMsg}");
         }
     }
 }

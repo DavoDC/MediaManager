@@ -28,6 +28,11 @@ namespace MediaManager
         public static List<AnimeFile> AnimeFiles { get; set; }
 
         /// <summary>
+        /// A list of episode file objects
+        /// </summary>
+        public static List<EpisodeFile> EpisodeFiles { get; set; }
+
+        /// <summary>
         /// A list of all media file objects combined
         /// </summary>
         public static List<MediaFile> MediaFiles { get; set; }
@@ -49,9 +54,13 @@ namespace MediaManager
             // Initialise anime file list
             AnimeFiles = ParseMediaTypeFiles<AnimeFile>(Prog.AnimeFolderName);
 
+            // Initialise episode file list
+            var episodeFileListsCombined = new List<IEnumerable<EpisodeFile>> { ShowFiles, AnimeFiles };
+            EpisodeFiles = episodeFileListsCombined.SelectMany(list => list).ToList();
+
             // Initialise combined media file list
-            var combinedList = new List<IEnumerable<MediaFile>> { MovieFiles, ShowFiles, AnimeFiles };
-            MediaFiles = combinedList.SelectMany(list => list).ToList();
+            var mediaFileListsCombined = new List<IEnumerable<MediaFile>> { MovieFiles, ShowFiles, AnimeFiles };
+            MediaFiles = mediaFileListsCombined.SelectMany(list => list).ToList();
 
             // Print total number of files parsed
             PrintFilesParsed("Total", MediaFiles.Count);
@@ -98,7 +107,8 @@ namespace MediaManager
                     {
                         // If constructor failed, print more info
                         Console.WriteLine("\nConstructor threw an exception: " + ex.InnerException?.Message);
-                        Console.WriteLine("Stack trace: " + ex.InnerException?.StackTrace);
+                        Console.WriteLine("\nStack trace: " + ex.InnerException?.StackTrace);
+                        Console.WriteLine("\nMirror file path: '" + mirrorFilePath + "'");
                         throw;
                     }
                 }

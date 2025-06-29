@@ -118,6 +118,9 @@ namespace MediaManager.Code.Modules
             XMLRootElement = XMLDoc.CreateElement("Media");
             XMLDoc.AppendChild(XMLRootElement);
 
+            // Always initialise simple fields
+            InitialiseSimpleCommonFields();
+
             // If the file needs to be converted to a valid XML file
             if (DoesFileNeedToBeConvertedToValidXML())
             {
@@ -129,9 +132,6 @@ namespace MediaManager.Code.Modules
                 // Else if the file is already valid XML, load it up
                 LoadXMLFile();
             }
-
-            // TESTING
-            //PrintAllProperties();
         }
 
         /// <summary>
@@ -140,7 +140,6 @@ namespace MediaManager.Code.Modules
         public void GenerateXMLFile()
         {
             // Initialise all fields
-            InitialiseSimpleCommonFields();
             InitialiseFieldsUsingMediaFolderName();
             InitialiseFieldsUsingMediaFileName();
 
@@ -207,9 +206,6 @@ namespace MediaManager.Code.Modules
         /// </summary>
         public void InitialiseSimpleCommonFields()
         {
-            // Extract media extension from real file path
-            Extension = Path.GetExtension(RealFilePath);
-
             // Get full relative path but without filename
             // e.g. "\Anime\A Certain Magical Index (2008) {tvdb-83322}\Season 01"
             // or "\Movies\8 Mile (2002) {tmdb-65}\"
@@ -331,6 +327,11 @@ namespace MediaManager.Code.Modules
             // Extract real file paths from mirror file contents
             string rawRealFilePath = mirrorFileContents[0];
             RealFilePath = Reflector.FixLongPath(rawRealFilePath);
+
+            // Initialise Extension field, which requires the RealFilePath to be set, hence why it is done here.
+            // - The RealFilePath is only valid when the file is not a valid XML file, and thats when the Extension gets set here.
+            // - When the file is valid XML, this will be set to a null or empty value, but assigned to with the correct value from the XML later on.
+            Extension = Path.GetExtension(Reflector.SanitiseFilename(RealFilePath));
 
             // Check if the real paths extracted are valid
             bool rawMirrorFilePathIsValid = File.Exists(rawRealFilePath);
