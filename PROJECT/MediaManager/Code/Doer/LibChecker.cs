@@ -43,12 +43,15 @@ namespace MediaManager
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.MirrorFilePath, "mirror folder path");
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.QualityTitle, "quality title");
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.RelativeFilePath, "relative file path");
-            CheckPropertyForUnknowns(Parser.MediaFiles, f => f.ReleaseGroup, "release group");
+            CheckPropertyForUnknowns(Parser.MediaFiles, f => f.ReleaseGroup, "release group", 55, "Boondocks");
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.ReleaseYear, "release year");
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.Title, "title");
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.Type, "type");
             CheckPropertyForUnknowns(Parser.MediaFiles, f => f.VideoCodec, "video codec");
             //CheckPropertyForUnknowns(Parser.MediaFiles, f => f.VideoDynamicRange, "video dynamic range"); // Disabled
+
+            // Check movie-specific string-type properties
+            // TODO
 
             // Check episode-specific string-type properties
             CheckPropertyForUnknowns(Parser.EpisodeFiles, f => f.SeasonType, "season type");
@@ -57,9 +60,15 @@ namespace MediaManager
             CheckPropertyForUnknowns(Parser.EpisodeFiles, f => f.EpisodeTitle, "episode title");
 
             // Check anime-specific string-type properties
-            CheckPropertyForUnknowns(Parser.AnimeFiles, f => f.AbsEpisodeNum, "absolute episode number");
-            CheckPropertyForUnknowns(Parser.AnimeFiles, f => f.VideoBitDepth, "video bit depth");
-            CheckPropertyForUnknowns(Parser.AnimeFiles, f => f.AudioLanguages, "audio language");
+            CheckPropertyForUnknowns(Parser.AnimeFiles, f => f.AbsEpisodeNum, "absolute episode number", 5, "Endymion+4 MHA");
+            CheckPropertyForUnknowns(Parser.AnimeFiles, f => f.VideoBitDepth, "video bit depth", 5, "Endymion+4 MHA");
+            CheckPropertyForUnknowns(Parser.AnimeFiles, f => f.AudioLanguages, "audio language", 341, "File Issue");
+            // More info: This is due to the files not having the language encoded in the metadata.
+            // Sonarr reads this info from the file and applies to the filenames.
+            // Even if you manually add the languages, Sonarr will remove it on next rename, as it cannot detect it.
+            // It cannot detect it even if you select the language within Sonarr.
+            // This is not an issue with Sonarrr or this program, but an issue with the files themselves.
+
         }
 
         /// <summary>
@@ -67,13 +76,15 @@ namespace MediaManager
         /// </summary>
         /// <typeparam name="T">The type of items in the collection.</typeparam>
         /// <param name="items">The collection to check.</param>
-        /// <param name="propertySelector">Function to extract the property value.</param>
-        /// <param name="propertyName">The name of the property.</param>
-        public static void CheckPropertyForUnknowns<T>(IEnumerable<T> items, Func<T, string> propertySelector,
-            string propertyName)
+        /// <param name="propExtractor">Function to extract the property value.</param>
+        /// <param name="propName">The name of the property.</param>
+        /// <param name="expIssues">The number of issues expected (Optional)</param>
+        /// <param name="expDesc">A short description explaining the issues (Optional)</param>
+        public static void CheckPropertyForUnknowns<T>(IEnumerable<T> items, Func<T, string> propExtractor,
+            string propName, int expIssues = 0, string expDesc = null)
         {
             // Issues found
-            int totalHits = 0;
+            int issuesFound = 0;
 
             // For every item in list provided
             foreach (var item in items)
@@ -81,7 +92,7 @@ namespace MediaManager
                 try
                 {
                     // Extract property value
-                    string propValue = propertySelector(item);
+                    string propValue = propExtractor(item);
 
                     // Check property value
                     bool isUnknown = propValue.Equals("Unknown", StringComparison.OrdinalIgnoreCase);
@@ -89,12 +100,12 @@ namespace MediaManager
                     if (isUnknown || isEmpty)
                     {
                         // Print out certain instances to investigate further
-                        if (propertyName.Equals("audio language"))
+                        if (propName.Equals("audio language"))
                         {
                             //Console.WriteLine($"  - '{item}' has an unknown {propertyName}!");
                         }
 
-                        totalHits++;
+                        issuesFound++;
                     }
                 }
                 catch (Exception ex)
@@ -108,28 +119,27 @@ namespace MediaManager
                 }
             }
 
+            // Subtract expected issues from those found
+            issuesFound = issuesFound - expIssues;
+
+            // Base summary message
+            string summaryMsg = $"  - {issuesFound} items had an unknown {propName}!";
+
+            // Add expected issues part if needed
+            if(expIssues != 0)
+            {
+                summaryMsg += $" ({expIssues} exceptions";
+
+                if(expDesc != null)
+                {
+                    summaryMsg += $"; {expDesc}";
+                }
+
+                summaryMsg += ")";
+            }
+
             // Notify
-            Console.WriteLine($"  - {totalHits} items had an unknown {propertyName}!");
-
-            // Special cases
-            if(propertyName.Equals("release group"))
-            {
-                Console.WriteLine($"   - The 55 Boondocks episodes without a release group are expected here");
-            }
-
-            if (propertyName.Equals("absolute episode number") || propertyName.Equals("video bit depth"))
-            {
-                Console.WriteLine($"   - 5 instances expected (Endymion+4 MHA)");
-            }
-
-            if (propertyName.Equals("audio language"))
-            {
-                Console.WriteLine($"   - 341 instances expected");
-                // More info: This is due to the files not having the language encoded in the metadata.
-                // Sonarr reads this info from the file and applies to the filenames.
-                // Even if you manually add the languages, Sonarr will remove it on next rename, as it cannot detect it.
-                // It cannot detect it even if you select the language within Sonarr.
-            }
+            Console.WriteLine(summaryMsg);
         }
     }
 }
