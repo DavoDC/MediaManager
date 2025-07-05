@@ -176,46 +176,46 @@ namespace MediaManager
         }
 
         /// <summary>
-        /// Remove a given {braced} string from a string.
+        /// Removes the specified string enclosed in curly braces (e.g., {value}) from the original string.
         /// </summary>
-        /// <param name="origStr">The original string</param>
-        /// <param name="strToRemove">The string to remove</param>
-        /// <returns>The new string</returns>
+        /// <param name="origStr">The original string.</param>
+        /// <param name="strToRemove">The inner string to remove (excluding braces).</param>
+        /// <returns>A new string with the specified braced substring removed.</returns>
         private static string RemoveBracedStr(string origStr, string strToRemove)
         {
             return RemoveDelimitedStr(origStr, strToRemove, "{", "}");
         }
 
         /// <summary>
-        /// Remove a given [bracketed] string from a string.
+        /// Removes the specified string enclosed in square brackets (e.g., [value]) from the original string.
         /// </summary>
-        /// <param name="origStr">The original string</param>
-        /// <param name="strToRemove">The string to remove</param>
-        /// <returns>The new string</returns>
+        /// <param name="origStr">The original string.</param>
+        /// <param name="strToRemove">The inner string to remove (excluding brackets).</param>
+        /// <returns>A new string with the specified bracketed substring removed.</returns>
         private static string RemoveBracketedStr(string origStr, string strToRemove)
         {
             return RemoveDelimitedStr(origStr, strToRemove, "[", "]");
         }
 
         /// <summary>
-        /// Remove a given delimited string from a string.
+        /// Removes the specified string enclosed between the given delimiters from the original string.
         /// </summary>
-        /// <param name="origStr">The original string</param>
-        /// <param name="strToRemove">The string to remove</param>
-        /// <param name="startDelim">The delimiter at the start</param>
-        /// <param name="endDelim">The delimiter at the end</param>
-        /// <returns>The new string</returns>
+        /// <param name="origStr">The original string.</param>
+        /// <param name="strToRemove">The inner string to remove (excluding delimiters).</param>
+        /// <param name="startDelim">The starting delimiter (e.g., "{" or "[").</param>
+        /// <param name="endDelim">The ending delimiter (e.g., "}" or "]").</param>
+        /// <returns>A new string with the specified delimited substring removed.</returns>
         private static string RemoveDelimitedStr(string origStr, string strToRemove, string startDelim, string endDelim)
         {
             return RemoveStr(origStr, startDelim + strToRemove + endDelim);
         }
 
         /// <summary>
-        /// Remove a given string from a string.
+        /// Removes the specified substring from the original string and trims the result.
         /// </summary>
-        /// <param name="origStr">The original string</param>
-        /// <param name="strToRemove">The string to remove</param>
-        /// <returns>The new string</returns>
+        /// <param name="origStr">The original string.</param>
+        /// <param name="strToRemove">The exact substring to remove.</param>
+        /// <returns>A new string with the specified substring removed and trimmed.</returns>
         private static string RemoveStr(string origStr, string strToRemove)
         {
             return origStr.Replace(strToRemove, "").Trim();
