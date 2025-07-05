@@ -60,7 +60,7 @@ namespace MediaManager.Code.Modules
         public XmlElement XMLRootElement { get; set; }
 
         /// <summary>
-        /// Properties initialised in derived class based on folder name
+        /// Properties initialised based on folder name
         /// </summary>
 
         // The title of the media item
@@ -68,6 +68,9 @@ namespace MediaManager.Code.Modules
 
         // The year the media item was released
         public string ReleaseYear { get; set; }
+
+        // A reference to this media item in a media database (in the format <database>-<id>)
+        public string DatabaseRef { get; set; }
 
         // A link to this media item in a media database
         public string DatabaseLink { get; set; }
@@ -232,21 +235,22 @@ namespace MediaManager.Code.Modules
                 Title = mediaFolderMatch.Groups["Title"].Value;
                 ReleaseYear = mediaFolderMatch.Groups["Year"].Value;
 
-                // Break down database ID parts
-                string[] databaseIDParts = mediaFolderMatch.Groups["ID"].Value.Split('-'); // e.g. split "tmdb-65"
-                string databaseIDType = databaseIDParts[0]; // e.g. tmdb
-                string databaseIDValue = databaseIDParts[1]; // e.g. 65
+                // Break down database reference parts
+                DatabaseRef = mediaFolderMatch.Groups["ID"].Value;
+                string[] dbRefParts = DatabaseRef.Split('-'); // e.g. split "tmdb-65"
+                string dbRefType = dbRefParts[0]; // e.g. tmdb
+                string dbRefID = dbRefParts[1]; // e.g. 65
 
-                // If database ID type matches expected type
-                if (databaseIDType.Equals(GetExpectedDatabaseIDType()))
+                // If database reference type matches expected type
+                if (dbRefType.Equals(GetExpectedDatabaseIDType()))
                 {
                     // Save database link
-                    DatabaseLink = GetDatabaseLink(databaseIDValue);
+                    DatabaseLink = GetDatabaseLink(dbRefID);
                 }
                 else
                 {
                     // Else if unexpected database ID type found, print error
-                    Prog.PrintErrMsg($"Unknown database ID type encountered: {databaseIDType}");
+                    Prog.PrintErrMsg($"Unknown database ID type encountered: {dbRefType}");
                 }
             }
             else

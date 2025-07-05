@@ -1,6 +1,7 @@
 ﻿using MediaManager.Code.Modules;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MediaManager
 {
@@ -20,6 +21,9 @@ namespace MediaManager
             // Check for properties containing "Unknown"
             CheckPropertiesForUnknowns();
 
+            // Check properties against filename
+            CheckPropertiesAgainstFilename();
+
             // Finish and print time taken
             FinishAndPrintTimeTaken();
         }
@@ -27,7 +31,7 @@ namespace MediaManager
         /// <summary>
         /// Check for properties containing "Unknown".
         /// </summary>
-        public static void CheckPropertiesForUnknowns()
+        private static void CheckPropertiesForUnknowns()
         {
             // Notify
             Console.WriteLine($" - Checking for 'Unknown' properties...");
@@ -51,7 +55,8 @@ namespace MediaManager
             //CheckPropertyForUnknowns(Parser.MediaFiles, f => f.VideoDynamicRange, "video dynamic range"); // Disabled
 
             // Check movie-specific string-type properties
-            // TODO
+            //CheckPropertyForUnknowns(Parser.MovieFiles, f => f.Edition, "edition");    // Disabled
+            //CheckPropertyForUnknowns(Parser.MovieFiles, f => f.ThreeDInfo, "3D info"); // Disabled
 
             // Check episode-specific string-type properties
             CheckPropertyForUnknowns(Parser.EpisodeFiles, f => f.SeasonType, "season type");
@@ -68,7 +73,6 @@ namespace MediaManager
             // Even if you manually add the languages, Sonarr will remove it on next rename, as it cannot detect it.
             // It cannot detect it even if you select the language within Sonarr.
             // This is not an issue with Sonarrr or this program, but an issue with the files themselves.
-
         }
 
         /// <summary>
@@ -80,7 +84,7 @@ namespace MediaManager
         /// <param name="propName">The name of the property.</param>
         /// <param name="expIssues">The number of issues expected (Optional)</param>
         /// <param name="expDesc">A short description explaining the issues (Optional)</param>
-        public static void CheckPropertyForUnknowns<T>(IEnumerable<T> items, Func<T, string> propExtractor,
+        private static void CheckPropertyForUnknowns<T>(IEnumerable<T> items, Func<T, string> propExtractor,
             string propName, int expIssues = 0, string expDesc = null)
         {
             // Issues found
@@ -140,6 +144,81 @@ namespace MediaManager
 
             // Notify
             Console.WriteLine(summaryMsg);
+        }
+
+        /// <summary>
+        /// Check that all properties are contained in filename
+        /// </summary>
+        private static void CheckPropertiesAgainstFilename()
+        {
+            Console.WriteLine("");
+
+            MovieFile file = Parser.MovieFiles.ElementAt(0);
+            string filename = file.MediaFileName;
+            Console.WriteLine(filename);
+
+            // 8 Mile (2002) {tmdb-65} [Bluray-720p][EAC3 5.1][x264]-playHD.mkv
+
+            // Remove title and year
+            filename = RemoveStr(filename, file.ToString());
+            Console.WriteLine(filename);
+
+            // Remove database link
+            filename = RemoveStr(filename, "{" + file.DatabaseRef + "}");
+            Console.WriteLine(filename);
+
+            // Remove quality title
+            filename = RemoveStr(filename, "[" + file.QualityTitle + "]");
+            Console.WriteLine(filename);
+
+            Console.WriteLine("");
+            Console.WriteLine("");
+        }
+
+        /// <summary>
+        /// Remove a given {braced} string from a string.
+        /// </summary>
+        /// <param name="origStr">The original string</param>
+        /// <param name="strToRemove">The string to remove</param>
+        /// <returns>The new string</returns>
+        private static string RemoveBracedStr(string origStr, string strToRemove)
+        {
+            return RemoveDelimitedStr(origStr, strToRemove, "{", "}");
+        }
+
+        /// <summary>
+        /// Remove a given [bracketed] string from a string.
+        /// </summary>
+        /// <param name="origStr">The original string</param>
+        /// <param name="strToRemove">The string to remove</param>
+        /// <returns>The new string</returns>
+        private static string RemoveBracketedStr(string origStr, string strToRemove)
+        {
+            return RemoveDelimitedStr(origStr, strToRemove, "[", "]");
+        }
+
+        /// <summary>
+        /// Remove a given delimited string from a string.
+        /// </summary>
+        /// <param name="origStr">The original string</param>
+        /// <param name="strToRemove">The string to remove</param>
+        /// <param name="startDelim">The delimiter at the start</param>
+        /// <param name="endDelim">The delimiter at the end</param>
+        /// <returns>The new string</returns>
+        private static string RemoveDelimitedStr(string origStr, string strToRemove, string startDelim, string endDelim)
+        {
+            return RemoveStr(origStr, startDelim + strToRemove + endDelim);
+        }
+
+        /// <summary>
+        /// Remove a given string from a string.
+        /// </summary>
+        /// <param name="origStr">The original string</param>
+        /// <param name="strToRemove">The string to remove</param>
+        /// <returns>The new string</returns>
+        private static string RemoveStr(string origStr, string strToRemove)
+        {
+            return origStr.Replace(strToRemove, "").Trim();
         }
     }
 }

@@ -6,12 +6,7 @@ Number of shows/animes
 
 
 ### LibChecker Further
-(A) One way
-Rebuild original filename from
-Fields and
-Confirm matches actual file name
-Add functions to class hierarchy to build up further e.g. GetOrigNameFromFields()
-next = base + x 
+(A) Remove fields from temp copy of filename, should be nothing left
 
 (B) Another way
 Also
