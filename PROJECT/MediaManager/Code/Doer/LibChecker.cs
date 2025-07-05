@@ -1,7 +1,6 @@
 ﻿using MediaManager.Code.Modules;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace MediaManager
 {
@@ -163,40 +162,86 @@ namespace MediaManager
                 // Get filename
                 string filename = curMediaFile.MediaFileName;
 
-                // Remove title and year
-                filename = RemoveStr(filename, curMediaFile.ToString());
+                // Remove common properties
+                filename = RemoveCommonProperties(filename, curMediaFile);
 
-                // Remove database link
-                filename = RemoveBracedStr(filename, curMediaFile.DatabaseRef);
+                // Remove media-type-specific properties
+                if(curMediaFile.Type.Equals("Movie"))
+                {
+                    // Remove movie-specific properties
+                    MovieFile movieFile = curMediaFile as MovieFile;
+                    filename = RemoveBracedStr(filename, $"edition-{movieFile.Edition}");
+                }
+                else
+                {
+                    // Remove episode-specific properties
+                    EpisodeFile epFile = curMediaFile as EpisodeFile;
 
-                // Remove custom format
-                filename = RemoveBracketedStr(filename, curMediaFile.CustomFormat);
+                    // Remove season-ep code
+                    filename = RemoveStr(filename, $"- {epFile.GetSeasonEpStr()}");
 
-                // Remove quality title
-                filename = RemoveBracketedStr(filename, curMediaFile.QualityTitle);
+                    // Remove episode title
+                    filename = RemoveStr(filename, $"- {epFile.EpisodeTitle}");
 
-                // Remove audio codec/channel part
-                filename = RemoveBracketedStr(filename, $"{curMediaFile.AudioCodec} {curMediaFile.AudioChannels}");
+                    // Remove anime specific properties
+                    if(curMediaFile.Type.Equals("Anime"))
+                    {
+                        AnimeFile animeFile = curMediaFile as AnimeFile;
 
-                // Remove video codec
-                filename = RemoveBracketedStr(filename, curMediaFile.VideoCodec);
+                        // Remove absolute episode number
+                        filename = RemoveStr(filename, $"- {animeFile.AbsEpisodeNum}");
 
-                // Remove release group
-                filename = RemoveStr(filename, $"-{curMediaFile.ReleaseGroup}");
+                        // Remove video bit depth
+                        filename = RemoveBracketedStr(filename, $"{animeFile.VideoBitDepth}bit");
 
-                // Remove extension
-                filename = RemoveStr(filename, curMediaFile.Extension);
+                        // Remove audio language(s)
+                        filename = RemoveBracketedStr(filename, animeFile.AudioLanguages);
+                    }
+                }
 
                 // At this stage, the filename should have nothing left
                 // If the filename still has something included, notify
-                if(filename.Length != 0)
+                if (filename.Length != 0)
                 {
                     Console.WriteLine($"  - '{curMediaFile.MediaFileName}' still had '{filename}' left!");
-
-                    // TEMPORARY, FOR TESTING
-                    break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Removes the common media file properties from a given filename
+        /// </summary>
+        /// <param name="filename">The media filename</param>
+        /// <returns></returns>
+        private static string RemoveCommonProperties(string filename, MediaFile file)
+        {
+            // Remove title and year
+            string titleAndYear = $"{file.Title} ({file.ReleaseYear})";
+            filename = RemoveStr(filename, Reflector.SanitiseFilename(titleAndYear));
+
+            // Remove database link
+            filename = RemoveBracedStr(filename, file.DatabaseRef);
+
+            // Remove custom format
+            filename = RemoveBracketedStr(filename, file.CustomFormat);
+
+            // Remove quality title
+            filename = RemoveBracketedStr(filename, file.QualityTitle);
+
+            // Remove audio codec/channel part
+            filename = RemoveBracketedStr(filename, $"{file.AudioCodec} {file.AudioChannels}");
+
+            // Remove video codec
+            filename = RemoveBracketedStr(filename, file.VideoCodec);
+
+            // Remove release group
+            filename = RemoveStr(filename, $"-{file.ReleaseGroup}");
+
+            // Remove extension
+            filename = RemoveStr(filename, file.Extension);
+
+            // Return new string
+            return filename;
         }
 
         /// <summary>

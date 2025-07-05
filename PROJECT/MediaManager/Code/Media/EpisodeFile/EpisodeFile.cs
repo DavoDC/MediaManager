@@ -57,7 +57,7 @@ namespace MediaManager.Code.Modules
         /// <returns>A concise string representing this episode file</returns>
         public override string ToString()
         {
-            return $"{base.ToString()}: S{SeasonNum}E{EpisodeNum}, {EpisodeTitle}";
+            return $"{base.ToString()}: {GetSeasonEpStr()}, {EpisodeTitle}";
         }
 
         /// <returns>The database used for shows</returns>
@@ -212,5 +212,11 @@ namespace MediaManager.Code.Modules
         /// Returns the expected media type as a string
         /// </summary>
         public abstract string GetExpectedType();
+
+        /// <returns>Season-episode code as a string (e.g. S02E06)</returns>
+        public string GetSeasonEpStr()
+        {
+            return $"S{SeasonNum}E{EpisodeNum}";
+        }
     }
 }

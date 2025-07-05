@@ -82,7 +82,7 @@ namespace MediaManager
                 Parser p = new Parser();
 
                 // 4) Analyse metadata and print statistics
-                //Analyser a = new Analyser();
+                Analyser a = new Analyser();
 
                 // 5) Check that values saved are correct
                 LibChecker lc = new LibChecker();
