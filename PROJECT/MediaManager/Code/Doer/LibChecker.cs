@@ -142,8 +142,11 @@ namespace MediaManager
                 summaryMsg += ")";
             }
 
-            // Notify
-            Console.WriteLine(summaryMsg);
+            // Notify if any issues found
+            if (issuesFound != 0)
+            {
+                Console.WriteLine(summaryMsg);
+            }
         }
 
         /// <summary>
@@ -151,28 +154,49 @@ namespace MediaManager
         /// </summary>
         private static void CheckPropertiesAgainstFilename()
         {
-            Console.WriteLine("");
+            // Notify
+            Console.WriteLine($" - Checking for properties against filename...");
 
-            MovieFile file = Parser.MovieFiles.ElementAt(0);
-            string filename = file.MediaFileName;
-            Console.WriteLine(filename);
+            // For every media file 
+            foreach (MediaFile curMediaFile in Parser.MediaFiles)
+            {
+                // Get filename
+                string filename = curMediaFile.MediaFileName;
 
-            // 8 Mile (2002) {tmdb-65} [Bluray-720p][EAC3 5.1][x264]-playHD.mkv
+                // Remove title and year
+                filename = RemoveStr(filename, curMediaFile.ToString());
 
-            // Remove title and year
-            filename = RemoveStr(filename, file.ToString());
-            Console.WriteLine(filename);
+                // Remove database link
+                filename = RemoveBracedStr(filename, curMediaFile.DatabaseRef);
 
-            // Remove database link
-            filename = RemoveStr(filename, "{" + file.DatabaseRef + "}");
-            Console.WriteLine(filename);
+                // Remove custom format
+                filename = RemoveBracketedStr(filename, curMediaFile.CustomFormat);
 
-            // Remove quality title
-            filename = RemoveStr(filename, "[" + file.QualityTitle + "]");
-            Console.WriteLine(filename);
+                // Remove quality title
+                filename = RemoveBracketedStr(filename, curMediaFile.QualityTitle);
 
-            Console.WriteLine("");
-            Console.WriteLine("");
+                // Remove audio codec/channel part
+                filename = RemoveBracketedStr(filename, $"{curMediaFile.AudioCodec} {curMediaFile.AudioChannels}");
+
+                // Remove video codec
+                filename = RemoveBracketedStr(filename, curMediaFile.VideoCodec);
+
+                // Remove release group
+                filename = RemoveStr(filename, $"-{curMediaFile.ReleaseGroup}");
+
+                // Remove extension
+                filename = RemoveStr(filename, curMediaFile.Extension);
+
+                // At this stage, the filename should have nothing left
+                // If the filename still has something included, notify
+                if(filename.Length != 0)
+                {
+                    Console.WriteLine($"  - '{curMediaFile.MediaFileName}' still had '{filename}' left!");
+
+                    // TEMPORARY, FOR TESTING
+                    break;
+                }
+            }
         }
 
         /// <summary>
