@@ -223,54 +223,54 @@ namespace MediaManager
         }
 
         /// <summary>
-        /// Removes the specified string enclosed in curly braces (e.g., {value}) from the original string.
+        /// Removes a `{value}` prefix from the input string, if present.
         /// </summary>
-        /// <param name="origStr">The original string.</param>
-        /// <param name="strToRemove">The inner string to remove (excluding braces).</param>
-        /// <returns>A new string with the specified braced substring removed.</returns>
-        private static string RemoveBracedPrefix(string origStr, string strToRemove)
+        /// <param name="input">The input string.</param>
+        /// <param name="value">The value inside the braces to remove.</param>
+        /// <returns>The string with the braced prefix removed and trimmed.</returns>
+        private static string RemoveBracedPrefix(string input, string value)
         {
-            return RemoveDelimitedPrefix(origStr, strToRemove, "{", "}");
+            return RemoveDelimitedPrefix(input, value, "{", "}");
         }
 
         /// <summary>
-        /// Removes the specified string enclosed in square brackets (e.g., [value]) from the original string.
+        /// Removes a `[value]` prefix from the input string, if present.
         /// </summary>
-        /// <param name="origStr">The original string.</param>
-        /// <param name="strToRemove">The inner string to remove (excluding brackets).</param>
-        /// <returns>A new string with the specified bracketed substring removed.</returns>
-        private static string RemoveBracketedPrefix(string origStr, string strToRemove)
+        /// <param name="input">The input string.</param>
+        /// <param name="value">The value inside the brackets to remove.</param>
+        /// <returns>The string with the bracketed prefix removed and trimmed.</returns>
+        private static string RemoveBracketedPrefix(string input, string value)
         {
-            return RemoveDelimitedPrefix(origStr, strToRemove, "[", "]");
+            return RemoveDelimitedPrefix(input, value, "[", "]");
         }
 
         /// <summary>
-        /// Removes the specified string enclosed between the given delimiters from the original string.
+        /// Removes a delimited prefix (e.g., `{value}`, `[value]`) from the input string, if present.
         /// </summary>
-        /// <param name="origStr">The original string.</param>
-        /// <param name="strToRemove">The inner string to remove (excluding delimiters).</param>
-        /// <param name="startDelim">The starting delimiter (e.g., "{" or "[").</param>
-        /// <param name="endDelim">The ending delimiter (e.g., "}" or "]").</param>
-        /// <returns>A new string with the specified delimited substring removed.</returns>
-        private static string RemoveDelimitedPrefix(string origStr, string strToRemove, string startDelim, string endDelim)
+        /// <param name="input">The input string.</param>
+        /// <param name="value">The value inside the delimiters to remove.</param>
+        /// <param name="startDelimiter">The opening delimiter (e.g., `{`).</param>
+        /// <param name="endDelimiter">The closing delimiter (e.g., `}`).</param>
+        /// <returns>The string with the delimited prefix removed and trimmed.</returns>
+        private static string RemoveDelimitedPrefix(string input, string value, string startDelimiter, string endDelimiter)
         {
-            return RemovePrefix(origStr, startDelim + strToRemove + endDelim);
+            return RemovePrefix(input, startDelimiter + value + endDelimiter);
         }
 
         /// <summary>
-        /// Removes the specified prefix from the start of the string, if present, and trims the result.
+        /// Removes the specified prefix from the start of a string and trims the result.
         /// </summary>
-        /// <param name="original">The original string.</param>
+        /// <param name="input">The input string.</param>
         /// <param name="prefix">The prefix to remove.</param>
-        /// <returns>The trimmed string with the prefix removed if it was present; otherwise, the original string.</returns>
-        private static string RemovePrefix(string original, string prefix)
+        /// <returns>The trimmed string with the prefix removed if present.</returns>
+        private static string RemovePrefix(string input, string prefix)
         {
-            if (!original.StartsWith(prefix))
-            {  
-                return original;
-            }  
+            if (!input.StartsWith(prefix))
+            {
+                return input;
+            }
 
-            return original.Substring(prefix.Length).Trim();
+            return input.Substring(prefix.Length).Trim();
         }
     }
 }
