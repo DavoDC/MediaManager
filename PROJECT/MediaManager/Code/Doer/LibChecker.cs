@@ -157,91 +157,71 @@ namespace MediaManager
             Console.WriteLine($" - Checking for properties against filename...");
 
             // For every media file 
-            foreach (MediaFile curMediaFile in Parser.MediaFiles)
+            foreach (MediaFile curFile in Parser.MediaFiles)
             {
                 // Get filename
-                string filename = curMediaFile.MediaFileName;
+                string filename = curFile.MediaFileName;
 
-                // Remove common properties
-                filename = RemoveCommonProperties(filename, curMediaFile);
+                // Remove title and year
+                filename = RemovePrefix(filename, Reflector.SanitiseFilename($"{curFile.Title} ({curFile.ReleaseYear})"));
 
-                // Remove media-type-specific properties
-                if(curMediaFile.Type.Equals("Movie"))
+                // If file is an episode, remove episode code
+                if(curFile.IsEpisode())
                 {
-                    // Remove movie-specific properties
-                    MovieFile movieFile = curMediaFile as MovieFile;
-                    filename = RemoveBracedStr(filename, $"edition-{movieFile.Edition}");
+                    filename = RemovePrefix(filename, $"- {((EpisodeFile) curFile).GetSeasonEpStr()}");
                 }
-                else
+
+                // If file is an anime, remove absolute episode number
+                if (curFile.IsAnime())
                 {
-                    // Remove episode-specific properties
-                    EpisodeFile epFile = curMediaFile as EpisodeFile;
-
-                    // Remove season-ep code
-                    filename = RemoveStr(filename, $"- {epFile.GetSeasonEpStr()}");
-
-                    // Remove episode title
-                    filename = RemoveStr(filename, $"- {epFile.EpisodeTitle}");
-
-                    // Remove anime specific properties
-                    if(curMediaFile.Type.Equals("Anime"))
-                    {
-                        AnimeFile animeFile = curMediaFile as AnimeFile;
-
-                        // Remove absolute episode number
-                        filename = RemoveStr(filename, $"- {animeFile.AbsEpisodeNum}");
-
-                        // Remove video bit depth
-                        filename = RemoveBracketedStr(filename, $"{animeFile.VideoBitDepth}bit");
-
-                        // Remove audio language(s)
-                        filename = RemoveBracketedStr(filename, animeFile.AudioLanguages);
-                    }
+                    filename = RemovePrefix(filename, $"- {((AnimeFile)curFile).AbsEpisodeNum}");
                 }
+
+                // If file is an episode, remove episode title
+                if (curFile.IsEpisode())
+                {
+                    filename = RemovePrefix(filename, $"- {((EpisodeFile)curFile).EpisodeTitle}");
+                }
+
+                // If file is a movie, remove database reference and edition
+                if(curFile.IsMovie())
+                {
+                    filename = RemoveBracedPrefix(filename, curFile.DatabaseRef);
+                    filename = RemoveBracedPrefix(filename, $"edition-{((MovieFile) curFile).Edition}");
+                }
+
+                // Remove custom format
+                filename = RemoveBracketedPrefix(filename, curFile.CustomFormat);
+
+                // Remove quality title
+                filename = RemoveBracketedPrefix(filename, curFile.QualityTitle);
+
+                // If file is an anime, remove video and audio info in right order
+                if (curFile.IsAnime())
+                {
+                    filename = RemoveBracketedPrefix(filename, $"{((AnimeFile)curFile).VideoBitDepth}bit");
+                    filename = RemoveBracketedPrefix(filename, curFile.VideoCodec);
+                    filename = RemoveBracketedPrefix(filename, $"{curFile.AudioCodec} {curFile.AudioChannels}");
+                    filename = RemoveBracketedPrefix(filename, ((AnimeFile)curFile).AudioLanguages);
+                }
+
+                // Else if not anime, remove audio info, THEN video codec
+                filename = RemoveBracketedPrefix(filename, $"{curFile.AudioCodec} {curFile.AudioChannels}");
+                filename = RemoveBracketedPrefix(filename, curFile.VideoCodec);
+
+                // Remove release group
+                filename = RemovePrefix(filename, $"-{curFile.ReleaseGroup}");
+
+                // Remove extension
+                filename = RemovePrefix(filename, curFile.Extension);
 
                 // At this stage, the filename should have nothing left
                 // If the filename still has something included, notify
                 if (filename.Length != 0)
                 {
-                    Console.WriteLine($"  - '{curMediaFile.MediaFileName}' still had '{filename}' left!");
+                    Console.WriteLine($"  - '{curFile.MediaFileName}' still had '{filename}' left!");
                 }
             }
-        }
-
-        /// <summary>
-        /// Removes the common media file properties from a given filename
-        /// </summary>
-        /// <param name="filename">The media filename</param>
-        /// <returns></returns>
-        private static string RemoveCommonProperties(string filename, MediaFile file)
-        {
-            // Remove title and year
-            string titleAndYear = $"{file.Title} ({file.ReleaseYear})";
-            filename = RemoveStr(filename, Reflector.SanitiseFilename(titleAndYear));
-
-            // Remove database link
-            filename = RemoveBracedStr(filename, file.DatabaseRef);
-
-            // Remove custom format
-            filename = RemoveBracketedStr(filename, file.CustomFormat);
-
-            // Remove quality title
-            filename = RemoveBracketedStr(filename, file.QualityTitle);
-
-            // Remove audio codec/channel part
-            filename = RemoveBracketedStr(filename, $"{file.AudioCodec} {file.AudioChannels}");
-
-            // Remove video codec
-            filename = RemoveBracketedStr(filename, file.VideoCodec);
-
-            // Remove release group
-            filename = RemoveStr(filename, $"-{file.ReleaseGroup}");
-
-            // Remove extension
-            filename = RemoveStr(filename, file.Extension);
-
-            // Return new string
-            return filename;
         }
 
         /// <summary>
@@ -250,9 +230,9 @@ namespace MediaManager
         /// <param name="origStr">The original string.</param>
         /// <param name="strToRemove">The inner string to remove (excluding braces).</param>
         /// <returns>A new string with the specified braced substring removed.</returns>
-        private static string RemoveBracedStr(string origStr, string strToRemove)
+        private static string RemoveBracedPrefix(string origStr, string strToRemove)
         {
-            return RemoveDelimitedStr(origStr, strToRemove, "{", "}");
+            return RemoveDelimitedPrefix(origStr, strToRemove, "{", "}");
         }
 
         /// <summary>
@@ -261,9 +241,9 @@ namespace MediaManager
         /// <param name="origStr">The original string.</param>
         /// <param name="strToRemove">The inner string to remove (excluding brackets).</param>
         /// <returns>A new string with the specified bracketed substring removed.</returns>
-        private static string RemoveBracketedStr(string origStr, string strToRemove)
+        private static string RemoveBracketedPrefix(string origStr, string strToRemove)
         {
-            return RemoveDelimitedStr(origStr, strToRemove, "[", "]");
+            return RemoveDelimitedPrefix(origStr, strToRemove, "[", "]");
         }
 
         /// <summary>
@@ -274,20 +254,25 @@ namespace MediaManager
         /// <param name="startDelim">The starting delimiter (e.g., "{" or "[").</param>
         /// <param name="endDelim">The ending delimiter (e.g., "}" or "]").</param>
         /// <returns>A new string with the specified delimited substring removed.</returns>
-        private static string RemoveDelimitedStr(string origStr, string strToRemove, string startDelim, string endDelim)
+        private static string RemoveDelimitedPrefix(string origStr, string strToRemove, string startDelim, string endDelim)
         {
-            return RemoveStr(origStr, startDelim + strToRemove + endDelim);
+            return RemovePrefix(origStr, startDelim + strToRemove + endDelim);
         }
 
         /// <summary>
-        /// Removes the specified substring from the original string and trims the result.
+        /// Removes the specified prefix from the start of the string, if present, and trims the result.
         /// </summary>
-        /// <param name="origStr">The original string.</param>
-        /// <param name="strToRemove">The exact substring to remove.</param>
-        /// <returns>A new string with the specified substring removed and trimmed.</returns>
-        private static string RemoveStr(string origStr, string strToRemove)
+        /// <param name="original">The original string.</param>
+        /// <param name="prefix">The prefix to remove.</param>
+        /// <returns>The trimmed string with the prefix removed if it was present; otherwise, the original string.</returns>
+        private static string RemovePrefix(string original, string prefix)
         {
-            return origStr.Replace(strToRemove, "").Trim();
+            if (!original.StartsWith(prefix))
+            {  
+                return original;
+            }  
+
+            return original.Substring(prefix.Length).Trim();
         }
     }
 }

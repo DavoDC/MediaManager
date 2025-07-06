@@ -446,6 +446,12 @@ namespace MediaManager.Code.Modules
             return XMLRootElement.SelectSingleNode(elementName) as XmlElement;
         }
 
+        /// <returns>A concise string representing this media file</returns>
+        public override string ToString()
+        {
+            return $"{Title} ({ReleaseYear})";
+        }
+
         /// <summary>
         /// Prints all properties of this file.
         /// </summary>
@@ -454,10 +460,28 @@ namespace MediaManager.Code.Modules
             Console.WriteLine(ToAllPropertiesString());
         }
 
-        /// <returns>A concise string representing this media file</returns>
-        public override string ToString()
+        /// <returns>True if the media file is a movie</returns>
+        public bool IsMovie()
         {
-            return $"{Title} ({ReleaseYear})";
+            return Type.Equals("Movie");
+        }
+
+        /// <returns>True if the media file is an episode</returns>
+        public bool IsEpisode()
+        {
+            return IsShow() || IsAnime();
+        }
+
+        /// <returns>True if the media file is a TV show episode</returns>
+        public bool IsShow()
+        {
+            return Type.Equals("Show");
+        }
+
+        /// <returns>True if the media file is an anime episode</returns>
+        public bool IsAnime()
+        {
+            return Type.Equals("Anime");
         }
 
         /// <summary>
