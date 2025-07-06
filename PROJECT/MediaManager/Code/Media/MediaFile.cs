@@ -449,7 +449,13 @@ namespace MediaManager.Code.Modules
         /// <returns>A concise string representing this media file</returns>
         public override string ToString()
         {
-            return $"{Title} ({ReleaseYear})";
+            return GetSanitisedTitleAndYear();
+        }
+
+        /// <returns>The title and year of this file as a sanitised string</returns>
+        public string GetSanitisedTitleAndYear()
+        {
+            return Reflector.SanitiseFilename($"{Title} ({ReleaseYear})");
         }
 
         /// <summary>
@@ -482,6 +488,12 @@ namespace MediaManager.Code.Modules
         public bool IsAnime()
         {
             return Type.Equals("Anime");
+        }
+
+        /// <returns>This media file's audio codec and channel info</returns>
+        public string GetAudioInfo()
+        {
+            return $"{AudioCodec} {AudioChannels}";
         }
 
         /// <summary>

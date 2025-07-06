@@ -154,72 +154,70 @@ namespace MediaManager
         private static void CheckPropertiesAgainstFilename()
         {
             // Notify
-            Console.WriteLine($" - Checking for properties against filename...");
+            Console.WriteLine($" - Checking property values against filename...");
 
             // For every media file 
             foreach (MediaFile curFile in Parser.MediaFiles)
             {
-                // Get filename
-                string filename = curFile.MediaFileName;
+                // Get copy of filename to remove parts from
+                string nameCopy = curFile.MediaFileName;
 
                 // Remove title and year
-                filename = RemovePrefix(filename, Reflector.SanitiseFilename($"{curFile.Title} ({curFile.ReleaseYear})"));
+                nameCopy = RemovePrefix(nameCopy, curFile.GetSanitisedTitleAndYear());
 
-                // If file is an episode, remove episode code
+                // If file is an episode
                 if(curFile.IsEpisode())
                 {
-                    filename = RemovePrefix(filename, $"- {((EpisodeFile) curFile).GetSeasonEpStr()}");
-                }
+                    // Remove episode code
+                    nameCopy = RemovePrefix(nameCopy, $"- {((EpisodeFile)curFile).GetSeasonEpStr()}");
 
-                // If file is an anime, remove absolute episode number
-                if (curFile.IsAnime())
-                {
-                    filename = RemovePrefix(filename, $"- {((AnimeFile)curFile).AbsEpisodeNum}");
-                }
+                    // If file is an anime, remove absolute episode number
+                    if (curFile.IsAnime())
+                    {
+                        nameCopy = RemovePrefix(nameCopy, $"- {((AnimeFile)curFile).AbsEpisodeNum}");
+                    }
 
-                // If file is an episode, remove episode title
-                if (curFile.IsEpisode())
-                {
-                    filename = RemovePrefix(filename, $"- {((EpisodeFile)curFile).EpisodeTitle}");
+                    // Remove episode title
+                    nameCopy = RemovePrefix(nameCopy, $"- {((EpisodeFile)curFile).EpisodeTitle}");
                 }
 
                 // If file is a movie, remove database reference and edition
                 if(curFile.IsMovie())
                 {
-                    filename = RemoveBracedPrefix(filename, curFile.DatabaseRef);
-                    filename = RemoveBracedPrefix(filename, $"edition-{((MovieFile) curFile).Edition}");
+                    nameCopy = RemoveBracedPrefix(nameCopy, curFile.DatabaseRef);
+                    nameCopy = RemoveBracedPrefix(nameCopy, $"edition-{((MovieFile)curFile).Edition}");
                 }
 
                 // Remove custom format
-                filename = RemoveBracketedPrefix(filename, curFile.CustomFormat);
+                nameCopy = RemoveBracketedPrefix(nameCopy, curFile.CustomFormat);
 
                 // Remove quality title
-                filename = RemoveBracketedPrefix(filename, curFile.QualityTitle);
+                nameCopy = RemoveBracketedPrefix(nameCopy, curFile.QualityTitle);
 
                 // If file is an anime, remove video and audio info in right order
                 if (curFile.IsAnime())
                 {
-                    filename = RemoveBracketedPrefix(filename, $"{((AnimeFile)curFile).VideoBitDepth}bit");
-                    filename = RemoveBracketedPrefix(filename, curFile.VideoCodec);
-                    filename = RemoveBracketedPrefix(filename, $"{curFile.AudioCodec} {curFile.AudioChannels}");
-                    filename = RemoveBracketedPrefix(filename, ((AnimeFile)curFile).AudioLanguages);
+                    nameCopy = RemoveBracketedPrefix(nameCopy, $"{((AnimeFile)curFile).VideoBitDepth}bit");
+                    nameCopy = RemoveBracketedPrefix(nameCopy, curFile.VideoCodec);
+                    nameCopy = RemoveBracketedPrefix(nameCopy, curFile.GetAudioInfo());
+                    nameCopy = RemoveBracketedPrefix(nameCopy, ((AnimeFile)curFile).AudioLanguages);
                 }
 
                 // Else if not anime, remove audio info, THEN video codec
-                filename = RemoveBracketedPrefix(filename, $"{curFile.AudioCodec} {curFile.AudioChannels}");
-                filename = RemoveBracketedPrefix(filename, curFile.VideoCodec);
+                nameCopy = RemoveBracketedPrefix(nameCopy, curFile.GetAudioInfo());
+                nameCopy = RemoveBracketedPrefix(nameCopy, curFile.VideoCodec);
 
                 // Remove release group
-                filename = RemovePrefix(filename, $"-{curFile.ReleaseGroup}");
+                nameCopy = RemovePrefix(nameCopy, $"-{curFile.ReleaseGroup}");
 
                 // Remove extension
-                filename = RemovePrefix(filename, curFile.Extension);
+                nameCopy = RemovePrefix(nameCopy, curFile.Extension);
 
                 // At this stage, the filename should have nothing left
                 // If the filename still has something included, notify
-                if (filename.Length != 0)
+                if (nameCopy.Length != 0)
                 {
-                    Console.WriteLine($"  - '{curFile.MediaFileName}' still had '{filename}' left!");
+                    Console.WriteLine($"  - '{curFile.MediaFileName}' still had '{nameCopy}' left!");
                 }
             }
         }
