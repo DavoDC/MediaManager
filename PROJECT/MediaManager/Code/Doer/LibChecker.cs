@@ -114,11 +114,9 @@ namespace MediaManager
                 catch (Exception ex)
                 {
                     MediaFile curMediaFile = item as MediaFile;
-                    string errMsg = $"Failed to extract property!";
-                    errMsg += $"\n\nException message: \n{ex.Message}";
-                    errMsg += $"\n\nMedia file info: \n{curMediaFile.ToAllPropertiesString()}";
+                    string errMsg = $"Failed to extract property from '{curMediaFile.MediaFileName}'";
+                    errMsg += $" due to exception ({ex.Message})!";
                     Prog.PrintErrMsg(errMsg);
-                    throw;
                 }
             }
 

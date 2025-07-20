@@ -375,10 +375,16 @@ namespace MediaManager.Code.Modules
         /// <returns>The simplified quality title</returns>
         public string GetConciseQualityTitle()
         {
+            // If QualityTitle is somehow unset
+            if(QualityTitle == null)
+            {
+                return "Unknown";
+            }
+
             // Handle special DVD case
             if(QualityTitle.Equals("DVD"))
             {
-                return QualityTitle;
+                return "DVD";
             }
 
             // Try to apply concise quality title regex to full quality title
@@ -392,10 +398,18 @@ namespace MediaManager.Code.Modules
             }
             else
             {
-                // Else if couldn't find match, print error and return full title
-                string errMsg = $"Failed to parse Quality Title: {QualityTitle}";
-                errMsg += $"\nMedia file info: \n{ToAllPropertiesString()}";
+                // Else if couldn't find match:
+
+                // Print error
+                string errMsg = $"Failed to parse Quality Title ('{QualityTitle}') for: {MediaFileName}";
                 Prog.PrintErrMsg(errMsg);
+
+                // If empty, return unknown
+                if (QualityTitle.Length == 0) {
+                    return "Unknown";
+                }
+                
+                // Otherwise return full title
                 return QualityTitle;
             }
         }

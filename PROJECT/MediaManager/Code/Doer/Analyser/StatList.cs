@@ -92,6 +92,13 @@ namespace MediaManager
                 // Extract property using the given function
                 string property = func(file);
 
+                // Do null check
+                if(property == null)
+                {
+                    Prog.PrintErrMsg("NULL property was retrieved!");
+                    break;
+                }
+
                 // If property is in dictionary
                 if (itemVariants.ContainsKey(property))
                 {
