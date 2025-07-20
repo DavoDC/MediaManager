@@ -17,7 +17,7 @@ namespace MediaManager.Code.Modules
                         S(?<SeasonNum>\d{2})E(?<EpisodeNum>\d{2})\s*-\s*
                         (?<AbsoluteEpisode>\d{3})\s*-\s*
                         (?<EpisodeTitle>.+?)\s*
-                        (?:\[(?<CustomFormat>(?!^(?:[A-Z]{2,}(?:\+[A-Z]{2,})*|\w+-\d{3,4}p)$)[^\]]+)\])?
+                        (?:\[(?<CustomFormat>(?:(?![A-Z]{2,}(?:\+[A-Z]{2,})*|\w+-\d{3,4}p)[^\]])+)\])?
                         (?:\[(?<QualityTitle>\w+-\d{3,4}p)\])?
                         (?:\[(?<AudioCodec>[^\]\s]+(?:\s+[^\]\s]+)*)\s+(?<AudioChannels>[\d.]+)\])?
                         (?:\[(?<AudioLanguages>[^\]]+)\])?
