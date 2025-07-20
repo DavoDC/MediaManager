@@ -10,17 +10,18 @@ namespace MediaManager.Code.Modules
     {
         /// <summary>
         /// This regex represents the naming format that Sonarr uses for TV show episode filenames:
-        /// {Series TitleYear} - S{season:00}E{episode:00} - {Episode CleanTitle} [{Custom Formats }{Quality Title}]{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[MediaInfo VideoCodec]}{-Release Group}
-        /// Example: "Gen V (2023) - S01E06 - Jumanji [AMZN WEBDL-720p][EAC3 5.1][h264]-NTb"
+        /// {Series TitleYear} - S{season:00}E{episode:00} - {Episode CleanTitle:90} {[Custom Formats]}{[Quality Title]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[MediaInfo VideoDynamicRangeType]}{[Mediainfo VideoCodec]}{-Release Group}
+        /// Example: "Gen V (2023) - S01E06 - Jumanji [AMZN][WEBDL-720p][EAC3 5.1][h264]-NTb"
         /// </summary>
         protected static readonly Regex showEpRegex = new Regex(@"
                     ^(?<Title>.+?)\s*(?:\((?<ReleaseYear>\d{4})\))?\s*-\s*
                     S(?<SeasonNum>\d{2})E(?<EpisodeNum>\d{2})\s*-\s*
                     (?<EpisodeTitle>.+?)\s*
-                    (?:\[(?<CustomFormat>[^]\[]*?)\s*(?<QualityTitle>[^]\[]*)\])?\s*
-                    (?:\[(?<VideoDynamicRange>HDR|SDR|HLG)\])?\s*
+                    (?:\[(?<CustomFormat>(?!EAC3|AC3|AAC|DTS)[^\]]+)\])?
+                    (?:\[(?<QualityTitle>(?!EAC3|AC3|AAC|DTS)[^\]]+)\])?
+                    (?:\[(?<AudioCodec>[^\]\s]+(?:\s+[^\]\s]+)*)\s+(?<AudioChannels>[\d.]+)\])?
+                    (?:\[(?<VideoDynamicRange>HDR|SDR|HLG)\])?
                     (?:\[(?<VideoBitDepth>\d+)bit\])?
-                    (?:\[(?<AudioCodec>EAC3|[^\]\s]+(?:\s+[^\]\s]+)*)\s+(?<AudioChannels>[\d.]+)\])?
                     (?:\[(?<VideoCodec>x264|x265|h264|h265|MPEG2)\])?
                     (?:\[(?<AudioLanguages>[^\]]+)\])?
                     (?:-(?<ReleaseGroup>[^\]]+))?$", RegexOptions.IgnorePatternWhitespace);
