@@ -9,20 +9,20 @@ namespace MediaManager.Code.Modules
     {
         /// <summary>
         /// This regex represents the naming format that Sonarr uses for anime episode filenames:
-        /// {Series TitleYear} - S{season:00}E{episode:00} - {absolute:000} - {Episode CleanTitle} [{Custom Formats}{Quality Title}]{[MediaInfo VideoDynamicRangeType]}[{MediaInfo VideoBitDepth}bit]{[MediaInfo VideoCodec]}[{Mediainfo AudioCodec} { Mediainfo AudioChannels}]{MediaInfo AudioLanguages}{-Release Group}
-        /// Example: "DAN DA DAN (2024) - S01E11 - 011 - First Love [WEBDL-1080p][8bit][x264][AAC 2.0][JA+EN]-MALD"
+        /// {Series TitleYear} - S{season:00}E{episode:00} - {absolute:000} - {Episode CleanTitle:90} {[Custom Formats]}{[Quality Title]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{MediaInfo AudioLanguages}{[MediaInfo VideoDynamicRangeType]}[{Mediainfo VideoCodec }{MediaInfo VideoBitDepth}bit]{-Release Group}
+        /// Example: "DAN DA DAN (2024) - S01E11 - 011 - First Love [v2][WEBDL-1080p][AAC 2.0][JA+EN][x264 8bit]-MALD"
         /// </summary>
         private static readonly Regex animeEpRegex = new Regex(@"
                         ^(?<Title>.+?)\s*(?:\((?<ReleaseYear>\d{4})\))?\s*-\s*
                         S(?<SeasonNum>\d{2})E(?<EpisodeNum>\d{2})\s*-\s*
                         (?<AbsoluteEpisode>\d{3})\s*-\s*
                         (?<EpisodeTitle>.+?)\s*
-                        (?:\[(?<CustomFormat>[^]\[]*?)\s*(?<QualityTitle>[^]\[]*)\])?\s*
-                        (?:\[(?<VideoDynamicRange>HDR|SDR|HLG)\])?\s*
-                        (?:\[(?<VideoBitDepth>\d+)bit\])?\s*
-                        (?:\[(?<VideoCodec>x264|x265|h264|h265)\])?\s*
-                        (?:\[(?<AudioCodec>[^\]\s]+)\s+(?<AudioChannels>[\d.]+)\])?\s*
-                        (?:\[(?<AudioLanguages>[^\]]+)\])?\s*
+                        (?:\[(?<CustomFormat>(?!^(?:[A-Z]{2,}(?:\+[A-Z]{2,})*|\w+-\d{3,4}p)$)[^\]]+)\])?
+                        (?:\[(?<QualityTitle>\w+-\d{3,4}p)\])?
+                        (?:\[(?<AudioCodec>[^\]\s]+(?:\s+[^\]\s]+)*)\s+(?<AudioChannels>[\d.]+)\])?
+                        (?:\[(?<AudioLanguages>[^\]]+)\])?
+                        (?:\[(?<VideoCodec>x264|x265|h264|h265)\s+(?<VideoBitDepth>\d+)bit\])?
+                        (?:\[(?<VideoDynamicRange>HDR|SDR|HLG)\])?
                         (?:-(?<ReleaseGroup>[^\]]+))?$", RegexOptions.IgnorePatternWhitespace);
 
         /// <summary>
@@ -71,6 +71,9 @@ namespace MediaManager.Code.Modules
                 // - The show regex used initially includes the absolute episode number in the title
                 // - The title from the anime regex will not include this extra info
                 EpisodeTitle = GetGroupValue(animeMatch, "EpisodeTitle");
+
+                // Fix custom format previously set
+                CustomFormat = GetGroupValue(animeMatch, "CustomFormat");
 
                 // Fix quality title previously set
                 QualityTitle = GetGroupValue(animeMatch, "QualityTitle");
