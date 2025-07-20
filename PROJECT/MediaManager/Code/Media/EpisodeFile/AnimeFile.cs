@@ -20,7 +20,7 @@ namespace MediaManager.Code.Modules
                         (?:\[(?<CustomFormat>(?:(?![A-Z]{2,}(?:\+[A-Z]{2,})*|\w+-\d{3,4}p)[^\]])+)\])?
                         (?:\[(?<QualityTitle>(DVD|\w+-\d{3,4}p))\])?
                         (?:\[(?<AudioCodec>[^\]\s]+(?:\s+[^\]\s]+)*)\s+(?<AudioChannels>[\d.]+)\])?
-                        (?:\[(?<AudioLanguages>[^\]]+)\])?
+                        (?:\[(?<AudioLanguages>[A-Z]{2,}(?:\+[A-Z]{2,})*)\])?
                         (?:\[(?<VideoCodec>x264|x265|h264|h265)\s+(?<VideoBitDepth>\d+)bit\])?
                         (?:\[(?<VideoDynamicRange>HDR|SDR|HLG)\])?
                         (?:-(?<ReleaseGroup>[^\]]+))?$", RegexOptions.IgnorePatternWhitespace);

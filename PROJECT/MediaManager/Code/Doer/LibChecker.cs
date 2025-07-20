@@ -105,7 +105,7 @@ namespace MediaManager
                         // Print out certain instances to investigate further
                         if (propName.Equals("audio language"))
                         {
-                            //Console.WriteLine($"  - '{item}' has an unknown {propertyName}!");
+                            //Console.WriteLine($"  - '{item}' has an unknown {propName}!");
                         }
 
                         issuesFound++;
