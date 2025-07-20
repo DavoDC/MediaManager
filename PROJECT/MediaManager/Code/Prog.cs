@@ -82,12 +82,10 @@ namespace MediaManager
                 Parser p = new Parser();
 
                 // 4) Analyse metadata and print statistics
-                // TEMP DISABLED
-                //Analyser a = new Analyser();
+                Analyser a = new Analyser();
 
                 // 5) Check that values saved are correct
-                // TEMP DISABLED
-                //LibChecker lc = new LibChecker();
+                LibChecker lc = new LibChecker();
 
                 // Print total time
                 Doer.PrintTotalTimeTaken();

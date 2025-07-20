@@ -183,6 +183,7 @@ namespace MediaManager
                 if(curFile.IsMovie())
                 {
                     nameCopy = RemoveBracedPrefix(nameCopy, curFile.DatabaseRef);
+                    nameCopy = RemovePrefix(nameCopy, "-");
                     nameCopy = RemoveBracedPrefix(nameCopy, $"edition-{((MovieFile)curFile).Edition}");
                 }
 
@@ -195,10 +196,9 @@ namespace MediaManager
                 // If file is an anime, remove video and audio info in right order
                 if (curFile.IsAnime())
                 {
-                    nameCopy = RemoveBracketedPrefix(nameCopy, $"{((AnimeFile)curFile).VideoBitDepth}bit");
-                    nameCopy = RemoveBracketedPrefix(nameCopy, curFile.VideoCodec);
                     nameCopy = RemoveBracketedPrefix(nameCopy, curFile.GetAudioInfo());
                     nameCopy = RemoveBracketedPrefix(nameCopy, ((AnimeFile)curFile).AudioLanguages);
+                    nameCopy = RemoveBracketedPrefix(nameCopy, $"{curFile.VideoCodec} {((AnimeFile)curFile).VideoBitDepth}bit");
                 }
 
                 // Else if not anime, remove audio info, THEN video codec

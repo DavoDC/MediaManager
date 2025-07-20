@@ -18,7 +18,7 @@ namespace MediaManager.Code.Modules
                         (?<AbsoluteEpisode>\d{3})\s*-\s*
                         (?<EpisodeTitle>.+?)\s*
                         (?:\[(?<CustomFormat>(?:(?![A-Z]{2,}(?:\+[A-Z]{2,})*|\w+-\d{3,4}p)[^\]])+)\])?
-                        (?:\[(?<QualityTitle>\w+-\d{3,4}p)\])?
+                        (?:\[(?<QualityTitle>(DVD|\w+-\d{3,4}p))\])?
                         (?:\[(?<AudioCodec>[^\]\s]+(?:\s+[^\]\s]+)*)\s+(?<AudioChannels>[\d.]+)\])?
                         (?:\[(?<AudioLanguages>[^\]]+)\])?
                         (?:\[(?<VideoCodec>x264|x265|h264|h265)\s+(?<VideoBitDepth>\d+)bit\])?
