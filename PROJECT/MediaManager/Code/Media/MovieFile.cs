@@ -9,20 +9,19 @@ namespace MediaManager.Code.Modules
     {
         /// <summary>
         /// This regex represents the naming format that Radarr uses for movies:
-        /// {Movie CleanTitle} {(Release Year)} {tmdb-{TmdbId}} {edition-{Edition Tags}} {[Custom Formats]}{[Quality Title]}{[MediaInfo 3D]}{[MediaInfo VideoDynamicRangeType]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[Mediainfo VideoCodec]}{-Release Group}
-        /// Example: "Doctor Strange in the Multiverse of Madness (2022) {tmdb-453395} {edition-Imax} [DSNP IMAX Enhanced][WEBDL-720p][EAC3 Atmos 5.1][h264]-playWEB"
+        /// {Movie CleanTitle} {(Release Year)} {tmdb-{TmdbId}} - {edition-{Edition Tags}} {[MediaInfo 3D]}{[Custom Formats]}{[Quality Title]}{[Mediainfo AudioCodec}{ Mediainfo AudioChannels]}{[MediaInfo VideoDynamicRangeType]}{[Mediainfo VideoCodec]}{-Release Group}
+        /// Example: "Doctor Strange in the Multiverse of Madness (2022) {tmdb-453395} - {edition-IMAX Enhanced} [DSNP IMAX Enhanced][WEBDL-1080p][EAC3 Atmos 5.1][h264]-FLUX"
         /// </summary>
         private static readonly Regex movieRegex = new Regex(@"
                     ^(?<Title>.+?)\s*\((?<ReleaseYear>\d{4})\)\s*
-                    \{(?<DBID>tmdb-\d+)\}\s*
+                    \{(?<DBID>tmdb-\d+)\}\s*-\s*
                     (?:\{edition-(?<Edition>[^}]+)\}\s*)?
+                    (?:\[(?<ThreeD>3D)\])?
                     (?:\[(?<CustomFormat>(?!DVD\b)(?!\w+-\d{3,4}p)[^\]]+)\])?
                     (?:\[(?<QualityTitle>(?!EAC3 5\.1)[^\]]+)\])?
-                    (?:\[(?<ThreeD>3D)\])?
-                    (?:\[(?<VideoDynamicRange>HDR|SDR|HLG)\])?
                     (?:\[(?<AudioCodec>EAC3|[^\]\s]+(?:\s+[^\]\s]+)*)\s+(?<AudioChannels>[\d.]+)\])?
+                    (?:\[(?<VideoDynamicRange>HDR|SDR|HLG)\])?
                     (?:\[(?<VideoCodec>x264|x265|h264|h265|AVC)\])?
-                    (?:\[(?<AudioLanguages>[^\]]+)\])?
                     (?:-(?<ReleaseGroup>[^\]]+))?$", RegexOptions.IgnorePatternWhitespace);
 
         /// <summary>
