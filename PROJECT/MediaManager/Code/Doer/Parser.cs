@@ -119,8 +119,25 @@ namespace MediaManager
                 }
             }
 
-            // Log the number of files parsed
-            PrintFilesParsed(mediaFolderName.Replace("s", ""), mediaFileList.Count);
+            // Print number of items parsed
+            int mediaFileCount = mediaFileList.Count;
+            string mediaTypeDesc = mediaFolderName.Replace("s", "");
+            if (mediaTypeDesc.Equals("Movie"))
+            {
+                // For movies, simply print count (as movies == files)
+                PrintFilesParsed(mediaTypeDesc, mediaFileCount);
+            } 
+            else
+            {
+                // Else for episodic media, print the number of media items, and the total files
+                // Note: If a show folder is empty, it won't add to the "mediaItems" count, meaning the actual show folder can have more folders.
+                int mediaItems = mediaFileList
+                    .Select(m => $"{m.Title}_{m.DatabaseRef}")
+                    .Distinct()
+                    .Count();
+
+                PrintFilesParsed(mediaTypeDesc, mediaItems, $"({mediaFileList.Count} files)");
+            }
 
             // Return media list generated
             return mediaFileList;
@@ -131,9 +148,9 @@ namespace MediaManager
         /// </summary>
         /// <param name="fileDesc">A descriptor for the files parsed.</param>
         /// <param name="mediaFileCount">The number of files parsed.</param>
-        private void PrintFilesParsed(string fileDesc, int mediaFileCount)
+        private void PrintFilesParsed(string fileDesc, int mediaFileCount, string extra = "")
         {
-            Console.WriteLine($" - {fileDesc} files parsed: {mediaFileCount}");
+            Console.WriteLine($" - {fileDesc} files parsed: {mediaFileCount} {extra}");
         }
     }
 }
