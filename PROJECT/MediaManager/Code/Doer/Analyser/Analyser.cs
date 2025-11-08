@@ -47,6 +47,9 @@ namespace MediaManager
             var relGroupStats = CreateStatList("ReleaseGroup", f => f.ReleaseGroup);
             relGroupStats.Print(0.25);
 
+            var animeRelGrpStats = new StatList<AnimeFile>("ReleaseGroup", Parser.AnimeFiles, f => f.ReleaseGroup);
+            animeRelGrpStats.Print(0, "(Anime-Specific)");
+
             // DISABLED BECAUSE contains extra un-needed info
             //var qualityStats = CreateStatList("QualityTitle", f => f.QualityTitle);
             //qualityStats.Print();
