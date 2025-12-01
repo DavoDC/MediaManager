@@ -63,7 +63,7 @@ namespace MediaManager
             MediaFiles = mediaFileListsCombined.SelectMany(list => list).ToList();
 
             // Print total number of files parsed
-            PrintFilesParsed("Total", MediaFiles.Count);
+            PrintFilesParsed("Total files", MediaFiles.Count);
 
             // Finish
             FinishAndPrintTimeTaken();
@@ -121,11 +121,10 @@ namespace MediaManager
 
             // Print number of items parsed
             int mediaFileCount = mediaFileList.Count;
-            string mediaTypeDesc = mediaFolderName.Replace("s", "");
-            if (mediaTypeDesc.Equals("Movie"))
+            if (mediaFolderName.Equals("Movies"))
             {
                 // For movies, simply print count (as movies == files)
-                PrintFilesParsed(mediaTypeDesc, mediaFileCount);
+                PrintFilesParsed(mediaFolderName, mediaFileCount);
             } 
             else
             {
@@ -136,7 +135,7 @@ namespace MediaManager
                     .Distinct()
                     .Count();
 
-                PrintFilesParsed(mediaTypeDesc, mediaItems, $"({mediaFileList.Count} files)");
+                PrintFilesParsed(mediaFolderName, mediaItems, mediaFileList.Count);
             }
 
             // Return media list generated
@@ -146,11 +145,18 @@ namespace MediaManager
         /// <summary>
         /// Print a message regarding how many files were passed
         /// </summary>
-        /// <param name="fileDesc">A descriptor for the files parsed.</param>
-        /// <param name="mediaFileCount">The number of files parsed.</param>
-        private void PrintFilesParsed(string fileDesc, int mediaFileCount, string extra = "")
+        /// <param name="mediaType">The type of media files parsed.</param>
+        /// <param name="itemCount">The number of media items parsed.</param>
+        /// <param name="fileCount">The number of files parsed, if each media item has multiple files</param>
+        /// </summary>
+        private void PrintFilesParsed(string mediaType, int itemCount, int fileCount = -1)
         {
-            Console.WriteLine($" - {fileDesc} files parsed: {mediaFileCount} {extra}");
+            string endingString = "";
+            if (fileCount != -1)
+            {
+                endingString = $"({fileCount} files)";
+            }
+            Console.WriteLine($" - {mediaType} parsed: {itemCount} {endingString}");
         }
     }
 }
