@@ -17,3 +17,12 @@ A C# console program which:
 
 ### Dependencies
 - None
+
+## Tech
+
+- **Language:** C#
+- **Architecture:** Mirrors the [AudioManager](https://github.com/DavoDC/AudioManager) design - `Doer` base class with automatic timing, `TeeWriter` for dual console/file output
+
+## Development
+
+**Started:** February 2025 · **Status:** Actively maintained · Companion: [MediaMirror](https://github.com/DavoDC/MediaMirror)
