@@ -29,4 +29,4 @@ A C# console program which:
 
 ## Development
 
-**Started:** February 2025 · **Status:** Actively maintained · Companion: [MediaMirror](https://github.com/DavoDC/MediaMirror)
+**Developed:** February 2025 · **Status:** Actively maintained · Companion: [MediaMirror](https://github.com/DavoDC/MediaMirror)
