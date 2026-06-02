@@ -77,6 +77,7 @@
     <Compile Include="Code\Doer\Parser.cs" />
     <Compile Include="Code\Prog.cs" />
     <Compile Include="Code\Tests\Assert.cs" />
+    <Compile Include="Code\Tests\LibCheckerTests.cs" />
     <Compile Include="Code\Tests\MediaFileTests.cs" />
     <Compile Include="Code\Tests\StatListTests.cs" />
     <Compile Include="Code\Tests\TestRunner.cs" />

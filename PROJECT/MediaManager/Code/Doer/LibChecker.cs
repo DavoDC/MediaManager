@@ -226,7 +226,7 @@ namespace MediaManager
         /// <param name="input">The input string.</param>
         /// <param name="value">The value inside the braces to remove.</param>
         /// <returns>The string with the braced prefix removed and trimmed.</returns>
-        private static string RemoveBracedPrefix(string input, string value)
+        internal static string RemoveBracedPrefix(string input, string value)
         {
             return RemoveDelimitedPrefix(input, value, "{", "}");
         }
@@ -237,7 +237,7 @@ namespace MediaManager
         /// <param name="input">The input string.</param>
         /// <param name="value">The value inside the brackets to remove.</param>
         /// <returns>The string with the bracketed prefix removed and trimmed.</returns>
-        private static string RemoveBracketedPrefix(string input, string value)
+        internal static string RemoveBracketedPrefix(string input, string value)
         {
             return RemoveDelimitedPrefix(input, value, "[", "]");
         }
@@ -261,7 +261,7 @@ namespace MediaManager
         /// <param name="input">The input string.</param>
         /// <param name="prefix">The prefix to remove.</param>
         /// <returns>The trimmed string with the prefix removed if present.</returns>
-        private static string RemovePrefix(string input, string prefix)
+        internal static string RemovePrefix(string input, string prefix)
         {
             if (!input.StartsWith(prefix))
             {
