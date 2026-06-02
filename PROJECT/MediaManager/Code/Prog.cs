@@ -55,6 +55,13 @@ namespace MediaManager
         /// <param name="args">Command-line arguments.</param>
         static void Main(string[] args)
         {
+            // Test mode: run tests and exit
+            if (args.Length > 0 && args[0] == "--test")
+            {
+                bool ok = TestRunner.Run();
+                Environment.Exit(ok ? 0 : 1);
+            }
+
             try
             {
                 // Start message
