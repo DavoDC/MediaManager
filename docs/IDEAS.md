@@ -31,8 +31,12 @@ Work on this after:
 - LibChecker: RemovePrefix, RemoveBracedPrefix, RemoveBracketedPrefix, chained removal (12 tests)
 - Reflector: SanitiseFilename, FixLongPath, GetRelativePath (11 tests)
 - AgeChecker: all 5 branches via path injection (5 tests)
+- EpisodeFile: showEpRegex + animeEpRegex pattern tests (12 tests)
+- MovieFile: movieRegex pattern tests (8 tests)
 
-**Next expansion candidates (in value order):**
-1. **EpisodeFile/AnimeFile/ShowFile regex** - showEpRegex and anime-specific patterns. Test by replicating patterns inline (same approach as MediaFile folder/quality regex tests).
-2. **MovieFile regex** - similar Radarr filename pattern.
-3. **Expansion rule:** Add a test when a real bug escapes current coverage. Not before.
+**Expansion rule:** Add a test when a real bug escapes current coverage. Not before.
+
+**Remaining uncovered:**
+- Parser.cs: depends on mirror filesystem - needs mirror files or mocking. Complex, low priority.
+- Analyser.cs: depends on Parser.MediaFiles - entire pipeline needed. Skip.
+- Doer.cs: abstract base class infrastructure. No testable logic.
