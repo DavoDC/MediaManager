@@ -20,6 +20,7 @@ Work on this after:
 
 - Understand current architecture (read MediaFile.cs, Analyser.cs, LibChecker.cs hierarchy)
 - Identify shared patterns with AudioManager (same DIY test framework, same injection refactor pattern)
+- **test.bat uses hardcoded MSBuild path** - `PROJECT/test.bat` hardcodes `C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe`. Breaks on machines with VS installed elsewhere or a different edition. Copy the vswhere discovery pattern from AudioManager's `scripts/dev/build.bat` (finds MSBuild dynamically via vswhere.exe, works with any VS 2017+ install).
 
 ## Automated Tests
 
