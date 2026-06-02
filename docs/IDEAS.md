@@ -21,13 +21,13 @@ Work on this after:
 - Understand current architecture (read MediaFile.cs, Analyser.cs, LibChecker.cs hierarchy)
 - Identify shared patterns with AudioManager (same DIY test framework, same injection refactor pattern)
 
-## Automated Tests - Gap
+## Automated Tests
 
-**Zero test coverage.** No test infrastructure exists. Priority order when tackling:
+**Infrastructure in place as of 2026-06-02.** Assert.cs + TestRunner.cs + `--test` flag + test.bat.
 
-1. **Set up test infrastructure** - copy Assert.cs + TestRunner.cs pattern from AudioManager. Wire into a `--test` CLI flag in Prog.cs. Add test.bat script.
-2. **MediaFile parsing** - `folderRegex` and `conciseQualityTitleRegex` are pure-function regex patterns in MediaFile.cs. These are the highest-value first tests: known-good folder names, edge cases (no year, no ID, anime vs movie vs show), quality title variations.
-3. **StatList** - likely same as AudioManager's StatList (GetSortedFreqDist, GetDecadeFreqDist). Direct port once infrastructure is in place.
-4. **LibChecker** - same pattern as AudioManager. Start with rules that have no external deps.
+**Current coverage:** MediaFile regex patterns and GetGroupValue (comprehensive as of 2026-06-02, all tests green).
 
-**Prerequisite:** Survey the architecture first. MediaManager shares AudioManager's structure but targets video/photos/documents. Confirm which modules are direct ports vs custom before writing tests.
+**Next expansion candidates (in value order):**
+1. **StatList** - likely same as AudioManager's StatList (GetSortedFreqDist, GetDecadeFreqDist). Direct port.
+2. **LibChecker** - same injection pattern as AudioManager. Start with rules that have no external deps.
+3. **Expansion rule:** Add a test when a real bug escapes current coverage. Not before.
