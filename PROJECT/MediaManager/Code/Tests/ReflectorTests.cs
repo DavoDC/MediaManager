@@ -76,5 +76,26 @@ namespace MediaManager
             string result = Reflector.FixLongPath(path, force: true);
             Assert.True(!result.Contains("/"), "no forward slashes after fix");
         }
+
+        // ---------------------------------------------------------------------------
+        // GetRelativePath
+        // ---------------------------------------------------------------------------
+
+        public static void GetRelativePath_SameDirectory_ReturnsFilenameOnly()
+        {
+            // URI-based: trailing slash on base dir is required
+            string result = Reflector.GetRelativePath(
+                @"C:\Media\Movies\",
+                @"C:\Media\Movies\Shrek.mkv");
+            Assert.Equal("Shrek.mkv", result, "file in same dir should return filename only");
+        }
+
+        public static void GetRelativePath_SubDirectory_ReturnsRelativePath()
+        {
+            string result = Reflector.GetRelativePath(
+                @"C:\Media\",
+                @"C:\Media\Movies\Shrek.mkv");
+            Assert.Equal("Movies/Shrek.mkv", result, "subdirectory file should include folder");
+        }
     }
 }
