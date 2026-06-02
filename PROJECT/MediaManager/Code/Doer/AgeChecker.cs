@@ -23,9 +23,12 @@ namespace MediaManager
         /// Create an age checker
         /// </summary>
         /// <param name="forceMirrorRegen">Whether the mirror should be regenerated regardless of age</param>
+        /// <param name="lastRunPath">Override path for testing; null uses the real Constants path</param>
         /// <exception cref="FileLoadException">If parsing date in last run file fails</exception>
-        public AgeChecker(bool forceMirrorRegen)
+        public AgeChecker(bool forceMirrorRegen, string lastRunPath = null)
         {
+            string effectivePath = lastRunPath ?? lastRunInfoFilePath;
+
             // Notify
             Console.WriteLine($"\nChecking age of mirror...");
 
@@ -34,10 +37,10 @@ namespace MediaManager
             PrintDate("Now", curDate);
 
             // If the last run info file doesn't exist
-            if (!File.Exists(lastRunInfoFilePath))
+            if (!File.Exists(effectivePath))
             {
                 // Create with it the current date
-                File.WriteAllText(lastRunInfoFilePath, GetStrFromDate(curDate));
+                File.WriteAllText(effectivePath, GetStrFromDate(curDate));
 
                 // Notify and regenerate
                 Console.WriteLine(" - Mirror age is unknown, will regenerate!");
@@ -48,10 +51,10 @@ namespace MediaManager
             //// Else if the last run file exists:
             // Try to parse date
             DateTime mirrorCreationDate;
-            if (!DateTime.TryParse(File.ReadAllText(lastRunInfoFilePath), out mirrorCreationDate))
+            if (!DateTime.TryParse(File.ReadAllText(effectivePath), out mirrorCreationDate))
             {
                 // If date parsing fails, notify and throw error
-                string parseErr = "\nERROR: Cannot parse date in: " + lastRunInfoFilePath;
+                string parseErr = "\nERROR: Cannot parse date in: " + effectivePath;
                 throw new FileLoadException(parseErr);
             }
 
@@ -95,7 +98,7 @@ namespace MediaManager
             // If regeneration will occur, update last run info
             if (RegenMirror)
             {
-                File.WriteAllText(lastRunInfoFilePath, GetStrFromDate(curDate));
+                File.WriteAllText(effectivePath, GetStrFromDate(curDate));
             }
 
             // Finish and print time taken
