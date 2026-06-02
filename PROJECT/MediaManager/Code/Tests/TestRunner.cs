@@ -9,7 +9,7 @@ namespace MediaManager
         {
             Console.WriteLine("\n###### MediaManager Tests ######\n");
 
-            var testTypes = new[] { typeof(AgeCheckerTests), typeof(EpisodeFileTests), typeof(MediaFileTests), typeof(StatListTests), typeof(LibCheckerTests), typeof(ReflectorTests) };
+            var testTypes = new[] { typeof(AgeCheckerTests), typeof(EpisodeFileTests), typeof(MovieFileTests), typeof(MediaFileTests), typeof(StatListTests), typeof(LibCheckerTests), typeof(ReflectorTests) };
             int passed = 0, failed = 0;
 
             foreach (var type in testTypes)
