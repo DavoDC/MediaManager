@@ -25,9 +25,14 @@ Work on this after:
 
 **Infrastructure in place as of 2026-06-02.** Assert.cs + TestRunner.cs + `--test` flag + test.bat.
 
-**Current coverage:** MediaFile regex patterns and GetGroupValue (comprehensive as of 2026-06-02, all tests green).
+**Current coverage (comprehensive as of 2026-06-02, all tests green):**
+- MediaFile: folderRegex + conciseQualityTitleRegex patterns, GetGroupValue (18 tests)
+- StatList: GetSortedFreqDist + GetDecadeFreqDist (9 tests)
+- LibChecker: RemovePrefix, RemoveBracedPrefix, RemoveBracketedPrefix, chained removal (12 tests)
+- Reflector: SanitiseFilename, FixLongPath, GetRelativePath (11 tests)
+- AgeChecker: all 5 branches via path injection (5 tests)
 
 **Next expansion candidates (in value order):**
-1. **StatList** - likely same as AudioManager's StatList (GetSortedFreqDist, GetDecadeFreqDist). Direct port.
-2. **LibChecker** - same injection pattern as AudioManager. Start with rules that have no external deps.
+1. **EpisodeFile/AnimeFile/ShowFile regex** - showEpRegex and anime-specific patterns. Test by replicating patterns inline (same approach as MediaFile folder/quality regex tests).
+2. **MovieFile regex** - similar Radarr filename pattern.
 3. **Expansion rule:** Add a test when a real bug escapes current coverage. Not before.
