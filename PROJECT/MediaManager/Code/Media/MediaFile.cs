@@ -369,49 +369,32 @@ namespace MediaManager.Code.Modules
         }
 
         /// <summary>
+        /// Pure logic for parsing a concise quality title from a raw quality title string.
+        /// Extracted for testability; called by GetConciseQualityTitle().
+        /// </summary>
+        internal static string ParseConciseQualityTitle(string qualityTitle)
+        {
+            if (qualityTitle == null) return "Unknown";
+            if (qualityTitle.Equals("DVD")) return "DVD";
+            Match m = conciseQualityTitleRegex.Match(qualityTitle);
+            if (m.Success) return m.Value;
+            return qualityTitle.Length == 0 ? "Unknown" : qualityTitle;
+        }
+
+        /// <summary>
         /// Get a concise version of this file's quality title that doesn't include extra info.
         /// e.g. Exclude streaming service name, repack info etc.
         /// </summary>
         /// <returns>The simplified quality title</returns>
         public string GetConciseQualityTitle()
         {
-            // If QualityTitle is somehow unset
-            if(QualityTitle == null)
+            if (QualityTitle != null && QualityTitle.Length > 0
+                && !QualityTitle.Equals("DVD")
+                && !conciseQualityTitleRegex.IsMatch(QualityTitle))
             {
-                return "Unknown";
+                Prog.PrintErrMsg($"Failed to parse Quality Title ('{QualityTitle}') for: {MediaFileName}");
             }
-
-            // Handle special DVD case
-            if(QualityTitle.Equals("DVD"))
-            {
-                return "DVD";
-            }
-
-            // Try to apply concise quality title regex to full quality title
-            Match conciseQualityTitleMatch = conciseQualityTitleRegex.Match(QualityTitle);
-
-            // If regex matched part of quality title
-            if (conciseQualityTitleMatch.Success)
-            {
-                // Return part that was found
-                return conciseQualityTitleMatch.Value;
-            }
-            else
-            {
-                // Else if couldn't find match:
-
-                // Print error
-                string errMsg = $"Failed to parse Quality Title ('{QualityTitle}') for: {MediaFileName}";
-                Prog.PrintErrMsg(errMsg);
-
-                // If empty, return unknown
-                if (QualityTitle.Length == 0) {
-                    return "Unknown";
-                }
-                
-                // Otherwise return full title
-                return QualityTitle;
-            }
+            return ParseConciseQualityTitle(QualityTitle);
         }
         /// <summary>
         /// Check media type (from path) against what is expected, and notify if not.

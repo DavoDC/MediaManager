@@ -155,5 +155,45 @@ namespace MediaManager
             var m = ConciseQualityTitleRegex.Match("DVD");
             Assert.True(!m.Success, "DVD should not match (no -NNNp pattern)");
         }
+
+        // ---------------------------------------------------------------------------
+        // ParseConciseQualityTitle - branch coverage
+        // ---------------------------------------------------------------------------
+
+        public static void ParseConciseQualityTitle_Null_ReturnsUnknown()
+        {
+            string result = MediaFile.ParseConciseQualityTitle(null);
+            Assert.Equal("Unknown", result, "null quality title should return Unknown");
+        }
+
+        public static void ParseConciseQualityTitle_DVD_ReturnsDVD()
+        {
+            string result = MediaFile.ParseConciseQualityTitle("DVD");
+            Assert.Equal("DVD", result, "DVD should pass through unchanged");
+        }
+
+        public static void ParseConciseQualityTitle_MatchingTitle_ReturnsMatch()
+        {
+            string result = MediaFile.ParseConciseQualityTitle("WEBDL-1080p");
+            Assert.Equal("WEBDL-1080p", result, "matching quality title should be returned");
+        }
+
+        public static void ParseConciseQualityTitle_LongTitleWithMatch_ExtractsMatch()
+        {
+            string result = MediaFile.ParseConciseQualityTitle("AMZN WEBRip-720p DDP5.1");
+            Assert.Equal("WEBRip-720p", result, "concise part should be extracted from long title");
+        }
+
+        public static void ParseConciseQualityTitle_EmptyString_ReturnsUnknown()
+        {
+            string result = MediaFile.ParseConciseQualityTitle("");
+            Assert.Equal("Unknown", result, "empty string should return Unknown");
+        }
+
+        public static void ParseConciseQualityTitle_UnrecognisedFormat_ReturnsTitleAsIs()
+        {
+            string result = MediaFile.ParseConciseQualityTitle("CamRip");
+            Assert.Equal("CamRip", result, "unrecognised non-empty title should be returned as-is");
+        }
     }
 }
