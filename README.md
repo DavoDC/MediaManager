@@ -19,8 +19,18 @@ A C# console program which:
 
 - Percentage and count breakdown of various metadata properties (see reports).
 
+### Build & Run
+
+> **Windows only.** Requires Visual Studio with C# / .NET workload.
+
+1. Open `PROJECT/MediaManager.sln` in Visual Studio
+2. Build with **Ctrl+Shift+B**
+3. Run with **F5** - configure your media library path when prompted
+
+Output goes to `REPORTS/`.
+
 ### Dependencies
-- None
+- None (uses .NET standard library only)
 
 ## Tech
 
